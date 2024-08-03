@@ -5,7 +5,8 @@
   "main": "app/server.js",
   "scripts": {
     "start": "cd app; node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup_local": "psql -U postgres -f ../db_scripts/create_tournament_db_tables.sql"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,8 @@
   "homepage": "https://github.com/bracketeers375/bracketeers375.github.io#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "pg": "^8.12.0"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.8"
