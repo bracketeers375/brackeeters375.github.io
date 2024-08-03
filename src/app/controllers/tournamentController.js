@@ -1,8 +1,3 @@
-const env = require("../env.json");
-const pg = require("pg");
-const Pool = pg.Pool;
-const pool = new Pool(env);
-
 exports.getAllTournaments = async (req, res) => {
     res.send("Not yet implemented.");
 }
