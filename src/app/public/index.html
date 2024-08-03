@@ -1,30 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US" id="html">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Test</title>
+    <title>finish.gg</title>
+    <link rel="stylesheet" type="text/css" href="./index.css">
 </head>
 <body>
-<h1>API Test</h1>
-<div id="api-response">Loading...</div>
+    <h1>finish.gg</h1>
+    <h2>Community through competition</h2>
 
-<script>
-    async function fetchData() {
-        try {
-            const response = await fetch('/api/test');
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.text(); // Adjusted to handle plain text
-            document.getElementById('api-response').textContent = data;
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            document.getElementById('api-response').textContent = 'Error fetching data.';
-        }
-    }
+    <div class="container">
+        <div class="center">
+            <button id="organize" class="button button5">Organize an event</button>
+            <button id="find" class="button button5">Find events</button>
+        </div>
+    </div>
 
-    fetchData();
-</script>
+    <div class="sidenav">
+        <a href="#">Search</a>
+        <a href="#" id="discover-link">Discover</a>
+        <a href="#">Help</a>
+        <a href="#" id="language-link">Language</a>
+        <a href="#" id="login-link">Login</a>
+    </div>
+
+    <div class="sidenav second-sidenav" id="second-nav">
+    </div>
+
+    <div class="tab-panel"></div>
+
+    <script src="./index.js"></script>
 </body>
 </html>
