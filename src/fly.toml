@@ -1,12 +1,10 @@
-# fly.toml app configuration file generated for bracketeers-backend on 2024-07-24T15:03:39-04:00
+# fly.toml app configuration file generated for bracketeers375 on 2024-08-03T18:12:13-04:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'bracketeers375'
 primary_region = 'iad'
-
-[build]
 
 [http_service]
   internal_port = 3000
