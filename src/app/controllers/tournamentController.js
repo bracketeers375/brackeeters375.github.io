@@ -11,11 +11,11 @@ exports.getAllTournaments = async (req, res) => {
 };
 
 exports.getTournamentById = async (req, res) => {
-
   const id = parseInt(req.params.id);
-  try{
-    await pool.query(
-      `SELECT 
+  try {
+    await pool
+      .query(
+        `SELECT 
       Tournaments.name,
       Games.name AS game_name,
       Tournaments.start_date,
@@ -27,20 +27,20 @@ exports.getTournamentById = async (req, res) => {
       JOIN Games on Tournaments.game_id = Games.game_id
       JOIN Organizations on Tournaments.organization_id = Organizations.organization_id
       WHERE tournament_id=$1`,
-      [id]
-    )
-    .then (result => {
-      console.log(result.rows);
-      let tournament = result.rows[0];
-      let name = tournament.name;
-    	let game_name = tournament.game_name;
-    	let org_name = tournament.org_name;
-      let org_email = tournament.org_email;
-    	let start_date = new Date(tournament.start_date);
-    	let end_date = new Date(tournament.end_date);
-      let desc = tournament.description;
-    	return res.send(
-      	`<!DOCTYPE html>
+        [id],
+      )
+      .then((result) => {
+        console.log(result.rows);
+        let tournament = result.rows[0];
+        let name = tournament.name;
+        let game_name = tournament.game_name;
+        let org_name = tournament.org_name;
+        let org_email = tournament.org_email;
+        let start_date = new Date(tournament.start_date);
+        let end_date = new Date(tournament.end_date);
+        let desc = tournament.description;
+        return res.send(
+          `<!DOCTYPE html>
            	<html>
              	<head>
                 <title>${name}</title>
@@ -60,13 +60,11 @@ exports.getTournamentById = async (req, res) => {
               </body>
            	</html>
       	`,
-    	);
-    });
-  }catch(error){
+        );
+      });
+  } catch (error) {
     console.log(error);
   }
-  
-    
 };
 
 exports.createTournament = async (req, res) => {
