@@ -30,7 +30,6 @@ exports.getTournamentById = async (req, res) => {
         [id],
       )
       .then((result) => {
-        console.log(result.rows);
         let tournament = result.rows[0];
         let name = tournament.name;
         let game_name = tournament.game_name;
@@ -54,9 +53,13 @@ exports.getTournamentById = async (req, res) => {
                     <h4>Description:</h4>
                     <p>${desc}</p>
                   </div>
-                  <p><a href=\"http://0.0.0.0:3000\">Home page</a></p>
+                  <p><a href=\"../../\" id=\"test\">Home page</a></p>
                   <p><a>Registration</a></p>
                   <p><a>Brackets</a></p>
+                  <script>
+                  	let a = document.getElementById(\"test\");
+                    a.href = a.href.replace(\"/api/\", \"\");
+                  </script>
               </body>
            	</html>
       	`,
