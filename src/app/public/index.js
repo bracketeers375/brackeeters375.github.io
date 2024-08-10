@@ -2,7 +2,10 @@ const discoverLink = document.getElementById("discover-link");
 const languageLink = document.getElementById("language-link");
 const loginLink = document.getElementById("login-link");
 const searchLink = document.getElementById("search-link");
+<<<<<<< HEAD
 const homeLink = document.getElementById("home-link");
+=======
+>>>>>>> a5b3b73 (Search Index WIP)
 const secondNav = document.querySelector(".second-sidenav");
 
 function hideSecondNav() {
@@ -15,6 +18,7 @@ function showSecondNav(content) {
   secondNav.appendChild(content);
 }
 
+<<<<<<< HEAD
 homeLink.addEventListener("click", () => {
   window.location.href = "index.html";
 });
@@ -23,6 +27,13 @@ searchLink.addEventListener("click", () => {
   window.location.href = "/search/search.html";
 });
 
+=======
+searchLink.addEventListener("click", () => {
+  window.location.href = 'search.html';
+});
+
+
+>>>>>>> a5b3b73 (Search Index WIP)
 discoverLink.addEventListener("click", () => {
   const panelTextDiscover = document.createElement("a");
   panelTextDiscover.textContent = "Discover Test";
@@ -49,3 +60,4 @@ document.addEventListener("click", (event) => {
     hideSecondNav();
   }
 });
+
