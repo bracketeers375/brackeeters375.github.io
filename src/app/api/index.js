@@ -1,7 +1,10 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+const apiRouter = express.Router();
 
-router.use("/users", require("./controllers/userController"));
-router.use("/tournaments", require("./controllers/tournamentController"));
+import userRouter from "./controllers/userController.js";
+import tournamentRouter from "./controllers/tournamentController.js";
 
-module.exports = router;
+apiRouter.use("/users", userRouter);
+apiRouter.use("/tournaments", tournamentRouter);
+
+export default apiRouter;

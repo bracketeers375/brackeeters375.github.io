@@ -1,4 +1,5 @@
-const tournamentService = require('../services/tournamentService')
+import express from "express";
+import tournamentService from "../services/tournamentService.js";
 
 const getAllTournaments = async (req, res) => {
     res.send("Not yet implemented.");
@@ -58,7 +59,6 @@ const deleteTournament = async (req, res) => {
     res.send("Not yet implemented.");
 };
 
-const express = require("express");
 const tournamentRouter = express.Router();
 
 tournamentRouter.get("/getAll", getAllTournaments);
@@ -67,4 +67,4 @@ tournamentRouter.post("/create", createTournament);
 tournamentRouter.put("/update/:id", updateTournament);
 tournamentRouter.delete("/delete/:id", deleteTournament);
 
-module.exports = tournamentRouter;
+export default tournamentRouter;

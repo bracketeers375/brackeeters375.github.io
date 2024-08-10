@@ -1,4 +1,6 @@
-const express = require("express");
+import apiRouter from "./api/index.js";
+import express from "express";
+
 const app = express();
 
 let host;
@@ -9,11 +11,10 @@ if (process.env.NODE_ENV === "production") {
   host = "localhost";
 }
 
-
 app.use(express.static("public"));
 app.use(express.json());
 
-app.use("/api", require("./api"));
+app.use("/api", apiRouter);
 
 app.listen(port, host, () => {
   console.log(`http://${host}:${port}`);
