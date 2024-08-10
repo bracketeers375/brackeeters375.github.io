@@ -17,8 +17,6 @@ CREATE TABLE Games
     developer VARCHAR(100)
 );
 
--- Recreate Organizations table.
-
 -- Recreate Users table.
 CREATE TABLE Users
 (
@@ -26,7 +24,7 @@ CREATE TABLE Users
     username        VARCHAR(100) UNIQUE NOT NULL,
     email           VARCHAR(100) UNIQUE NOT NULL,
     password_hash   VARCHAR(255)        NOT NULL,
-    full_name       VARCHAR(100),
+    full_name       VARCHAR(100)
 );
 
 -- Recreate Tournaments table.
@@ -36,7 +34,7 @@ CREATE TABLE Tournaments
     name            VARCHAR(100) NOT NULL,
     start_date      DATE         NOT NULL,
     end_date        DATE         NOT NULL,
-    description     TEXT,
+    description     TEXT
 );
 
 CREATE TABLE Events
@@ -45,17 +43,16 @@ CREATE TABLE Events
     event_name  TEXT,
     game_id     INT,
     tournament_id INT,
-
     FOREIGN KEY (game_id) REFERENCES Games (game_id),
-    FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id),
-)
+    FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id)
+);
 
 CREATE TABLE Stages
 (
     stage_id        SERIAL PRIMARY KEY,
     stage_name      TEXT,
-    bracket_type    TEXT,
-)
+    bracket_type    TEXT
+);
 
 -- Recreate Matches table.
 CREATE TABLE Matches
@@ -77,7 +74,7 @@ CREATE TABLE Matches
     FOREIGN KEY (event_id) REFERENCES Events (event_id),
     FOREIGN KEY (stage_id) REFERENCES Stages (stage_id),
     FOREIGN KEY (winner_next_match_id) REFERENCES Matches (match_id),
-    FOREIGN KEY (loser_next_match_id) REFERENCES Matches (match_id),
+    FOREIGN KEY (loser_next_match_id) REFERENCES Matches (match_id)
 );
 
 CREATE TABLE Participants
@@ -89,8 +86,8 @@ CREATE TABLE Participants
     event_id        INT,
     tournament_id   INT,
     FOREIGN KEY (event_id) REFERENCES Events (event_id),
-    FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id),
-)
+    FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id)
+);
 
 CREATE TABLE Admins
 (
@@ -98,5 +95,5 @@ CREATE TABLE Admins
     tournament_id   INT,
     user_id         INT,
     FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id),
-    FOREIGN KEY (user_id) REFERENCES Users (user_id);
-)
+    FOREIGN KEY (user_id) REFERENCES Users (user_id)
+);
