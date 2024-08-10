@@ -53,7 +53,7 @@ exports.getTournamentById = async (req, res) => {
                     <h4>Description:</h4>
                     <p>${desc}</p>
                   </div>
-                  <p><a href=\"../../\" id=\"test\">Home page</a></p>
+                  <p><a href=\"../../..\" id=\"test\">Home page</a></p>
                   <p><a>Registration</a></p>
                   <p><a>Brackets</a></p>
                   <script>
