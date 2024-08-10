@@ -1,11 +1,11 @@
 const { pool } = require('../../connection');
 
-exports.getUserById = async (req, res) => {
+const getUserById = async (req, res) => {
   const { id } = req.params;
   res.send(`User with ID: ${id} got`);
 };
 
-exports.createUser = async (req, res) => {
+const createUser = async (req, res) => {
   let body = req.body;
   let username;
   let email;
@@ -57,12 +57,22 @@ exports.createUser = async (req, res) => {
   }
 };
 
-exports.updateUser = (req, res) => {
+const updateUser = (req, res) => {
   const { id } = req.params;
   res.send(`User with ID: ${id} updated`);
 };
 
-exports.deleteUser = (req, res) => {
+const deleteUser = (req, res) => {
   const { id } = req.params;
   res.send(`User with ID: ${id} deleted`);
 };
+
+const express = require("express");
+const userRouter = express.Router();
+
+userRouter.get("/get/:id", getUserById);
+userRouter.post("/create", createUser);
+userRouter.put("/update/:id", updateUser);
+userRouter.delete("/delete/:id", deleteUser);
+
+module.exports = userRouter;
