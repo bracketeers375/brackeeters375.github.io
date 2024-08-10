@@ -1,7 +1,7 @@
-const express = require("express");
+import * as express from "express";
 const router = express.Router();
 
-const tournamentController = require("../controllers/tournamentController");
+import * as tournamentController from "../controllers/tournamentController";
 
 router.get("/getAll", tournamentController.getAllTournaments);
 router.get("/get/:id", tournamentController.getTournamentById);

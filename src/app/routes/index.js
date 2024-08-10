@@ -1,11 +1,12 @@
-const express = require("express");
+import * as express from "express"
 const router = express.Router();
 
-const testRoutes = require("./test");
+import * as testRoutes from "./test";
 router.use("/test", testRoutes);
-const userRoutes = require("./users");
+
+import * as userRoutes from "./users";
 router.use("/users", userRoutes);
-const tournamentRoutes = require("./tournaments");
+import * as tournamentRoutes from "./tournaments";
 router.use("/tournaments", tournamentRoutes);
 
 module.exports = router;
