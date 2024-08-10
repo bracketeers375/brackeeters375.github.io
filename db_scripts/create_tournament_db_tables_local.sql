@@ -1,3 +1,7 @@
+--
+CREATE DATABASE local_tournament_db;
+\c local_tournament_db;
+
 -- Clean out the database.
 DROP TABLE IF EXISTS Admins CASCADE;
 DROP TABLE IF EXISTS Participants CASCADE;
