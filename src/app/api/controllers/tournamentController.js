@@ -1,10 +1,10 @@
 const { pool } = require('../../connection');
 
-exports.getAllTournaments = async (req, res) => {
+const getAllTournaments = async (req, res) => {
   res.send("Not yet implemented.");
 };
 
-exports.getTournamentById = async (req, res) => {
+const getTournamentById = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
     await pool
@@ -64,14 +64,25 @@ exports.getTournamentById = async (req, res) => {
   }
 };
 
-exports.createTournament = async (req, res) => {
+const createTournament = async (req, res) => {
   res.send("Not yet implemented.");
 };
 
-exports.updateTournament = async (req, res) => {
+const updateTournament = async (req, res) => {
   res.send("Not yet implemented.");
 };
 
-exports.deleteTournament = async (req, res) => {
+const deleteTournament = async (req, res) => {
   res.send("Not yet implemented.");
 };
+
+const express = require("express");
+const tournamentRouter = express.Router();
+
+tournamentRouter.get("/getAll", getAllTournaments);
+tournamentRouter.get("/get/:id", getTournamentById);
+tournamentRouter.post("/create", createTournament);
+tournamentRouter.put("/update/:id", updateTournament);
+tournamentRouter.delete("/delete/:id", deleteTournament);
+
+module.exports = tournamentRouter;
