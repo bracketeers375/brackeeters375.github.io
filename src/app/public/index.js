@@ -1,6 +1,7 @@
 const discoverLink = document.getElementById("discover-link");
 const languageLink = document.getElementById("language-link");
 const loginLink = document.getElementById("login-link");
+const searchLink = document.getElementById("search-link");
 const secondNav = document.querySelector(".second-sidenav");
 
 function hideSecondNav() {
@@ -12,6 +13,11 @@ function showSecondNav(content) {
   secondNav.textContent = "";
   secondNav.appendChild(content);
 }
+
+searchLink.addEventListener("click", () => {
+  window.location.href = 'search.html';
+});
+
 
 discoverLink.addEventListener("click", () => {
   const panelTextDiscover = document.createElement("a");
@@ -39,3 +45,4 @@ document.addEventListener("click", (event) => {
     hideSecondNav();
   }
 });
+
