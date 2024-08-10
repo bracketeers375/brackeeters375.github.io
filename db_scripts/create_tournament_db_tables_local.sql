@@ -1,4 +1,3 @@
---
 CREATE DATABASE local_tournament_db;
 \c local_tournament_db;
 
@@ -11,6 +10,7 @@ DROP TABLE IF EXISTS Events CASCADE;
 DROP TABLE IF EXISTS Tournaments CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
 DROP TABLE IF EXISTS Games CASCADE;
+CREATE EXTENSION pgcrypto ;
 
 -- Recreate Games table.
 CREATE TABLE Games
@@ -89,6 +89,8 @@ CREATE TABLE Participants
     seed            INT,
     event_id        INT,
     tournament_id   INT,
+    FOREIGN KEY (user_id) REFERENCES Users (user_id),
+    FOREIGN KEY (username) REFERENCES Users (username),
     FOREIGN KEY (event_id) REFERENCES Events (event_id),
     FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id)
 );
@@ -101,3 +103,18 @@ CREATE TABLE Admins
     FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id),
     FOREIGN KEY (user_id) REFERENCES Users (user_id)
 );
+
+INSERT INTO Games(name, genre)
+VALUES('GGST', 'Fighting');
+
+INSERT INTO tournaments(name, start_date, end_date, description)
+VALUES('my tourney', '2024-08-10', '2024-08-11', 'Welcome to my tourney');
+
+INSERT INTO events(event_name, game_id, tournament_id)
+VALUES('GGST TOURNEY', 1, 1);
+
+INSERT INTO USERS(username, email, password_hash)
+VALUES('bob', 'bob@gmail.com', '$1$tQYTwdjo$T/JkKXeULiiSNyfp4du9j.');
+
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(1, 'bob', 1, 1);

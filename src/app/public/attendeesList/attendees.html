@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>FINISH.GG</title>
+        <link rel="stylesheet" href="attendees.css">
+    </head>
+
+    <body>
+        <div id="mainContainer">
+            <p id="titleText">Attendees List</p>
+            <label for="tourId">Enter tournament ID here:</label>
+            <input id="tourId" type="text" />
+        </div>
+        <button id="search">Search for attendees:</button>
+        <div id="errorContainer"></div>
+        <div id="tableContainer">
+            <table id="myTable">
+                <thead>
+                    <tr>
+                        <th>Player Name</th>
+                        <th>Entered Games</th>
+                    </tr>
+                </thead>
+                <tbody id="myTBody">
+
+                </tbody>
+            </table>
+            <script src="attendees.js"></script>
+        </div>
+    </body>
+
+</html>
