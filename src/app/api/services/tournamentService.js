@@ -1,4 +1,4 @@
-const { pool } = require('../../connection');
+import pool from "../../connection.js";
 
 const getTournamentById = async (id) => {
     try {
@@ -40,9 +40,9 @@ const deleteTournament = async (id) => {
     // TODO
 };
 
-module.exports = {
+export default {
     getTournamentById,
     createTournament,
     updateTournament,
     deleteTournament,
-};
+}

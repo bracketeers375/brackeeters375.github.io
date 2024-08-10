@@ -1,4 +1,4 @@
-const { pool } = require('../../connection');
+import pool from "../../connection.js";
 
 const createUser = async (username, email, password) => {
     try {
@@ -33,7 +33,7 @@ const deleteUser = async (id) => {
     // TODO
 };
 
-module.exports = {
+export default {
     createUser,
     getUserById,
     updateUser,

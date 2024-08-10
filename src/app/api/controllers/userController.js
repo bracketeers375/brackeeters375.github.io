@@ -1,4 +1,5 @@
-const userService = require('../services/userService')
+import express from "express";
+import userService from '../services/userService.js';
 
 const getUserById = async (req, res) => {
   const { id } = req.params;
@@ -43,7 +44,6 @@ const deleteUser = (req, res) => {
   res.send(`User with ID: ${id} deleted`);
 };
 
-const express = require("express");
 const userRouter = express.Router();
 
 userRouter.get("/get/:id", getUserById);
@@ -51,4 +51,4 @@ userRouter.post("/create", createUser);
 userRouter.put("/update/:id", updateUser);
 userRouter.delete("/delete/:id", deleteUser);
 
-module.exports = userRouter;
+export default userRouter;
