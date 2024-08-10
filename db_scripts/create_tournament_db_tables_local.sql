@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS Events CASCADE;
 DROP TABLE IF EXISTS Tournaments CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
 DROP TABLE IF EXISTS Games CASCADE;
+CREATE EXTENSION pgcrypto ;
 
 -- Recreate Games table.
 CREATE TABLE Games
@@ -89,6 +90,8 @@ CREATE TABLE Participants
     seed            INT,
     event_id        INT,
     tournament_id   INT,
+    FOREIGN KEY (user_id) REFERENCES Users (user_id),
+    FOREIGN KEY (username) REFERENCES Users (username),
     FOREIGN KEY (event_id) REFERENCES Events (event_id),
     FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id)
 );
