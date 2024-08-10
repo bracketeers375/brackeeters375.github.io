@@ -1,4 +1,4 @@
-const { pool } = require('../../connection');
+const userService = require('../services/userService')
 
 const getUserById = async (req, res) => {
   const { id } = req.params;
@@ -6,54 +6,30 @@ const getUserById = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  let body = req.body;
-  let username;
-  let email;
-  let cemail;
-  let password;
-  let cpassword;
+  const { username, email, cemail, password, cpassword } = req.body;
 
-  if (
-    !body.hasOwnProperty("username") ||
-    !body.hasOwnProperty("email") ||
-    !body.hasOwnProperty("cemail") ||
-    !body.hasOwnProperty("password") ||
-    !body.hasOwnProperty("cpassword")
-  ) {
-    res.status(400);
-    return res.send();
+  if (!username || !email || !cemail || !password || !cpassword) {
+    return res.status(400).send("Missing required fields");
   }
 
-  username = body.username;
-  email = body.email;
-  cemail = body.cemail;
-  password = body.password;
-  cpassword = body.cpassword;
-
   if (email.toLowerCase() !== cemail.toLowerCase()) {
-    res.status(400);
-    return res.json({ error: "Email does not match" });
+    return res.status(400).send("Email does not match");
   }
 
   if (password !== cpassword) {
-    res.status(400);
-    return res.json({ error: "Password does not match" });
+    return res.status(400).send("Password does not match");
   }
 
   try {
-    await pool
-      .query(
-        `INSERT INTO users(username, email, password_hash)
-             VALUES ($1, $2, crypt($3, gen_salt('md5')))
-             RETURNING *`,
-        [username, email, password],
-      )
-      .then(() => {
-        return res.sendStatus(200);
-      });
+    await userService.createUser(username, email, password);
+    return res.sendStatus(201);
   } catch (error) {
-    console.log(error);
-    return res.sendStatus(error.status);
+    switch (error.message) {
+      case "Username or email already exists":
+        return res.status(409).send("Username or email already exists");
+      default:
+        return res.sendStatus(500);
+    }
   }
 };
 
