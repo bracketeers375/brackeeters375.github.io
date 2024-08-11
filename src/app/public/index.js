@@ -20,7 +20,7 @@ homeLink.addEventListener("click", () => {
 });
 
 searchLink.addEventListener("click", () => {
-  window.location.href = "search.html";
+  window.location.href = "/search/search.html";
 });
 
 discoverLink.addEventListener("click", () => {
