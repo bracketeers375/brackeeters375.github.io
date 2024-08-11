@@ -1,5 +1,5 @@
 import express from "express";
-import participantsService from "../services/searchService.js";
+import searchService from "../services/searchService.js";
 
 const searchTournamentsByName = async (req, res) => {
   const name = req.query.name;
