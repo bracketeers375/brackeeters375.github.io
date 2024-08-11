@@ -4,50 +4,46 @@ import crypto from "crypto";
 
 let tokenStorage = {};
 function makeToken() {
-    return crypto.randomBytes(32).toString("hex");
+  return crypto.randomBytes(32).toString("hex");
 }
 
 let cookieOptions = {
-    httpOnly: true,
-    secure: true, 
-    sameSite: "strict",
+  httpOnly: true,
+  secure: true,
+  sameSite: "strict",
 };
-  
 
 const getUserById = async (req, res) => {
   const { id } = req.params;
   res.send(`User with ID: ${id} got`);
 };
 
-
-
-
-const loginUser = async(req, res) => {
-  let {username, password} = req.body;
-  if(!username || !password){
-  	return res.status(400).send("Missing features");
+const loginUser = async (req, res) => {
+  let { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).send("Missing features");
   }
 
-  try{
+  try {
     let result = await userService.loginUser(username, password);
-    if(result){
-      for(let [key, val] of Object.entries(tokenStorage)){
-        if(val === username.toUpperCase()){
+    if (result) {
+      for (let [key, val] of Object.entries(tokenStorage)) {
+        if (val === username.toUpperCase()) {
           console.log("Related token", key);
           return res.cookie("token", key, cookieOptions).send();
-        } 
-      } 
+        }
+      }
 
       let token = makeToken();
       console.log("Generated token", token);
-  		tokenStorage[token] = username.toUpperCase();
-  		return res.cookie("token", token, cookieOptions).send();
+      tokenStorage[token] = username.toUpperCase();
+      return res.cookie("token", token, cookieOptions).send();
     }
     return res.status(400).send("Incorrect password");
-  }catch(error){
-		console.log(error);
+  } catch (error) {
+    console.log(error);
   }
-}
+};
 
 const createUser = async (req, res) => {
   const { username, email, cemail, password, cpassword } = req.body;
@@ -57,20 +53,19 @@ const createUser = async (req, res) => {
   }
 
   if (email.toLowerCase() !== cemail.toLowerCase()) {
-    return res.status(400).send("Email does not match" );
+    return res.status(400).send("Email does not match");
   }
 
   if (password !== cpassword) {
     return res.status(400).send("Password does not match");
   }
 
-  try{ 
+  try {
     await userService.createUser(username, email, password);
     let token = makeToken();
     console.log("Generated token", token);
     tokenStorage[token] = username.toUpperCase();
     return res.cookie("token", token, cookieOptions).send();
-
   } catch (error) {
     switch (error.message) {
       case "Username or email already exists":
@@ -90,7 +85,6 @@ const deleteUser = (req, res) => {
   const { id } = req.params;
   res.send(`User with ID: ${id} deleted`);
 };
-
 
 const userRouter = express.Router();
 

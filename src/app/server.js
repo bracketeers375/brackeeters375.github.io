@@ -11,12 +11,10 @@ if (process.env.NODE_ENV === "production") {
   host = "localhost";
 }
 
-
 app.use(express.static("public"));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api", apiRouter);
-
 
 app.listen(port, host, () => {
   console.log(`http://${host}:${port}`);

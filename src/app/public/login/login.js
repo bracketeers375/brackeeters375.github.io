@@ -18,11 +18,11 @@ function sendLoginInfo() {
     },
     body: JSON.stringify({
       username: username,
-      password: password
+      password: password,
     }),
   })
     .then((response) => {
-    	return response.status;
+      return response.status;
     })
     .catch((error) => {
       console.log(error);
