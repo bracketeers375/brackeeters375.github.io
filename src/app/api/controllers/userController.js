@@ -69,7 +69,7 @@ const createUser = async (req, res) => {
   } catch (error) {
     switch (error.message) {
       case "Username or email already exists":
-        return res.status(400).send("Username or email already exists");
+        return res.status(409).send("Username or email already exists");
       default:
         return res.sendStatus(500);
     }
