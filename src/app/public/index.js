@@ -3,9 +3,13 @@ const languageLink = document.getElementById("language-link");
 const loginLink = document.getElementById("login-link");
 const searchLink = document.getElementById("search-link");
 <<<<<<< HEAD
+<<<<<<< HEAD
 const homeLink = document.getElementById("home-link");
 =======
 >>>>>>> a5b3b73 (Search Index WIP)
+=======
+const homeLink = document.getElementById("home-link");
+>>>>>>> c0d3663 (updated search)
 const secondNav = document.querySelector(".second-sidenav");
 
 function hideSecondNav() {
@@ -19,6 +23,7 @@ function showSecondNav(content) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 homeLink.addEventListener("click", () => {
   window.location.href = "index.html";
 });
@@ -30,8 +35,15 @@ searchLink.addEventListener("click", () => {
 =======
 searchLink.addEventListener("click", () => {
   window.location.href = 'search.html';
+=======
+homeLink.addEventListener("click", () => {
+  window.location.href = "index.html";
+>>>>>>> c0d3663 (updated search)
 });
 
+searchLink.addEventListener("click", () => {
+  window.location.href = "search.html";
+});
 
 >>>>>>> a5b3b73 (Search Index WIP)
 discoverLink.addEventListener("click", () => {
@@ -60,4 +72,3 @@ document.addEventListener("click", (event) => {
     hideSecondNav();
   }
 });
-
