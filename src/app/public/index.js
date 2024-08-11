@@ -30,6 +30,7 @@ homeLink.addEventListener("click", () => {
 
 searchLink.addEventListener("click", () => {
   window.location.href = "/search/search.html";
+<<<<<<< HEAD
 });
 
 =======
@@ -43,6 +44,8 @@ homeLink.addEventListener("click", () => {
 
 searchLink.addEventListener("click", () => {
   window.location.href = "search.html";
+=======
+>>>>>>> d52024f (organized/routed search)
 });
 
 >>>>>>> a5b3b73 (Search Index WIP)
