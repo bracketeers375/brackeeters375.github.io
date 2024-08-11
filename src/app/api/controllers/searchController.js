@@ -1,6 +1,7 @@
 import express from "express";
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import searchService from "../services/searchService.js";
 =======
 import participantsService from '../services/searchService.js';
@@ -8,6 +9,9 @@ import participantsService from '../services/searchService.js';
 =======
 import participantsService from "../services/searchService.js";
 >>>>>>> afe8be9 (prettier run)
+=======
+import searchService from "../services/searchService.js";
+>>>>>>> 51c3f41 (syntax error fix)
 
 const searchTournamentsByName = async (req, res) => {
   const name = req.query.name;
