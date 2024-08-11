@@ -117,3 +117,7 @@ input {
 #search-button:hover {
     background-color: #0056b3;
 }
+
+#search-results {
+  margin-left: 180px; /* or padding-left: 160px; */
+}

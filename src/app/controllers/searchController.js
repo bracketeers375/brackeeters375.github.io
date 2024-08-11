@@ -6,20 +6,26 @@ const pool = new Pool({
   connectionTimeoutMillis: 2000,
 });
 
-
-app.get("/search", async (req, res) => {
+exports.searchTournamentsByName = async (req, res) => {
   const name = req.query.name;
-  if (!name) {
-    return res.status(400).json({ error: "Name query parameter is required" });
-  }
+
+  let query = "SELECT * FROM tournaments WHERE name ILIKE $1";
+  let queryParams = [`%${name}%`];
 
   try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT * FROM tournaments WHERE name ILIKE $1', [`%${name}%`]);
-    client.release();
-    res.json(result.rows);
+    const result = await pool.query(query, queryParams);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No tournaments found with the given name." });
+    }
+
+    res.status(200).json(result.rows);
   } catch (error) {
-    console.error("Database query error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while searching for tournaments." });
   }
-});
+};
