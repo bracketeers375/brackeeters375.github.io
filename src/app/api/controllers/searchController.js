@@ -1,5 +1,5 @@
 import express from "express";
-import participantsService from '../services/searchService.js';
+import participantsService from "../services/searchService.js";
 
 const searchTournamentsByName = async (req, res) => {
   const name = req.query.name;
@@ -7,10 +7,9 @@ const searchTournamentsByName = async (req, res) => {
   try {
     const result = await searchService.getTournamentByName(name);
     let body = {
-      "tourneys": results
-    }
+      tourneys: results,
+    };
     return res.json(body);
-
   } catch (error) {
     console.log(error);
     res.status(500).send("An error occurred while searching for tournaments.");
@@ -18,6 +17,6 @@ const searchTournamentsByName = async (req, res) => {
 };
 
 const searchRouter = express.Router();
-searchRouter.get("/getAll/:name", getTournamentByName)
+searchRouter.get("/getAll/:name", getTournamentByName);
 
 export default searchRouter;
