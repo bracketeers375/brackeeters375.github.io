@@ -1,13 +1,23 @@
-const express = require("express");
+import apiRouter from "./api/index.js";
+import express from "express";
+import cookieParser from "cookie-parser";
+
 const app = express();
-let hostname = "0.0.0.0";
+let host;
 let port = 3000;
+if (process.env.NODE_ENV === "production") {
+  host = "0.0.0.0";
+} else {
+  host = "localhost";
+}
+
 
 app.use(express.static("public"));
 app.use(express.json());
+app.use(cookieParser());
+app.use("/api", apiRouter);
 
-app.use("/api", require("./routes"));
 
-app.listen(port, hostname, () => {
-  console.log(`http://${hostname}:${port}`);
+app.listen(port, host, () => {
+  console.log(`http://${host}:${port}`);
 });
