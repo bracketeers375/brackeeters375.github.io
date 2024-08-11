@@ -7,6 +7,9 @@ button.addEventListener("click", getPartByName);
 
 function getPartByName() {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 60f8ecf (prettier run)
   let name = searchInput.value;
   fetch(`/api/tournaments/getAll/${encodeURIComponent(name)}`)
     .then((response) => {
@@ -14,6 +17,7 @@ function getPartByName() {
         response.json().then((errorBody) => {
           let errorDiv = document.getElementById("search-results");
           errorDiv.textContent = errorBody.error || "Error getting results.";
+<<<<<<< HEAD
         });
       } else {
         response.json().then((data) => {
@@ -51,10 +55,27 @@ function getPartByName() {
             errorDiv.textContent = `Error getting results: ${error.message}`;
         });
 >>>>>>> d52024f (organized/routed search)
+=======
+        });
+      } else {
+        response.json().then((data) => {
+          console.log("DATA!!!", data);
+          let tableData = getTableData(data); // Assuming `data` is in the correct format
+          addTableRows(tableData);
+        });
+      }
+      console.log("response: ", response);
+    })
+    .catch((error) => {
+      let errorDiv = document.getElementById("search-results");
+      errorDiv.textContent = `Error getting results: ${error.message}`;
+    });
+>>>>>>> 60f8ecf (prettier run)
 }
 
 // Helper function to process data (modify if needed based on actual data structure)
 function getTableData(data) {
+<<<<<<< HEAD
 <<<<<<< HEAD
   let tableData = {};
 
@@ -83,29 +104,39 @@ function addTableRows(tableData) {
   }
 =======
     let tableData = {};
+=======
+  let tableData = {};
+>>>>>>> 60f8ecf (prettier run)
 
-    data.forEach(item => {
-        let id = item.id; // Adjust based on actual data structure
-        tableData[id] = {
-            name: item.name,
-            details: item.details
-        };
-    });
+  data.forEach((item) => {
+    let id = item.id; // Adjust based on actual data structure
+    tableData[id] = {
+      name: item.name,
+      details: item.details,
+    };
+  });
 
-    return tableData;
+  return tableData;
 }
 
 function addTableRows(tableData) {
-    let searchResultsContainer = document.getElementById("search-results");
-    searchResultsContainer.innerHTML = ""; // Clear previous results
+  let searchResultsContainer = document.getElementById("search-results");
+  searchResultsContainer.innerHTML = ""; // Clear previous results
 
-    for (const [key, value] of Object.entries(tableData)) {
-        let name = value.name;
-        let details = value.details;
+  for (const [key, value] of Object.entries(tableData)) {
+    let name = value.name;
+    let details = value.details;
 
+<<<<<<< HEAD
         let newDiv = document.createElement("div");
         newDiv.textContent = `Name: ${name}, Details: ${details}`;
         searchResultsContainer.append(newDiv);
     }
 >>>>>>> d52024f (organized/routed search)
+=======
+    let newDiv = document.createElement("div");
+    newDiv.textContent = `Name: ${name}, Details: ${details}`;
+    searchResultsContainer.append(newDiv);
+  }
+>>>>>>> 60f8ecf (prettier run)
 }

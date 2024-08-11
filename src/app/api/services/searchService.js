@@ -58,24 +58,30 @@ export default {
 import pool from "../../connection.js";
 
 const getTournamentsByName = async (name) => {
-	try {
-		const result = await pool.query(
-			`SELECT * FROM SELECT * FROM tournaments WHERE name ILIKE $1`, [name]
-			);
+  try {
+    const result = await pool.query(
+      `SELECT * FROM SELECT * FROM tournaments WHERE name ILIKE $1`,
+      [name],
+    );
 
-		if (result.rows.length === 0) {
-			return null;
-		}
+    if (result.rows.length === 0) {
+      return null;
+    }
 
-		return result.rows;
-	} catch (error) {
-		console.log(error);
-		throw new Error("Database error");
-	}
+    return result.rows;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
 };
 
 export default {
+<<<<<<< HEAD
 	getTournamentsByName
 }
 
 >>>>>>> d52024f (organized/routed search)
+=======
+  getTournamentsByName,
+};
+>>>>>>> 60f8ecf (prettier run)
