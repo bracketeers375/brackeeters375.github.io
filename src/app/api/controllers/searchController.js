@@ -3,6 +3,7 @@ import express from "express";
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import searchService from "../services/searchService.js";
 =======
 import participantsService from '../services/searchService.js';
@@ -16,6 +17,9 @@ import searchService from "../services/searchService.js";
 =======
 import participantsService from '../services/searchService.js';
 >>>>>>> d52024f (organized/routed search)
+=======
+import participantsService from "../services/searchService.js";
+>>>>>>> 60f8ecf (prettier run)
 
 const searchTournamentsByName = async (req, res) => {
   const name = req.query.name;
@@ -23,6 +27,7 @@ const searchTournamentsByName = async (req, res) => {
   try {
     const result = await searchService.getTournamentByName(name);
     let body = {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -45,6 +50,11 @@ const searchTournamentsByName = async (req, res) => {
 >>>>>>> afe8be9 (prettier run)
 =======
 >>>>>>> d52024f (organized/routed search)
+=======
+      tourneys: results,
+    };
+    return res.json(body);
+>>>>>>> 60f8ecf (prettier run)
   } catch (error) {
     console.log(error);
     res.status(500).send("An error occurred while searching for tournaments.");
@@ -52,6 +62,7 @@ const searchTournamentsByName = async (req, res) => {
 };
 
 const searchRouter = express.Router();
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -65,5 +76,8 @@ searchRouter.get("/getAll/:name", getTournamentByName);
 =======
 searchRouter.get("/getAll/:name", getTournamentByName)
 >>>>>>> d52024f (organized/routed search)
+=======
+searchRouter.get("/getAll/:name", getTournamentByName);
+>>>>>>> 60f8ecf (prettier run)
 
 export default searchRouter;
