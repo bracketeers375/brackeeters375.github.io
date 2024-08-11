@@ -1,7 +1,6 @@
 import apiRouter from "./api/index.js";
 import express from "express";
-
-const app = express();
+import cookieParser from "cookie-parser";
 
 let host;
 let port = 3000;
@@ -13,7 +12,7 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(express.static("public"));
 app.use(express.json());
-
+app.use(cookieParser());
 app.use("/api", apiRouter);
 
 app.listen(port, host, () => {
