@@ -1,9 +1,0 @@
-const express = require("express");
-const router = express.Router();
-
-const searchController = require("../controllers/searchController");
-
-// Search route
-router.get("/search", searchController.searchTournamentsByName);
-
-module.exports = router;
