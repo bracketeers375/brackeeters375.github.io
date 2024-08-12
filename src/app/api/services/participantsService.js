@@ -1,4 +1,4 @@
-import pool from "../../connection.js";
+import pool from "./connection.js";
 
 const getParticipantsByTourId = async (tournament_id) => {
   try {

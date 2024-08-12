@@ -1,4 +1,4 @@
-import pool from "../../connection.js";
+import pool from "./connection.js";
 import argon2 from "argon2";
 
 const createUser = async (username, email, password) => {
