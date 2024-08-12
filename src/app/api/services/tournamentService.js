@@ -1,9 +1,9 @@
 import pool from "../../connection.js";
 
 const getTournamentById = async (id) => {
-    try {
-        const result = await pool.query(
-            `SELECT Tournaments.name,
+  try {
+    const result = await pool.query(
+      `SELECT Tournaments.name,
                     Games.name                  AS game_name,
                     Tournaments.start_date,
                     Tournaments.end_date,
@@ -14,35 +14,35 @@ const getTournamentById = async (id) => {
                       JOIN Games on Tournaments.game_id = Games.game_id
                       JOIN Organizations on Tournaments.organization_id = Organizations.organization_id
              WHERE tournament_id = $1`,
-            [id]
-        );
+      [id],
+    );
 
-        if (result.rows.length === 0) {
-            return null; // Return null if no tournament is found
-        }
-
-        return result.rows[0];
-    } catch (error) {
-        console.log(error);
-        throw new Error("Database error");
+    if (result.rows.length === 0) {
+      return null; // Return null if no tournament is found
     }
+
+    return result.rows[0];
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
 };
 
 const createTournament = async (tournamentData) => {
-    // TODO
+  // TODO
 };
 
 const updateTournament = async (id, tournamentData) => {
-    // TODO
+  // TODO
 };
 
 const deleteTournament = async (id) => {
-    // TODO
+  // TODO
 };
 
 export default {
-    getTournamentById,
-    createTournament,
-    updateTournament,
-    deleteTournament,
-}
+  getTournamentById,
+  createTournament,
+  updateTournament,
+  deleteTournament,
+};

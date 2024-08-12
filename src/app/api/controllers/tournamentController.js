@@ -2,22 +2,30 @@ import express from "express";
 import tournamentService from "../services/tournamentService.js";
 
 const getAllTournaments = async (req, res) => {
-    res.send("Not yet implemented.");
+  res.send("Not yet implemented.");
 };
 
 const getTournamentById = async (req, res) => {
-    const id = parseInt(req.params.id);
-    try {
-        const tournament = await tournamentService.getTournamentById(id);
+  const id = parseInt(req.params.id);
+  try {
+    const tournament = await tournamentService.getTournamentById(id);
 
-        if (!tournament) {
-            return res.status(404).send("Tournament not found");
-        }
+    if (!tournament) {
+      return res.status(404).send("Tournament not found");
+    }
 
-        const { name, game_name, org_name, org_email, start_date, end_date, description } = tournament;
+    const {
+      name,
+      game_name,
+      org_name,
+      org_email,
+      start_date,
+      end_date,
+      description,
+    } = tournament;
 
-        return res.send(
-            `<!DOCTYPE html>
+    return res.send(
+      `<!DOCTYPE html>
          <html>
            <head>
              <title>${name}</title>
@@ -39,24 +47,24 @@ const getTournamentById = async (req, res) => {
                a.href = a.href.replace(\"/api/\", \"\");
              </script>
            </body>
-         </html>`
-        );
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("An error occurred while retrieving the tournament");
-    }
+         </html>`,
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("An error occurred while retrieving the tournament");
+  }
 };
 
 const createTournament = async (req, res) => {
-    res.send("Not yet implemented.");
+  res.send("Not yet implemented.");
 };
 
 const updateTournament = async (req, res) => {
-    res.send("Not yet implemented.");
+  res.send("Not yet implemented.");
 };
 
 const deleteTournament = async (req, res) => {
-    res.send("Not yet implemented.");
+  res.send("Not yet implemented.");
 };
 
 const tournamentRouter = express.Router();

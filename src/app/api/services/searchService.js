@@ -1,15 +1,14 @@
 import pool from "../../connection.js";
 
-const getParticipantsByTourId = async (tournament_id) => {
+const getTournamentsByName = async (name) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM Participants
-            WHERE tournament_id =$1`,
-      [tournament_id],
+      `SELECT * FROM tournaments WHERE name ILIKE $1`,
+      [name],
     );
 
     if (result.rows.length === 0) {
-      return null; // Return null if no participants is found
+      return null;
     }
 
     return result.rows;
@@ -20,5 +19,5 @@ const getParticipantsByTourId = async (tournament_id) => {
 };
 
 export default {
-  getParticipantsByTourId,
+  getTournamentsByName,
 };
