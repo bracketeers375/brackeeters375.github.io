@@ -16,15 +16,6 @@ const createUser = async (username, email, password) => {
              RETURNING *`,
       [username, email, hash],
     );
-
-  try {
-    const result = await pool.query(
-      `INSERT INTO users(username, email, password_hash)
-             VALUES ($1, $2, crypt($3, gen_salt('md5')))
-             RETURNING *`,
-      [username, email, password],
-    );
-    return result.rows[0];
   } catch (error) {
     switch (error.code) {
       case "23505": // i.e. Duplicate key constraint violated
@@ -34,7 +25,6 @@ const createUser = async (username, email, password) => {
         throw new Error("Database error");
     }
   }
-
 };
 
 const loginUser = async (username, password) => {
@@ -71,7 +61,6 @@ const loginUser = async (username, password) => {
   }
 
   return isCorrectPass;
-
 };
 
 const getUserById = async (id) => {
@@ -88,12 +77,7 @@ const deleteUser = async (id) => {
 
 export default {
   createUser,
-
   loginUser,
-  getUserById,
-  updateUser,
-  deleteUser,
-};
   getUserById,
   updateUser,
   deleteUser,
