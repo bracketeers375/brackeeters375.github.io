@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>
+            <%= title %>
+        </title>
+        <link rel="stylesheet" type="text/css" href="../../public/css/bracket-setup.css">
+    </head>
+    <body>
+        <div id="mainContainer">
+            <div>
+                <label for="numPlayers">Enter number of players:</label>
+                <input id="numPlayers" type="text" />
+
+                <label for="format">Format:</label>
+                <select id="format" name="format">
+                    <option value="double">Double Elimination</option>
+                    <option value="single">Single Elimination</option>
+                    <option value="roundrobin">Round Robin</option>
+                </select>
+
+                <button id="save">Save</button>
+            </div>
+        </div>
+
+        <script src="../../public/js/bracket-setup.js"></script>
+    </body>
+</html>
