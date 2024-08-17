@@ -2,7 +2,6 @@ import express from "express";
 import bracketsService from "../services/bracketsService.js";
 
 const createBracketTest = async (req, res) => {
-    console.log("test 123")
     const { numPlayers, format } = req.body;
     
     if(!numPlayers || !format) {
@@ -17,6 +16,7 @@ const createBracketTest = async (req, res) => {
         return res.json(body);
     }   catch (error) {
         res.status(500);
+        console.log(error);
         res.send("An error occured while creating bracket");
     }
 
