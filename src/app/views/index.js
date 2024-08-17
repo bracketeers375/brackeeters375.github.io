@@ -3,7 +3,19 @@ const viewRouter = express.Router();
 
 viewRouter.get("/", (req, res) => {
   res.render(`index`, {
-    title: 'finish.gg - Community through competition'
+    title: "finish.gg - Community through competition",
+  });
+});
+
+viewRouter.get("/login", (req, res) => {
+  res.render(`login`, {
+    title: "Login - Bracketeers",
+  });
+});
+
+viewRouter.get("/registration", (req, res) => {
+  res.render(`registration`, {
+    title: "Registration - Bracketeers",
   });
 });
 
@@ -27,8 +39,8 @@ viewRouter.get("/bracket-setup", (req, res) => {
 
 
 viewRouter.use((req, res) => {
-  res.status(404).render('404', {
-    title: '404 - Page Not Found'
+  res.status(404).render("404", {
+    title: "404 - Page Not Found",
   });
 });
 

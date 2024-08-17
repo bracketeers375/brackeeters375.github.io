@@ -13,7 +13,6 @@ let cookieOptions = {
   sameSite: "strict",
 };
 
-
 const getUserById = async (req, res) => {
   const { id } = req.params;
   res.send(`User with ID: ${id} got`);
@@ -45,7 +44,6 @@ const loginUser = async (req, res) => {
     console.log(error);
   }
 };
-
 
 const createUser = async (req, res) => {
   const { username, email, password, cpassword } = req.body;
