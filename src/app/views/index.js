@@ -7,6 +7,18 @@ viewRouter.get("/", (req, res) => {
   });
 });
 
+viewRouter.get("/login", (req, res) => {
+  res.render(`login`, {
+    title: "Login - Bracketeers",
+  });
+});
+
+viewRouter.get("/registration", (req, res) => {
+  res.render(`registration`, {
+    title: "Registration - Bracketeers",
+  });
+});
+
 viewRouter.get("/search", (req, res) => {
   res.render(`search`, {
     title: "Search - Bracketeers",
