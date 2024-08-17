@@ -19,6 +19,13 @@ viewRouter.get("/attendees", (req, res) => {
   });
 });
 
+viewRouter.get("/bracket-setup", (req, res) => {
+    res.render(`bracket-setup`, {
+    title: "Bracket Setup - Bracketeers",
+  });
+});
+
+
 viewRouter.use((req, res) => {
   res.status(404).render('404', {
     title: '404 - Page Not Found'
