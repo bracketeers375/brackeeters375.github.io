@@ -1,12 +1,10 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 import pool from "./connection.js";
 
 const getTournamentsByName = async (name) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM tournaments WHERE name ILIKE $1`,
-      [name],
+      `SELECT * FROM tournaments WHERE tournament_name ILIKE $1`,
+      [`%${name}%`],
     );
 
     if (result.rows.length === 0) {
@@ -15,22 +13,16 @@ const getTournamentsByName = async (name) => {
 
     return result.rows;
   } catch (error) {
-    console.log(error);
-    throw new Error("Database error");
+    console.error("Error querying tournaments:", error);
+    throw new Error(`Database error: ${error.message}`);
   }
 };
 
-export default {
-  getTournamentsByName,
-};
-=======
-import pool from "../../connection.js";
-
-const getTournamentsByName = async (name) => {
+const getGamesByName = async (name) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM tournaments WHERE name ILIKE $1`,
-      [name],
+      `SELECT * FROM Games WHERE game_name ILIKE $1`,
+      [`%${name}%`],
     );
 
     if (result.rows.length === 0) {
@@ -39,49 +31,12 @@ const getTournamentsByName = async (name) => {
 
     return result.rows;
   } catch (error) {
-    console.log(error);
-    throw new Error("Database error");
+    console.error("Error querying events:", error);
+    throw new Error(`Database error: ${error.message}`);
   }
 };
 
 export default {
-<<<<<<< HEAD
-	getTournamentsByName
-}
-
->>>>>>> aaffe15 (organized/routed search)
-=======
   getTournamentsByName,
+  getGamesByName,
 };
->>>>>>> afe8be9 (prettier run)
-=======
-import pool from "../../connection.js";
-
-const getTournamentsByName = async (name) => {
-  try {
-    const result = await pool.query(
-      `SELECT * FROM tournaments WHERE name ILIKE $1`,
-      [name],
-    );
-
-    if (result.rows.length === 0) {
-      return null;
-    }
-
-    return result.rows;
-  } catch (error) {
-    console.log(error);
-    throw new Error("Database error");
-  }
-};
-
-export default {
-<<<<<<< HEAD
-	getTournamentsByName
-}
-
->>>>>>> d52024f (organized/routed search)
-=======
-  getTournamentsByName,
-};
->>>>>>> 60f8ecf (prettier run)
