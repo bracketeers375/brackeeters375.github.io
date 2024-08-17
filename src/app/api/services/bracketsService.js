@@ -4,11 +4,13 @@ import { BracketsManager, helpers } from "brackets-manager";
 import { json } from "express";
 
 const storage = new InMemoryDatabase();
+console.log("storage: ", storage);
 const manager = new BracketsManager(storage);
 
 const createBracketTest = async (numPlayers, format) => {
     let seedinglist = [];
     let config;
+    let seedOrder;
 
     for(let i = 0; i < numPlayers; i++) {
         let playerName = "Player " + i;
@@ -16,9 +18,22 @@ const createBracketTest = async (numPlayers, format) => {
     }
 
     switch (format) {
+        case 'single_elimination':
+            seedOrder = ["inner_outer"];
+            const singleEliminationSettings = {
+                seedOrdering: seedOrder,
+                consolationFinal: false,
+            }
+            config = {
+                tournamentId: 123,
+                type: format,
+                name: "Example name",
+                settings: singleEliminationSettings,
+                seeding: seedinglist
+            }
         case 'double_elimination':
 
-            const seedOrder = ["inner_outer"];
+            seedOrder = ["inner_outer"];
             const doubleEliminationSettings = {
                 seedOrdering: seedOrder,
                 consolationFinal: false,
@@ -26,11 +41,30 @@ const createBracketTest = async (numPlayers, format) => {
                 grandFinal: "double",
                 size: helpers.getNearestPowerOfTwo(numPlayers)
             };
+
             config = {
                 tournamentId: "123",
                 name: "Example name",
                 type: format,
                 settings: doubleEliminationSettings,
+                seeding: seedinglist,
+            };
+
+        case 'round_robin':
+            seedOrder = ['groups.effort_balanced'];
+
+            const roundRobinSettings = {
+                seedOrdering: seedOrder,
+                roundRobinMode: 'simple',
+                groupCount: 1,
+                size: helpers.getNearestPowerOfTwo(numPlayers)
+            };
+            
+            config = {
+                tournamentId: "123",
+                name: "Example name",
+                type: format,
+                settings: roundRobinSettings,
                 seeding: seedinglist,
             }
 
@@ -38,8 +72,8 @@ const createBracketTest = async (numPlayers, format) => {
 
     await manager.create.stage(config);
 
-    let jsonData = await manager.export();
-
+    let jsonData = await manager.export();;
+    console.log("STORAGE INSIDE: ", storage);
     return jsonData;
 
 }
