@@ -6,7 +6,11 @@
         <title>
             <%= title %>
         </title>
-        <link rel="stylesheet" type="text/css" href="../../public/css/bracket-setup.css">
+        <link rel="stylesheet" type="text/css" href="/css/bracket-setup.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.css" />
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
+
     </head>
     <body>
         <div id="mainContainer">
@@ -16,15 +20,16 @@
 
                 <label for="format">Format:</label>
                 <select id="format" name="format">
-                    <option value="double">Double Elimination</option>
-                    <option value="single">Single Elimination</option>
-                    <option value="roundrobin">Round Robin</option>
+                    <option value="double_elimination">Double Elimination</option>
+                    <option value="single_elimination">Single Elimination</option>
+                    <option value="round_robin">Round Robin</option>
                 </select>
 
-                <button id="save">Save</button>
+                <button id="saveButton">Save</button>
             </div>
         </div>
 
-        <script src="../../public/js/bracket-setup.js"></script>
+        <div id="bracketsViewerExample" class="brackets-viewer"></div>
+        <script src="/js/bracket-setup.js"></script>
     </body>
 </html>
