@@ -48,14 +48,10 @@ const loginUser = async (req, res) => {
 
 
 const createUser = async (req, res) => {
-  const { username, email, cemail, password, cpassword } = req.body;
+  const { username, email, password, cpassword } = req.body;
 
-  if (!username || !email || !cemail || !password || !cpassword) {
+  if (!username || !email || !password || !cpassword) {
     return res.status(400).send("Missing required fields");
-  }
-
-  if (email.toLowerCase() !== cemail.toLowerCase()) {
-    return res.status(400).send("Email does not match");
   }
 
   if (password !== cpassword) {

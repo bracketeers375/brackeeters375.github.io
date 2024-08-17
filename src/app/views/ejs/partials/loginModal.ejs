@@ -1,0 +1,207 @@
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        transition: opacity 0.2s ease;
+        opacity: 0;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        width: 80%;
+        max-width: 500px;
+        position: absolute;
+        left: 50%;
+        bottom: -100%;
+        transform: translateX(-50%);
+        animation: animatebottom 0.3s ease-out forwards;
+    }
+
+    @keyframes animatebottom {
+        from {
+            bottom: -100%;
+            opacity: 0;
+        }
+        to {
+            bottom: 50%;
+            transform: translate(-50%, 50%);
+            opacity: 1;
+        }
+    }
+
+    .modal.show {
+        display: block;
+        opacity: 1;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        color: #333;
+        font-size: 14px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        margin-top: 5px;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .btn {
+        background-color: #1947A4;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    .btn:hover {
+        background-color: #103478;
+    }
+
+    .btn.cancel {
+        background-color: #d9534f;
+    }
+
+    .btn.cancel:hover {
+        background-color: #c9302c;
+    }
+
+    .checkbox {
+        margin-bottom: 15px;
+    }
+
+    .checkbox label {
+        display: inline-flex;
+        color: #333;
+    }
+
+    .checkbox input {
+        margin-right: 5px;
+        width: auto;
+        height: auto;
+    }
+
+    .modal-footer {
+        text-align: center;
+    }
+
+    .modal-footer a {
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+    .modal-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .modal-footer a {
+        color: #1947A4;
+        text-decoration: none;
+    }
+
+    .modal-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .tab-switch {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 20px;
+    }
+
+    .tab-switch button {
+        background-color: #f1f1f1;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 16px;
+        flex: 1;
+    }
+
+    .tab-switch button.active {
+        background-color: #1947A4;
+        color: white;
+    }
+</style>
+
+<div class="modal-container">
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="tab-switch">
+                    <button id="loginTab" class="active">Login</button>
+                    <button id="registerTab">Register</button>
+                </div>
+                <%- include('loginForm') %>
+                <%- include('registerForm') %>
+            </div>
+            <div class="modal-footer">
+                <button class="btn cancel" id="authCancelBtn">Cancel</button>
+                <a href="#"><p>Forgot Password?</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById("authModal");
+        const cancelBtn = document.getElementById("authCancelBtn");
+        const loginTab = document.getElementById("loginTab");
+        const registerTab = document.getElementById("registerTab");
+        const loginForm = document.getElementById("loginForm");
+        const registerForm = document.getElementById("registerForm");
+
+        const toggleModal = (show) => {
+            modal.classList.toggle("show", show);
+        };
+
+        const switchTab = (activateTab, deactivateTab, activateForm, deactivateForm) => {
+            activateTab.classList.add("active");
+            deactivateTab.classList.remove("active");
+            activateForm.classList.add("active");
+            deactivateForm.classList.remove("active");
+        };
+
+        document.getElementById("authModalTrigger").onclick = () => toggleModal(true);
+        cancelBtn.onclick = (e) => {
+            e.preventDefault();
+            toggleModal(false);
+        };
+
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                toggleModal(false);
+            }
+        };
+
+        registerTab.onclick = () => switchTab(registerTab, loginTab, registerForm, loginForm);
+        loginTab.onclick = () => switchTab(loginTab, registerTab, loginForm, registerForm);
+    });
+</script>
