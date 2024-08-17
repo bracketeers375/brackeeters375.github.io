@@ -3,7 +3,7 @@ const viewRouter = express.Router();
 
 viewRouter.get("/", (req, res) => {
   res.render(`index`, {
-    title: 'finish.gg - Community through competition'
+    title: "finish.gg - Community through competition",
   });
 });
 
@@ -32,8 +32,8 @@ viewRouter.get("/attendees", (req, res) => {
 });
 
 viewRouter.use((req, res) => {
-  res.status(404).render('404', {
-    title: '404 - Page Not Found'
+  res.status(404).render("404", {
+    title: "404 - Page Not Found",
   });
 });
 
