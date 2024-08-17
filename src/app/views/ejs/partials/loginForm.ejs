@@ -1,0 +1,47 @@
+<div id="loginForm" class="tab-content active">
+    <form id="loginFormElement">
+        <div class="form-group">
+            <label for="authUsername">Username</label>
+            <input type="text" id="authUsername" class="form-control" placeholder="Enter email">
+        </div>
+        <div class="form-group">
+            <label for="authPassword">Password</label>
+            <input type="password" id="authPassword" class="form-control" placeholder="Enter password">
+        </div>
+        <div class="checkbox">
+            <label><input type="checkbox" checked>Remember me</label>
+        </div>
+        <button type="submit" id="loginSubmit" class="btn">Login</button>
+    </form>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById("loginFormElement");
+        const usernameIn = document.getElementById("authUsername");
+        const passwordIn = document.getElementById("authPassword");
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+
+            const payload = {
+                username: usernameIn.value,
+                password: passwordIn.value
+            };
+
+            try {
+                const response = await fetch("/api/users/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                console.log("Response received: ", response.status);
+                console.log("Response: ", response);
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    });
+</script>
