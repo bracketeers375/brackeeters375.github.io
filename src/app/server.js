@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "views/ejs"));
 
 app.use("/api", apiRouter);
 app.use("/", viewRouter);
