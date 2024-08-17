@@ -51,10 +51,8 @@ const createBracketTest = async (numPlayers, format) => {
             };
 
         case 'round_robin':
-            seedOrder = ['groups.effort_balanced'];
 
             const roundRobinSettings = {
-                seedOrdering: seedOrder,
                 roundRobinMode: 'simple',
                 groupCount: 1,
                 size: helpers.getNearestPowerOfTwo(numPlayers)
