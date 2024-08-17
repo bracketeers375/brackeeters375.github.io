@@ -1,0 +1,58 @@
+<style>
+    .sidenav {
+        height: 100%;
+        width: 50px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #1c1c1c;
+        border-right: 1px solid #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidenav a {
+        padding: 10px 0;
+        text-decoration: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        width: 100%;
+    }
+
+    .sidenav a:hover {
+        color: #fff;
+        background-color: #333;
+        border-radius: 4px;
+    }
+
+    .sidenav a#authModalTrigger {
+        background-color: #1947A4;
+        margin-top: auto;
+    }
+
+    #sidenav-container {
+        display: flex;
+    }
+</style>
+
+<div id="sidenav-container">
+    <div class="sidenav">
+        <a href="/">
+            <%- include('icons/_homeIcon') %>
+        </a>
+        <a href="/search">
+            <%- include('icons/_searchIcon') %>
+        </a>
+        <a href="/explore">
+            <%- include('icons/_exploreIcon') %>
+        </a>
+        <a style="cursor: pointer" id="authModalTrigger">
+            <%- include('icons/_loginIcon') %>
+        </a>
+    </div>
+</div>
+
+<%- include('_loginModal') %>

@@ -2,31 +2,38 @@
 <html lang="en-US" id="html">
 <head>
     <title><%= title %></title>
-    <link rel="stylesheet" type="text/css" href="/css/search.css">
+    <link rel="stylesheet" href="/css/search.css">
 </head>
 <body>
-<h1>START YOUR SEARCH</h1>
+<%- include('partials/_sideNav') %>
 
 <div class="search-container">
-    <label for="search-input"></label>
-    <input type="search" id="search-input" placeholder="Search...">
-    <button id="search-button">Search</button>
+    <h1>START YOUR SEARCH</h1>
+    <div class="search-input-wrapper">
+        <label for="search-input" style="display:none;"></label>
+        <input type="search" id="search-input" placeholder="Search...">
+        <div id="search-divider"></div>
+        <button id="search-button">Search</button>
+    </div>
 </div>
 
-<div id="search-results"></div>
-
-<div class="sidenav">
-    <a href="#" id="home-link">Home</a>
-    <a href="#" id="search-link">Search</a>
-    <a href="#" id="login-link">Login</a>
+<div id="search-results">
+    <table class="results-table">
+        <thead>
+        <tr>
+            <th>Result #</th>
+            <th>Title</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="3">No results found. Please enter a search term.</td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 
-<div class="sidenav second-sidenav" id="second-nav">
-</div>
-
-<div class="tab-panel"></div>
-
-<script src="/js/index.js"></script>
 <script src="/js/search.js"></script>
 </body>
 </html>
