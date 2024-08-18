@@ -13,7 +13,7 @@ const getTournamentById = async (req, res) => {
     if (!tournament) {
       return res.status(404).send("Tournament not found");
     }
-    
+
     return res.json(tournament);
   } catch (error) {
     console.log(error);

@@ -60,59 +60,55 @@ const loginUser = async (username, password) => {
     throw new Error("Verification failed");
   }
 
-  return (isCorrectPass ? user : undefined);
+  return isCorrectPass ? user : undefined;
 };
 
 const getUserByToken = async (token) => {
-  
-  if(token === undefined)
-    throw new Error("No token for this site");
+  if (token === undefined) throw new Error("No token for this site");
 
-  try{
+  try {
     let result = await pool.query(
       `SELECT *
       FROM Users
       WHERE token=$1`,
-      [token]
+      [token],
     );
     return result.rows;
-  }catch(error){
+  } catch (error) {
     throw new Error("Problem querying database");
   }
-}
+};
 
 const getUserById = async (id) => {
   // TODO
 };
 
-
 const updateUser = async (id, details) => {
-  let queryString = 'UPDATE Users SET ';
-  if(!details)
-    throw new Error("No details provided");
-  
+  let queryString = "UPDATE Users SET ";
+  if (!details) throw new Error("No details provided");
+
   let paramNumber = 1;
-  
+
   let args = [];
-  if(details.hasOwnProperty("username")){
+  if (details.hasOwnProperty("username")) {
     queryString += `username= \$${paramNumber}, `;
     args.push(details.username);
     paramNumber++;
   }
 
-  if(details.hasOwnProperty("email")){
+  if (details.hasOwnProperty("email")) {
     queryString += `email= \$${paramNumber}, `;
     args.push(details.email);
     paramNumber++;
   }
 
-  if(details.hasOwnProperty("full_name")){
+  if (details.hasOwnProperty("full_name")) {
     queryString += `full_name= \$${paramNumber}, `;
     args.push(details.full_name);
     paramNumber++;
   }
 
-  if(details.hasOwnProperty("token")){
+  if (details.hasOwnProperty("token")) {
     queryString += `token= \$${paramNumber}`;
     args.push(details.token);
     paramNumber++;
@@ -120,14 +116,14 @@ const updateUser = async (id, details) => {
 
   queryString += ` WHERE user_id= \$${paramNumber} RETURNING *`;
   args.push(parseInt(id));
-  
-  try{
+
+  try {
     console.log(queryString);
     console.log(args);
     let result = await pool.query(queryString, args);
     console.log("Success");
     return result.rows;
-  }catch(error){
+  } catch (error) {
     console.log("Could not query database");
   }
 };

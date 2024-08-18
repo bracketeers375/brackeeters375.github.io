@@ -3,7 +3,7 @@ import pool from "./connection.js";
 const getTournamentById = async (id) => {
   try {
     const result = await pool.query(
-     `SELECT *
+      `SELECT *
       FROM Tournaments
       WHERE tournament_id = $1`,
       [id],

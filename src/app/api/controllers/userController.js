@@ -12,7 +12,6 @@ let cookieOptions = {
   sameSite: "strict",
 };
 
-
 const getUserById = async (req, res) => {
   const { id } = req.params;
   res.send(`User with ID: ${id} got`);
@@ -20,32 +19,32 @@ const getUserById = async (req, res) => {
 
 const getUserByToken = async (req, res) => {
   let token = req.cookies.token;
-  try{
+  try {
     let user = await userService.getUserByToken(token);
-    if(user.length === 0)
-      return res.status(404).send("Account does not exist or no token was found");
+    if (user.length === 0)
+      return res
+        .status(404)
+        .send("Account does not exist or no token was found");
 
-    if(user.length > 1)
-      return res.status(400).send("Duplicate token");
-    
+    if (user.length > 1) return res.status(400).send("Duplicate token");
+
     return res.status(200).send(user[0]);
-  }catch(error){
+  } catch (error) {
     console.log(error);
     res.status(500).send("Database error");
   }
-  
-}
+};
 
 const loginUser = async (req, res) => {
   let { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).send("Missing features");
   }
-  
+
   try {
     let user = await userService.loginUser(username, password);
     if (user) {
-      if(user.token){
+      if (user.token) {
         console.log(`Preexisting token ${user.token}`);
         return res.cookie("token", user.token, cookieOptions).send();
       }
@@ -57,7 +56,6 @@ const loginUser = async (req, res) => {
     return res.send(error);
   }
 };
-
 
 const createUser = async (req, res) => {
   const { username, email, password, cpassword } = req.body;
@@ -73,7 +71,6 @@ const createUser = async (req, res) => {
   try {
     await userService.createUser(username, email, password);
   } catch (error) {
-    
     switch (error.message) {
       case "Username or email already exists":
         return res.status(409).send("Username or email already exists");
@@ -82,39 +79,38 @@ const createUser = async (req, res) => {
     }
   }
   let verifiedUser;
- 	try{
+  try {
     verifiedUser = await userService.loginUser(username, password);
- 	}catch(error){
+  } catch (error) {
     console.log(error);
     return res.send(error);
   }
 
-
-  try{
-    let result = await userService.updateUser(verifiedUser.user_id, {token: makeToken()});
+  try {
+    let result = await userService.updateUser(verifiedUser.user_id, {
+      token: makeToken(),
+    });
     let updatedUser = result[0];
     console.log(`Generated token ${updatedUser.token}`);
     return res.cookie("token", updatedUser.token, cookieOptions).send();
-  }catch(error){
+  } catch (error) {
     console.log(error);
     return res.send(error);
   }
-  
 };
 
 const updateUser = async (req, res) => {
-  const id  = req.params.id;
+  const id = req.params.id;
   const details = req.body;
-  try{
+  try {
     let user = await userService.updateUser(id, details);
-    if(user.length == 0)
-      return res.status(404).send("Account does not exist");
+    if (user.length == 0) return res.status(404).send("Account does not exist");
 
-    if(user.length > 1)
+    if (user.length > 1)
       return res.status(400).send("More than one account was found");
 
     return res.status(200).send(user[0]);
-  }catch(error){
+  } catch (error) {
     res.status(500).send("Database error");
   }
 };
