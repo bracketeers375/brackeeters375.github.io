@@ -34,7 +34,7 @@ viewRouter.get("/tournaments/get/:id", (req, res) => {
       return response.json();
     })
     .then((tournament) => {
-      res.render(`${VIEW_PREFIX}/tournaments`, {
+      res.render(`tournaments`, {
         id: tournament.tournament_id,
         title: `Tournaments - ${tournament.tournament_name}`,
         name: tournament.tournament_name,
@@ -64,7 +64,7 @@ viewRouter.get("/tournaments/register/:id", (req, res) => {
           return eventsResponse.json();
         })
         .then((events) => {
-          res.render(`${VIEW_PREFIX}/tournaments-register`, {
+          res.render(`tournaments-register`, {
             title: `Register for Tournament - ${tournTitle}`,
             name: tournTitle,
             eventsData: events,
