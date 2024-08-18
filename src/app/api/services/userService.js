@@ -32,8 +32,8 @@ const loginUser = async (username, password) => {
   try {
     result = await pool.query(
       `
-      SELECT password_hash FROM Users 
-      WHERE UPPER(username)=$1 `,
+      SELECT * FROM Users 
+      WHERE UPPER(username)=$1`,
       [username.toUpperCase()],
     );
   } catch (error) {
@@ -60,7 +60,23 @@ const loginUser = async (username, password) => {
     throw new Error("Verification failed");
   }
 
-  return isCorrectPass;
+  return isCorrectPass ? user : undefined;
+};
+
+const getUserByToken = async (token) => {
+  if (token === undefined) throw new Error("No token for this site");
+
+  try {
+    let result = await pool.query(
+      `SELECT *
+      FROM Users
+      WHERE token=$1`,
+      [token],
+    );
+    return result.rows;
+  } catch (error) {
+    throw new Error("Problem querying database");
+  }
 };
 
 const getUserById = async (id) => {
@@ -68,7 +84,48 @@ const getUserById = async (id) => {
 };
 
 const updateUser = async (id, details) => {
-  // TODO
+  let queryString = "UPDATE Users SET ";
+  if (!details) throw new Error("No details provided");
+
+  let paramNumber = 1;
+
+  let args = [];
+  if (details.hasOwnProperty("username")) {
+    queryString += `username= \$${paramNumber}, `;
+    args.push(details.username);
+    paramNumber++;
+  }
+
+  if (details.hasOwnProperty("email")) {
+    queryString += `email= \$${paramNumber}, `;
+    args.push(details.email);
+    paramNumber++;
+  }
+
+  if (details.hasOwnProperty("full_name")) {
+    queryString += `full_name= \$${paramNumber}, `;
+    args.push(details.full_name);
+    paramNumber++;
+  }
+
+  if (details.hasOwnProperty("token")) {
+    queryString += `token= \$${paramNumber}`;
+    args.push(details.token);
+    paramNumber++;
+  }
+
+  queryString += ` WHERE user_id= \$${paramNumber} RETURNING *`;
+  args.push(parseInt(id));
+
+  try {
+    console.log(queryString);
+    console.log(args);
+    let result = await pool.query(queryString, args);
+    console.log("Success");
+    return result.rows;
+  } catch (error) {
+    console.log("Could not query database");
+  }
 };
 
 const deleteUser = async (id) => {
@@ -79,6 +136,7 @@ export default {
   createUser,
   loginUser,
   getUserById,
+  getUserByToken,
   updateUser,
   deleteUser,
 };

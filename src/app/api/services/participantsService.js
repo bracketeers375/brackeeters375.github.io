@@ -19,6 +19,56 @@ const getParticipantsByTourId = async (tournament_id) => {
   }
 };
 
+const addParticipantToEvent = async (
+  user_id,
+  username,
+  event_id,
+  tournament_id,
+  game_id,
+  game_name,
+) => {
+  console.log(user_id);
+  console.log(username);
+  console.log(event_id);
+  console.log(tournament_id);
+  console.log(game_id);
+  console.log(game_name);
+  if (
+    !user_id ||
+    !username ||
+    !event_id ||
+    !tournament_id ||
+    !game_id ||
+    !game_name
+  ) {
+    throw new Error("Missing features");
+    return;
+  }
+
+  try {
+    let result = await pool.query(
+      `
+      INSERT INTO 
+      Participants(user_id, username, event_id, tournament_id, game_id, game_name)
+      VALUES($1, $2, $3, $4, $5, $6)
+      RETURNING *
+      `,
+      [user_id, username, event_id, tournament_id, game_id, game_name],
+    );
+
+    return result.rows;
+  } catch (error) {
+    switch (error.code) {
+      case "23505": // i.e. Duplicate key constraint violated
+        throw new Error("Participant already exists");
+      default:
+        console.log(error);
+        throw new Error("Database error");
+    }
+  }
+};
+
 export default {
   getParticipantsByTourId,
+  addParticipantToEvent,
 };

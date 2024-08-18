@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en-US" id="tournaments-html">
+  <head>
+    <meta charset="utf-8">
+    <title><%= title%></title>
+  </head>
+  <body>
+    <h1><%= name%></h1>
+    <h3><%= start_date%> - <%=end_date%></h3>
+    <div>
+      <h4>Description:</h4>
+      <p><%= desc%></p>
+    </div>
+    <p><a id="regPage" href="../../tournaments/register/<%=id%>">Event Registration</a></p>
+    <p><a>Brackets</a></p>
+    
+    <script src="/js/tournaments.js"></script>
+  </body>
+</html>

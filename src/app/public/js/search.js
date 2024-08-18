@@ -21,8 +21,9 @@ function search() {
         });
       } else {
         response.json().then((data) => {
-          let searchResultsContainer =
-            document.getElementById("search-results-body");
+          let searchResultsContainer = document.getElementById(
+            "search-results-body",
+          );
           searchResultsContainer.textContent = ""; // Clear previous results
 
           let tourneyData = getTableData(data.tourneys, "Tournaments");
@@ -38,7 +39,6 @@ function search() {
       errorDiv.textContent = `Error getting results: ${error.message}`;
     });
 }
-
 
 // Helper function to process data
 function getTableData(itemsArray, type) {
@@ -78,16 +78,12 @@ function addTableRows(tableData, displayType) {
       let title = document.createElement("td");
       let detailsText = document.createElement("td");
 
-
       title.textContent = `${name}`;
       bodyRow.appendChild(title);
       detailsText.textContent =
-        displayType === "Tournaments"
-          ? `${details}`
-          : `${genre}`;
+        displayType === "Tournaments" ? `${details}` : `${genre}`;
       bodyRow.appendChild(detailsText);
       searchResultsContainer.appendChild(bodyRow);
     }
   }
 }
-
