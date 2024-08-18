@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title><%= title%></title>
+  </head>
+  <body>
+    <h1><%= name%></h1>
+    <div id="events-container">
+      <% for (let event of eventsData) { %>
+					<input type="checkbox" name="events" id="<%event.event_name%>">
+          <label for="<%event.event_name%>"><%=event.event_name%></label><br>
+      <% } %>
+      <script>
+        const data = <%- JSON.stringify(eventsData) %>
+      </script>
+    </div>
+    <button id="submit">Register for tournament</button><br>
+    <p id="message"></p>
+    <script src="/js/tournaments-register.js"></script>
+  </body>
+</html>

@@ -13,42 +13,8 @@ const getTournamentById = async (req, res) => {
     if (!tournament) {
       return res.status(404).send("Tournament not found");
     }
-
-    const {
-      name,
-      game_name,
-      org_name,
-      org_email,
-      start_date,
-      end_date,
-      description,
-    } = tournament;
-
-    return res.send(
-      `<!DOCTYPE html>
-         <html>
-           <head>
-             <title>${name}</title>
-           </head>
-           <body>
-             <h1>${name}</h1>
-             <h3>Hosted by: ${org_name} - ${org_email}</h3>
-             <h3>${new Date(start_date).toDateString()} - ${new Date(end_date).toDateString()}</h3>
-             <h3>Game: ${game_name}</h3>
-             <div>
-               <h4>Description:</h4>
-               <p>${description}</p>
-             </div>
-             <p><a href=\"../../..\" id=\"test\">Home page</a></p>
-             <p><a>Registration</a></p>
-             <p><a>Brackets</a></p>
-             <script>
-               let a = document.getElementById(\"test\");
-               a.href = a.href.replace(\"/api/\", \"\");
-             </script>
-           </body>
-         </html>`,
-    );
+    
+    return res.json(tournament);
   } catch (error) {
     console.log(error);
     res.status(500).send("An error occurred while retrieving the tournament");
