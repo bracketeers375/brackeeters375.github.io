@@ -38,6 +38,7 @@ CREATE TABLE Tournaments
 (
     tournament_id    SERIAL PRIMARY KEY,
     tournament_name  TEXT,
+    tournament_details  JSON,
     game_id     INT,
     -- game_name   TEXT,
     event_id INT,
