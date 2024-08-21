@@ -25,6 +25,12 @@ viewRouter.get("/bracket-setup", (req, res) => {
   });
 });
 
+viewRouter.get("/events", (req, res) => {
+  res.render('events', {
+    title: "Events - Bracketeers",
+  });
+});
+
 viewRouter.get("/tournaments/get/:id", (req, res) => {
   let id = req.params.id;
   let apiPrefix = `${req.protocol}://${req.get("host")}`;
