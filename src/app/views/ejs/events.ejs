@@ -1,0 +1,93 @@
+<div>
+    <label for="event-name">Enter name of event: </label>
+    <input id="event-name">
+    <button id='submit'> Submit</button>
+</div>
+
+<div>
+    <label for="delete-event-name">Enter name of event: </label>
+    <input id="delete-event-name">
+    <button id='delete'> Delete</button>
+</div>
+
+<div>
+    <label for="update-event-name">Enter current name of event: </label>
+    <input id="update-event-name">
+    <label for="new-event-name">Enter new name of event: </label>
+    <input id="new-event-name">
+    <button id='update'> Update</button>
+</div>
+
+<script>
+    const eventButton = document.getElementById("submit");
+    const eventName = document.getElementById('event-name');
+    const updateButton = document.getElementById("update");
+    const updateEvent = document.getElementById("update-event-name");
+    const newEventName = document.getElementById("new-event-name");
+    const deleteButton = document.getElementById("delete");
+    const deleteEvent = document.getElementById("delete-event-name");
+
+    eventButton.addEventListener("click", async function(event) {
+        const details = {
+            eventName: eventName.value,
+        };
+
+        try {
+            const response = await fetch("/api/events/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(details),
+            });
+
+            console.log("Response received: ", response.status);
+            console.log("Response: ", response);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    updateButton.addEventListener("click", async function(event) {
+        const details = {
+            eventName: updateEvent.value, // Current event name
+            updatedEventName: newEventName.value, // New event name
+        };
+
+        try {
+            const response = await fetch("/api/events/update", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(details),
+            });
+
+            console.log("Response received: ", response.status);
+            console.log("Response: ", response);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    deleteButton.addEventListener("click", async function(event) {
+        const details = {
+            deleteEvent: deleteEvent.value,
+        };
+
+        try {
+            const response = await fetch("/api/events/delete", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(details),
+            });
+
+            console.log("Response received: ", response.status);
+            console.log("Response: ", response);
+        } catch (error) {
+            console.error(error);
+        }
+    });
+</script>

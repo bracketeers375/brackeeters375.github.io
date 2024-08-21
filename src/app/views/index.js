@@ -25,6 +25,12 @@ viewRouter.get("/bracket-setup", (req, res) => {
   });
 });
 
+viewRouter.get("/events", (req, res) => {
+  res.render(`events`, {
+  title: "Event Creation - Bracketeers",
+});
+});
+
 
 viewRouter.use((req, res) => {
   res.status(404).render('404', {
