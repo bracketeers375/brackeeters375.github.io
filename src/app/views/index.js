@@ -26,7 +26,7 @@ viewRouter.get("/bracket-setup", (req, res) => {
 });
 
 viewRouter.get("/events", (req, res) => {
-  res.render('events', {
+  res.render("events", {
     title: "Events - Bracketeers",
   });
 });
