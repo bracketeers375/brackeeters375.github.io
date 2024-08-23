@@ -80,49 +80,49 @@ VALUES('TEST GGST', 1, 1, '{
   "participant": [
     {
       "id": 0,
-      "tournament_id": "123",
+      "tournament_id": 0,
       "name": "Player 0"
     },
     {
       "id": 1,
-      "tournament_id": "123",
+      "tournament_id": 0,
       "name": "Player 1"
     },
     {
       "id": 2,
-      "tournament_id": "123",
+      "tournament_id": 0,
       "name": "Player 2"
     },
     {
       "id": 3,
-      "tournament_id": "123",
+      "tournament_id": 0,
       "name": "Player 3"
     },
     {
       "id": 4,
-      "tournament_id": "123",
+      "tournament_id": 0,
       "name": "Player 4"
     },
     {
       "id": 5,
-      "tournament_id": "123",
+      "tournament_id": 0,
       "name": "Player 5"
     },
     {
       "id": 6,
-      "tournament_id": "123",
+      "tournament_id": 0,
       "name": "Player 6"
     },
     {
       "id": 7,
-      "tournament_id": "123",
+      "tournament_id": 0,
       "name": "Player 7"
     }
   ],
   "stage": [
     {
       "id": 0,
-      "tournament_id": "123",
+      "tournament_id": 0,
       "name": "Example name",
       "type": "double_elimination",
       "number": 1,

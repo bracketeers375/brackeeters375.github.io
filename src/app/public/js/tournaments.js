@@ -30,6 +30,29 @@ function getTest() {
         })
         .then((body) => {
             console.log("body: ", body);
+            renderBracket(body.tournament_json);
         });
 
+}
+
+function renderBracket(data) {
+  console.log("data: ", data);
+  document.getElementById("bracketsViewerExample").innerHTML = "";
+
+  window.bracketsViewer.render(
+    {
+      stages: data.stage,
+      matches: data.match,
+      matchGames: data.match_game,
+      participants: data.participant,
+    },
+    {
+      selector: "#" + "bracketsViewerExample",
+      participantOriginPlacement: "before",
+      separatedChildCountLabel: true,
+      showSlotsOrigin: true,
+      showLowerBracketSlotsOrigin: true,
+      highlightParticipantOnHover: true,
+    },
+  );
 }

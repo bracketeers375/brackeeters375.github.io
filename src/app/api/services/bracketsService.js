@@ -74,5 +74,3 @@ const createBracketTest = async (numPlayers, format) => {
 export default {
   createBracketTest,
 };
-
-export {storage};

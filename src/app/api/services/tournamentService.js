@@ -1,5 +1,26 @@
 import pool from "./connection.js";
-import { storage as InMemDB } from "./bracketsService.js";
+import { InMemoryDatabase } from "brackets-memory-db";
+import { BracketsManager, helpers } from "brackets-manager";
+
+const storage = new InMemoryDatabase();
+const manager = new BracketsManager(storage);
+
+const getAllTournaments = async () => {
+    try {
+    const result = await pool.query(
+      `SELECT *FROM Tournaments`
+    );
+
+    if (result.rows.length === 0) {
+      return null; // Return null if no tournament is found
+    }
+    //console.log("reached service");
+    return result.rows[0];
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
+}
 
 const getTournamentById = async (id) => {
   try {
@@ -81,10 +102,17 @@ const deleteTournament = async (id) => {
   // TODO
 };
 
+const testthing = await getAllTournaments();
+console.log('testthing json: ', testthing.tournament_json);
+manager.import(testthing.tournament_json);
+storage.setData(testthing.tournament_json);
+console.log("storage data", storage.data);
+
 export default {
   getTournamentById,
   createTournament,
   updateTournamentJson,
   deleteTournament,
+  getAllTournaments,
   getAllTournamentsByEventId,
 };
