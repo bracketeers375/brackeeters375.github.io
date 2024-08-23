@@ -37,9 +37,10 @@ CREATE TABLE Events
 
 CREATE TABLE Tournaments
 (
-    tournament_id    SERIAL PRIMARY KEY,
-    tournament_name  TEXT,
-    game_id     INT,
+    tournament_id       SERIAL PRIMARY KEY,
+    tournament_name     VARCHAR(100) NOT NULL,
+    tournament_json     JSON,
+    game_id             INT NOT NULL,
     -- game_name   TEXT,
     event_id INT,
     FOREIGN KEY (game_id) REFERENCES Games (game_id),
@@ -64,3 +65,13 @@ CREATE TABLE Tournaments
 --     FOREIGN KEY (game_id) REFERENCES Games (game_id),
 --     FOREIGN KEY (game_name) REFERENCES Games (game_name)
 -- );
+
+-- dummy data
+INSERT INTO Games(game_name)
+VALUES('GGST');
+INSERT INTO Games(game_name)
+VALUES('SF6');
+
+INSERT INTO Events(event_name)
+VALUES('TEST TOURNEY');
+
