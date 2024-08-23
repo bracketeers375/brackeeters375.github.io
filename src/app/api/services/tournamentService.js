@@ -1,4 +1,5 @@
 import pool from "./connection.js";
+import { storage as InMemDB } from "./bracketsService.js";
 
 const getTournamentById = async (id) => {
   try {
@@ -43,6 +44,8 @@ const getAllTournamentsByEventId = async (event_id) => {
 
 const createTournament = async (t_name, g_id, e_id,) => {
   
+  //Getting the row with highest tournament_id
+  //SELECT * FROM TOURNAMENTS ORDER BY tournament_id desc limit 1;
   try {
     await pool.query(
       `INSERT INTO tournaments(tournament_name, game_id, event_id)
@@ -58,8 +61,20 @@ const createTournament = async (t_name, g_id, e_id,) => {
   }
 };
 
-const updateTournament = async (id, tournamentData) => {
-  // TODO
+const updateTournamentJson = async (tourId, tourData) => {
+  try {
+    await pool.query(
+      `UPDATE tournaments
+      SET tournament_json = $1
+      WHERE tournament_id = $2`,
+      [tourData, tourId],
+    ).then((result) => {
+
+    });
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
 };
 
 const deleteTournament = async (id) => {
@@ -69,7 +84,7 @@ const deleteTournament = async (id) => {
 export default {
   getTournamentById,
   createTournament,
-  updateTournament,
+  updateTournamentJson,
   deleteTournament,
   getAllTournamentsByEventId,
 };

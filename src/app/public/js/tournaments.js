@@ -1,5 +1,5 @@
 let testCreateBtn = document.getElementById("testCreate");
-testCreateBtn.addEventListener("click", createTest);
+testCreateBtn.addEventListener("click", getTest);
 
 function createTest() {
 
@@ -21,5 +21,15 @@ function createTest() {
     .catch((error) => {
         console.log(error);
     });
+}
+
+function getTest() {
+    fetch(`api/tournaments/get/1`)
+        .then((response) => {
+            return response.json();
+        })
+        .then((body) => {
+            console.log("body: ", body);
+        });
 
 }

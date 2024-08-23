@@ -19,7 +19,8 @@ const getTournamentById = async (req, res) => {
 
 const getAllTournamentsByEventId = async (req, res) => {
   try {
-    let {event_id} = req.body;
+    const event_id = parseInt(req.params.eventid);
+    
     if (Number.isNaN(event_id)) {
       return res.status(400).send("Event ID must be a number");
     }
@@ -53,8 +54,23 @@ const createTournament = async (req, res) => {
   
 };
 
-const updateTournament = async (req, res) => {
-  res.send("Not yet implemented.");
+const updateTournamentJson = async (req, res) => {
+  let {tournament_id, tournament_json} = req.body;
+  if (!tournament_id) {
+      return res.status(400).send("Missing required fields");
+  }
+
+  if(Number.isNaN(tournament_id)) {
+    return res.status(400).send("Tournament ID must be a number");
+  }
+
+  try {
+    const result = await tournamentService.updateTournamentJson(tournament_id, tournament_json);
+    res.status(200).send();
+  } catch {
+      console.log(error);
+      res.status(500).send("An error occurred while creating tournament");
+  }
 };
 
 const deleteTournament = async (req, res) => {
@@ -66,7 +82,7 @@ const tournamentRouter = express.Router();
 tournamentRouter.get("/get/:id", getTournamentById);
 tournamentRouter.get("/getAllTourFromEvent/:eventid", getAllTournamentsByEventId);
 tournamentRouter.post("/create", createTournament);
-tournamentRouter.put("/update/:id", updateTournament);
+tournamentRouter.put("/updateJson/:id", updateTournamentJson);
 tournamentRouter.delete("/delete/:id", deleteTournament);
 
 export default tournamentRouter;
