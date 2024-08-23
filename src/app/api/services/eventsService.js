@@ -1,75 +1,192 @@
 import pool from "./connection.js";
 
-const getEventById = async (id) => {
-  let result;
-  try {
-    result = await pool.query(
-      `SELECT *
+const createEvent = async (eventName, startDate, endDate = null) => {
+    try {
+        const result = await pool.query(
+            `INSERT INTO Events(event_name, start_date, end_date)
+             VALUES ($1, $2, $3)
+             RETURNING *`,
+            [eventName, startDate, endDate]
+        );
+        return result.rows[0];
+    } catch (error) {
+        console.error("Database error during event creation:", error);
+        throw new Error("Database error during event creation");
+    }
+};
+
+const getEventById = async (eventId) => {
+    try {
+        const result = await pool.query(
+            `SELECT *
              FROM Events
              WHERE event_id = $1`,
-      [tournId],
-    );
-  } catch (error) {
-    throw new Error("Database query failed");
-  }
-
-  return result.rows;
+            [eventId]
+        );
+        if (result.rows.length === 0) {
+            throw new Error("Event not found");
+        }
+        return result.rows[0];
+    } catch (error) {
+        console.error("Database error during event retrieval:", error);
+        throw new Error("Database error during event retrieval");
+    }
 };
 
-const getAllEventsByTournamentId = async (tournId) => {
-  let result;
-  try {
-    result = await pool.query(
-      `SELECT *
-             FROM Events
-             WHERE tournament_id = $1`,
-      [tournId],
-    );
-  } catch (error) {
-    throw new Error("Database query failed");
-  }
-
-  return result.rows;
+const getAllClosedEvents = async () => {
+    try {
+        const result = await pool.query(`
+      SELECT * 
+      FROM Events
+      WHERE end_date < CURRENT_DATE
+      ORDER BY end_date DESC
+    `);
+        return result.rows;
+    } catch (error) {
+        console.error("Database error during closed events retrieval:", error);
+        throw new Error("Database error during closed events retrieval");
+    }
 };
 
-const createEvent = async (eventName) => {
-  try {
-    await pool.query(
-      `INSERT INTO events(event_name)
-          VALUES ($1)`,
-      [eventName],
-    );
-  } catch (error) {
-    console.log(error);
-    throw new Error("Database error");
-  }
+const getAllUpcomingEvents = async () => {
+    try {
+        const result = await pool.query(`
+      SELECT * 
+      FROM Events
+      WHERE start_date > CURRENT_DATE
+      ORDER BY start_date DESC
+    `);
+        return result.rows;
+    } catch (error) {
+        console.error("Database error during upcoming events retrieval:", error);
+        throw new Error("Database error during upcoming events retrieval");
+    }
 };
 
-const updateEvent = async (eventName, updatedEventName) => {
-  try {
-    await pool.query(
-      `UPDATE events SET event_name = $1 WHERE event_name = $2`,
-      [updatedEventName, eventName],
-    );
-  } catch (error) {
-    console.log(error);
-    throw new Error("Database error");
-  }
+const getAllOpenEvents = async () => {
+    try {
+        const result = await pool.query(`
+      SELECT * 
+      FROM Events
+      WHERE start_date < CURRENT_DATE AND
+            end_date >= CURRENT_DATE
+      ORDER BY end_date DESC
+    `);
+        return result.rows;
+    } catch (error) {
+        console.error("Database error during open events retrieval:", error);
+        throw new Error("Database error during open events retrieval");
+    }
 };
 
-const deleteEvent = async (eventName) => {
-  try {
-    await pool.query(`DELETE FROM events WHERE event_name = $1`, [eventName]);
-  } catch (error) {
-    console.log(error);
-    throw new Error("Database error");
-  }
+const getAllEvents = async () => {
+    try {
+        const result = await pool.query(`
+      SELECT * 
+      FROM Events
+      ORDER BY end_date DESC
+    `);
+        return result.rows;
+    } catch (error) {
+        console.error("Database error during events retrieval:", error);
+        throw new Error("Database error during events retrieval");
+    }
+};
+
+const updateEvent = async (eventId, details) => {
+    let queryString = "UPDATE Events SET ";
+    if (!details) throw new Error("No details provided");
+
+    let paramNumber = 1;
+    let args = [];
+
+    if (details.hasOwnProperty("event_name")) {
+        queryString += `event_name = \$${paramNumber}, `;
+        args.push(details.event_name);
+        paramNumber++;
+    }
+
+    if (details.hasOwnProperty("start_date")) {
+        queryString += `start_date = \$${paramNumber}, `;
+        args.push(details.start_date);
+        paramNumber++;
+    }
+
+    if (details.hasOwnProperty("end_date")) {
+        queryString += `end_date = \$${paramNumber}`;
+        args.push(details.end_date);
+        paramNumber++;
+    }
+
+    queryString += ` WHERE event_id = \$${paramNumber} RETURNING *`;
+    args.push(parseInt(eventId));
+
+    try {
+        const result = await pool.query(queryString, args);
+        return result.rows[0];
+    } catch (error) {
+        console.error("Could not query database", error);
+        throw new Error("Database error during event update");
+    }
+};
+
+const deleteEvent = async (eventId) => {
+    try {
+        await pool.query(`DELETE
+                          FROM Events
+                          WHERE event_id = $1`, [eventId]);
+        return {message: "Event deleted successfully"};
+    } catch (error) {
+        console.error("Database error during event deletion:", error);
+        throw new Error("Database error during event deletion");
+    }
+};
+
+const getTournamentsForEvent = async (eventId) => {
+    try {
+        const result = await pool.query(
+            `SELECT *
+             FROM Tournaments
+             WHERE event_id = $1`,
+            [eventId]
+        );
+        return result.rows;
+    } catch (error) {
+        console.error("Database error during tournaments retrieval:", error);
+        throw new Error("Database error during tournaments retrieval");
+    }
+};
+
+const getEventByTournamentId = async (tournamentId) => {
+    try {
+        const result = await pool.query(
+            `SELECT e.*
+             FROM Events e
+                      JOIN Tournaments t ON e.event_id = t.event_id
+             WHERE t.tournament_id = $1`,
+            [tournamentId]
+        );
+
+        if (result.rows.length === 0) {
+            throw new Error("Event not found for the given tournament ID");
+        }
+
+        return result.rows[0];
+    } catch (error) {
+        console.error("Database error during event retrieval by tournament ID:", error);
+        throw new Error("Database error during event retrieval by tournament ID");
+    }
 };
 
 export default {
-  getEventById,
-  getAllEventsByTournamentId,
-  createEvent,
-  updateEvent,
-  deleteEvent,
+    createEvent,
+    getEventById,
+    getAllOpenEvents,
+    getAllClosedEvents,
+    getAllUpcomingEvents,
+    getAllEvents,
+    updateEvent,
+    deleteEvent,
+    getTournamentsForEvent,
+    getEventByTournamentId
 };

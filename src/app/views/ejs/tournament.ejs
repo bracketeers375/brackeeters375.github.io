@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/tournament.css">
+</head>
+<body>
+<%- include('partials/sideNav') %>
+
+<div class="content">
+    <header class="page-header">
+        <h1><%= event.event_name %></h1>
+        <h2><%= tournament.tournament_name %></h2>
+        <div class="divider-bar"></div>
+    </header>
+
+    <div id="bracketsViewer" class="brackets-viewer"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch(`/api/tournaments/get/<%= tournament.tournament_id %>`)
+            .then(response => response.json())
+            .then(body => {
+                renderBracket(body.tournament_json);
+            })
+            .catch(error => console.error('Error loading tournament:', error));
+    });
+
+    function renderBracket(data) {
+        document.getElementById("bracketsViewer").innerHTML = "";
+
+        window.bracketsViewer.render(
+            {
+                stages: data.stage,
+                matches: data.match,
+                matchGames: data.match_game,
+                participants: data.participant,
+            },
+            {
+                selector: "#bracketsViewer",
+                participantOriginPlacement: "before",
+                separatedChildCountLabel: true,
+                showSlotsOrigin: true,
+                showLowerBracketSlotsOrigin: true,
+                highlightParticipantOnHover: true,
+            }
+        );
+    }
+</script>
+</body>
+</html>

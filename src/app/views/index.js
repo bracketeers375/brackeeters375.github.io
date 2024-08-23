@@ -1,4 +1,6 @@
 import express from "express";
+import eventsService from "../api/services/eventsService.js";
+import tournamentService from "../api/services/tournamentService.js";
 const viewRouter = express.Router();
 
 viewRouter.get("/", (req, res) => {
@@ -25,70 +27,97 @@ viewRouter.get("/bracket-setup", (req, res) => {
   });
 });
 
-viewRouter.get("/events", (req, res) => {
-  res.render("events", {
-    title: "Events - Bracketeers",
-  });
+viewRouter.get("/events", async (req, res) => {
+  try {
+    const openEvents = await eventsService.getAllOpenEvents();
+    res.render("events", {
+      title: "Events - Bracketeers",
+      openEvents,
+    });
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).send("Error retrieving events.");
+  }
 });
 
-viewRouter.get("/tournaments", (req, res) => {
-  res.render(`tournaments`, {
-    title: "Tournaments Test - Bracketeers",
-  });
+viewRouter.get("/events/open", async (req, res) => {
+  try {
+    const openEvents = await eventsService.getAllOpenEvents();
+    res.render("partials/events/eventsList", { events: openEvents });
+  } catch (error) {
+    console.error("Error fetching open events:", error);
+    res.status(500).send("Error retrieving open events.");
+  }
 });
-// viewRouter.get("/tournaments/get/:id", (req, res) => {
-//   let id = req.params.id;
-//   let apiPrefix = `${req.protocol}://${req.get("host")}`;
-//   fetch(`${apiPrefix}/api/tournaments/get/${id}`)
-//     .then((response) => {
-//       //console.log(response.url);
-//       return response.json();
-//     })
-//     .then((tournament) => {
-//       res.render(`tournaments`, {
-//         id: tournament.tournament_id,
-//         title: `Tournaments - ${tournament.tournament_name}`,
-//         name: tournament.tournament_name,
-//         start_date: new Date(tournament.start_date).toDateString(),
-//         end_date: new Date(tournament.end_date).toDateString(),
-//         desc: tournament.description,
-//       });
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//       return res.status(400).send(error);
-//     });
-// });
 
-// viewRouter.get("/tournaments/register/:id", (req, res) => {
-//   let id = req.params.id;
-//   let tournTitle;
-//   let apiPrefix = `${req.protocol}://${req.get("host")}`;
-//   fetch(`${apiPrefix}/api/tournaments/get/${id}`)
-//     .then((tournResponse) => {
-//       return tournResponse.json();
-//     })
-//     .then((tournament) => {
-//       tournTitle = tournament.tournament_name;
-//       fetch(`${apiPrefix}/api/events/getAll/${id}`)
-//         .then((eventsResponse) => {
-//           return eventsResponse.json();
-//         })
-//         .then((events) => {
-//           res.render(`tournaments-register`, {
-//             title: `Register for Tournament - ${tournTitle}`,
-//             name: tournTitle,
-//             eventsData: events,
-//           });
-//         })
-//         .catch((error) => {
-//           return res.status(400).send(error);
-//         });
-//     })
-//     .catch((error) => {
-//       return res.status(400).send(error);
-//     });
-// });
+viewRouter.get("/events/upcoming", async (req, res) => {
+  try {
+    const upcomingEvents = await eventsService.getAllUpcomingEvents();
+    res.render("partials/events/eventsList", { events: upcomingEvents });
+  } catch (error) {
+    console.error("Error fetching upcoming events:", error);
+    res.status(500).send("Error retrieving upcoming events.");
+  }
+});
+
+viewRouter.get("/events/closed", async (req, res) => {
+  try {
+    const closedEvents = await eventsService.getAllClosedEvents();
+    res.render("partials/events/eventsList", { events: closedEvents });
+  } catch (error) {
+    console.error("Error fetching closed events:", error);
+    res.status(500).send("Error retrieving closed events.");
+  }
+});
+
+viewRouter.get("/events/:event_id", async (req, res) => {
+  const eventId = parseInt(req.params.event_id);
+
+  try {
+    const event = await eventsService.getEventById(eventId);
+    const tournaments =
+      await tournamentService.getTournamentsByEventId(eventId);
+
+    if (!event) {
+      return res.status(404).render("404", {
+        title: "404 - Event Not Found",
+      });
+    }
+
+    res.render("event", {
+      title: `Event - ${event.event_name}`,
+      event,
+      tournaments,
+    });
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    res.status(500).send("Error retrieving the event.");
+  }
+});
+
+viewRouter.get("/tournament/:id", async (req, res) => {
+  const tournamentId = parseInt(req.params.id);
+
+  try {
+    const event = await eventsService.getEventByTournamentId(tournamentId);
+    const tournament = await tournamentService.getTournamentById(tournamentId);
+
+    if (!event || !tournament) {
+      return res.status(404).render("404", {
+        title: "404 - Tournament Not Found",
+      });
+    }
+
+    res.render("tournament", {
+      title: `Tournament - ${tournament.tournament_name}`,
+      tournament,
+      event,
+    });
+  } catch (error) {
+    console.error("Error fetching tournament:", error);
+    res.status(500).send("Error retrieving the tournament.");
+  }
+});
 
 viewRouter.use((req, res) => {
   res.status(404).render("404", {

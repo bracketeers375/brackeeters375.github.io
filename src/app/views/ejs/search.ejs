@@ -7,30 +7,33 @@
 <body>
 <%- include('partials/sideNav') %>
 
-<div class="search-container">
-    <h1>START YOUR SEARCH</h1>
+<div class="content">
+    <header class="page-header">
+        <h1>Start Your Search</h1>
+        <h2>Find the right event for you</h2>
+        <div class="divider-bar"></div>
+    </header>
     <div class="search-input-wrapper">
         <label for="search-input" style="display:none;"></label>
         <input type="search" id="search-input" placeholder="Search...">
         <div id="search-divider"></div>
         <button id="search-button">Search</button>
     </div>
-</div>
-
-<div id="search-results">
-    <table class="results-table">
-        <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody id="search-results-body">
-        <tr>
-            <td colspan="2">No results found. Please enter a search term.</td>
-        </tr>
-        </tbody>
-    </table>
+    <div id="search-results">
+        <table class="results-table">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody id="search-results-body">
+            <tr>
+                <td colspan="2">No results found. Please enter a search term.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script src="/js/search.js"></script>

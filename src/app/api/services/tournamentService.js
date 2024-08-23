@@ -42,29 +42,29 @@ const getTournamentById = async (id) => {
   }
 };
 
+const getTournamentsByEventId = async (event_id) => {
+    try {
+        const result = await pool.query(
+            `SELECT t.tournament_id, t.tournament_name, g.game_name 
+       FROM Tournaments t
+       JOIN Games g ON t.game_id = g.game_id
+       WHERE t.event_id = $1`,
+            [event_id]
+        );
 
-const getAllTournamentsByEventId = async (event_id) => {
-  try {
-      const result = await pool.query(
-        `SELECT *
-        FROM Tournaments
-        WHERE event_id = $1`,
-        [event_id],
-      );
+        if (result.rows.length === 0) {
+            return [];
+        }
 
-      if(result.rows.length === 0 ) {
-        return null;
-      }
-
-      return result.rows[0];
+        return result.rows;
     } catch (error) {
-      console.log(error);
-      throw new Error("Database error");
+        console.log(error);
+        throw new Error("Database error");
     }
-}
+};
 
 const createTournament = async (t_name, g_id, e_id,) => {
-  
+
   //Getting the row with highest tournament_id
   //SELECT * FROM TOURNAMENTS ORDER BY tournament_id desc limit 1;
   try {
@@ -110,9 +110,9 @@ console.log("storage data", storage.data);
 
 export default {
   getTournamentById,
+  getTournamentsByEventId,
   createTournament,
   updateTournamentJson,
   deleteTournament,
-  getAllTournaments,
-  getAllTournamentsByEventId,
+  getAllTournaments
 };

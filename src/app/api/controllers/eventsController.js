@@ -1,87 +1,88 @@
 import express from "express";
 import eventsService from "../services/eventsService.js";
 
+const getAllEvents = async (req, res) => {
+  try {
+    const events = await eventsService.getAllEvents();
+    return res.json(events);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while retrieving the events list");
+  }
+};
+
 const getEventById = async (req, res) => {
-  let id = req.params.id;
+  const eventId = parseInt(req.params.event_id);
   try {
-    let event = await eventsService.getEventById(id);
-
-    if (event.length > 1)
-      return res.status(500).send("Too many events retrieved");
-
-    if (event.length === 0) return res.status(400).send("Event does not exist");
-
-    return res.json(event[0]);
+    const event = await eventsService.getEventById(eventId);
+    if (!event) {
+      return res.status(404).send("Event not found");
+    }
+    return res.json(event);
   } catch (error) {
-    return res.status(500).send("Could not retrieve event");
+    console.error(error);
+    res.status(500).send("An error occurred while retrieving the event");
   }
 };
 
-const getAllEventsByTournamentId = async (req, res) => {
-  let id = req.params.id;
+const getEventByTournamentId = async (req, res) => {
+  const tournamentId = parseInt(req.params.tournament_id);
   try {
-    let events = await eventsService.getAllEventsByTournamentId(id);
-
-    if (events.length === 0)
-      return res.status(400).send("Tournament does not have events");
-
-    return res.send(events);
+    const event = await eventsService.getEventByTournamentId(tournamentId);
+    if (!event) {
+      return res.status(404).send("Event not found for the given tournament ID");
+    }
+    return res.json(event);
   } catch (error) {
-    return res.status(500).send("Could not retrieve events");
+    console.error(error);
+    res.status(500).send("An error occurred while retrieving the event by tournament ID");
   }
 };
 
-const getDetails = async (req, res) => {
-  let { eventName } = req.body;
-  if (!eventName) {
-    return res.status(400).send("Missing parameter");
-  }
-
+const createEvent = async (req, res) => {
+  const { event_name, start_date, end_date } = req.body;
   try {
-    await eventsService.createEvent(eventName);
-    res.status(200).send("Event created successfully");
+    const newEvent = await eventsService.createEvent(event_name, start_date, end_date);
+    return res.status(201).json(newEvent);
   } catch (error) {
-    console.log(error);
-    return res.status(500).send("Internal server error");
+    console.error(error);
+    res.status(500).send("An error occurred while creating the event");
   }
 };
 
-const updateDetails = async (req, res) => {
-  let { eventName, updatedEventName } = req.body;
-  if (!eventName || !updatedEventName) {
-    return res.status(400).send("Missing parameters");
-  }
-
+const updateEvent = async (req, res) => {
+  const eventId = parseInt(req.params.event_id);
+  const details = req.body;
   try {
-    await eventsService.updateEvent(eventName, updatedEventName);
-    res.status(200).send("Event updated successfully");
+    const updatedEvent = await eventsService.updateEvent(eventId, details);
+    if (!updatedEvent) {
+      return res.status(404).send("Event not found");
+    }
+    return res.json(updatedEvent);
   } catch (error) {
-    console.log(error);
-    return res.status(500).send("Internal server error");
+    console.error(error);
+    res.status(500).send("An error occurred while updating the event");
   }
 };
 
-const deleteDetails = async (req, res) => {
-  let { deleteEvent } = req.body;
-  if (!deleteEvent) {
-    return res.status(400).send("Missing parameter");
-  }
-
+const deleteEvent = async (req, res) => {
+  const eventId = parseInt(req.params.event_id);
   try {
-    await eventsService.deleteEvent(deleteEvent);
-    res.status(200).send("Event deleted successfully");
+    await eventsService.deleteEvent(eventId);
+    return res.sendStatus(204);
   } catch (error) {
-    console.log(error);
-    return res.status(500).send("Internal server error");
+    console.error(error);
+    res.status(500).send("An error occurred while deleting the event");
   }
 };
 
 const eventRouter = express.Router();
 
-eventRouter.get("/get/:id", getEventById);
-eventRouter.get("/getAll/:id", getAllEventsByTournamentId);
-eventRouter.delete("/delete", deleteDetails);
-eventRouter.post("/update", updateDetails);
-eventRouter.post("/create", getDetails);
+eventRouter.get("/getAll", getAllEvents);
+eventRouter.get("/:event_id", getEventById);
+eventRouter.get("/byTournament/:tournament_id", getEventByTournamentId);
+eventRouter.post("/create", createEvent);
+eventRouter.put("/update/:event_id", updateEvent);
+eventRouter.delete("/delete/:event_id", deleteEvent);
 
 export default eventRouter;

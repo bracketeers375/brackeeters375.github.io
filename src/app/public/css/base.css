@@ -4,9 +4,72 @@ html, body {
     color: white;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     min-height: 100vh;
     margin: 0;
     padding: 0;
+}
+
+.page-header {
+    width: 100%;
+    text-align: center;
+    padding: 40px 20px 20px 20px;
+    box-sizing: border-box;
+}
+
+.page-header h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.page-header h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #66a3ff;
+}
+
+.page-header .divider-bar {
+    width: 80px;
+    height: 4px;
+    background-color: #66a3ff;
+    margin: 0 auto 20px;
+}
+
+.content {
+    padding-top: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.button {
+    background-color: #1947A4;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.tab-switch {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.tab-switch button {
+    background-color: #f1f1f1;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    flex: 1;
+}
+
+.tab-switch button.active {
+    background-color: #1947A4;
+    color: white;
 }
