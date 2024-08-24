@@ -3,17 +3,15 @@
   <head>
     <meta charset="utf-8">
     <title><%= title%></title>
+            <link rel="stylesheet" type="text/css" href="/css/bracket-setup.css">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.css" />
+            <script type="text/javascript"
+              src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"></script>
   </head>
   <body>
-    <h1><%= name%></h1>
-    <h3><%= start_date%> - <%=end_date%></h3>
-    <div>
-      <h4>Description:</h4>
-      <p><%= desc%></p>
-    </div>
-    <p><a id="regPage" href="../../tournaments/register/<%=id%>">Event Registration</a></p>
-    <p><a>Brackets</a></p>
-    
+    <button id="testCreate">Get</button>
+
+    <div id="bracketsViewerExample" class="brackets-viewer"></div>
     <script src="/js/tournaments.js"></script>
   </body>
 </html>

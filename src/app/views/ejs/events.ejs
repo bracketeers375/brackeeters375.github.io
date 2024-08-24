@@ -1,93 +1,82 @@
-<div>
-    <label for="event-name">Enter name of event: </label>
-    <input id="event-name">
-    <button id='submit'> Submit</button>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" type="text/css" href="/css/events.css">
+</head>
+<body>
+<%- include('partials/sideNav') %>
 
-<div>
-    <label for="delete-event-name">Enter name of event: </label>
-    <input id="delete-event-name">
-    <button id='delete'> Delete</button>
+<div class="content">
+    <header class="page-header">
+        <h1>Explore Events</h1>
+        <h2>Find the right event for you</h2>
+        <div class="divider-bar"></div>
+    </header>
+    <div class="tab-switch">
+        <button id="openTab" class="active">Open Events</button>
+        <button id="upcomingTab">Upcoming Events</button>
+        <button id="closedTab">Closed Events</button>
+    </div>
+    <div id="eventsContainer">
+        <%- include('partials/events/eventsList', { events: openEvents }) %>
+    </div>
 </div>
-
-<div>
-    <label for="update-event-name">Enter current name of event: </label>
-    <input id="update-event-name">
-    <label for="new-event-name">Enter new name of event: </label>
-    <input id="new-event-name">
-    <button id='update'> Update</button>
-</div>
-
+</body>
 <script>
-    const eventButton = document.getElementById("submit");
-    const eventName = document.getElementById('event-name');
-    const updateButton = document.getElementById("update");
-    const updateEvent = document.getElementById("update-event-name");
-    const newEventName = document.getElementById("new-event-name");
-    const deleteButton = document.getElementById("delete");
-    const deleteEvent = document.getElementById("delete-event-name");
+    document.addEventListener('DOMContentLoaded', () => {
+        const openTab = document.getElementById("openTab");
+        const upcomingTab = document.getElementById("upcomingTab");
+        const closedTab = document.getElementById("closedTab");
 
-    eventButton.addEventListener("click", async function(event) {
-        const details = {
-            eventName: eventName.value,
+        const callback = (tab) => {
+            switch(tab) {
+                case 'open':
+                    fetch('/events/open')
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById("eventsContainer").innerHTML = html;
+                        });
+                    break;
+                case 'upcoming':
+                    fetch('/events/upcoming')
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById("eventsContainer").innerHTML = html;
+                        });
+                    break;
+                case 'closed':
+                    fetch('/events/closed')
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById("eventsContainer").innerHTML = html;
+                        });
+                    break;
+            }
         };
 
-        try {
-            const response = await fetch("/api/events/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(details),
-            });
-
-            console.log("Response received: ", response.status);
-            console.log("Response: ", response);
-        } catch (error) {
-            console.error(error);
-        }
-    });
-
-    updateButton.addEventListener("click", async function(event) {
-        const details = {
-            eventName: updateEvent.value, // Current event name
-            updatedEventName: newEventName.value, // New event name
+        openTab.onclick = () => {
+            openTab.classList.add("active");
+            upcomingTab.classList.remove("active");
+            closedTab.classList.remove("active");
+            callback('open');
         };
 
-        try {
-            const response = await fetch("/api/events/update", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(details),
-            });
-
-            console.log("Response received: ", response.status);
-            console.log("Response: ", response);
-        } catch (error) {
-            console.error(error);
-        }
-    });
-
-    deleteButton.addEventListener("click", async function(event) {
-        const details = {
-            deleteEvent: deleteEvent.value,
+        upcomingTab.onclick = () => {
+            upcomingTab.classList.add("active");
+            openTab.classList.remove("active");
+            closedTab.classList.remove("active");
+            callback('upcoming');
         };
 
-        try {
-            const response = await fetch("/api/events/delete", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(details),
-            });
-
-            console.log("Response received: ", response.status);
-            console.log("Response: ", response);
-        } catch (error) {
-            console.error(error);
-        }
+        closedTab.onclick = () => {
+            closedTab.classList.add("active");
+            openTab.classList.remove("active");
+            upcomingTab.classList.remove("active");
+            callback('closed');
+        };
     });
 </script>
+</html>

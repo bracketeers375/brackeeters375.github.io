@@ -66,9 +66,8 @@ const createBracketTest = async (numPlayers, format) => {
   }
 
   await manager.create.stage(config);
-
   let jsonData = await manager.export();
-  console.log("STORAGE INSIDE: ", storage);
+  console.log("jsondata INSIDE: ", jsonData);
   return jsonData;
 };
 

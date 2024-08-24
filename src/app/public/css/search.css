@@ -1,11 +1,5 @@
 @import url(base.css);
 
-h1 {
-    font-size: 36px;
-    color: #1947A4;
-    text-align: center;
-}
-
 .search-container {
     display: flex;
     flex-direction: column;

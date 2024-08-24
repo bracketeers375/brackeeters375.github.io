@@ -1,0 +1,10 @@
+<div class="grid-list">
+    <% events.forEach(event => { %>
+        <div class="grid-item">
+            <h3><%= event.event_name %></h3>
+            <p>Start Date: <%= new Date(event.start_date).toDateString() %></p>
+            <p>End Date: <%= event.end_date ? new Date(event.end_date).toDateString() : 'Ongoing' %></p>
+            <a href="/events/<%= event.event_id %>" class="button">View Event</a>
+        </div>
+    <% }); %>
+</div>

@@ -1,4 +1,26 @@
 import pool from "./connection.js";
+import { InMemoryDatabase } from "brackets-memory-db";
+import { BracketsManager, helpers } from "brackets-manager";
+
+const storage = new InMemoryDatabase();
+const manager = new BracketsManager(storage);
+
+const getAllTournaments = async () => {
+    try {
+    const result = await pool.query(
+      `SELECT *FROM Tournaments`
+    );
+
+    if (result.rows.length === 0) {
+      return null; // Return null if no tournament is found
+    }
+    //console.log("reached service");
+    return result.rows[0];
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
+}
 
 const getTournamentById = async (id) => {
   try {
@@ -20,21 +42,77 @@ const getTournamentById = async (id) => {
   }
 };
 
-const createTournament = async (tournamentData) => {
-  // TODO
+const getTournamentsByEventId = async (event_id) => {
+    try {
+        const result = await pool.query(
+            `SELECT t.tournament_id, t.tournament_name, g.game_name 
+       FROM Tournaments t
+       JOIN Games g ON t.game_id = g.game_id
+       WHERE t.event_id = $1`,
+            [event_id]
+        );
+
+        if (result.rows.length === 0) {
+            return [];
+        }
+
+        return result.rows;
+    } catch (error) {
+        console.log(error);
+        throw new Error("Database error");
+    }
 };
 
-const updateTournament = async (id, tournamentData) => {
-  // TODO
+const createTournament = async (t_name, g_id, e_id,) => {
+
+  //Getting the row with highest tournament_id
+  //SELECT * FROM TOURNAMENTS ORDER BY tournament_id desc limit 1;
+  try {
+    await pool.query(
+      `INSERT INTO tournaments(tournament_name, game_id, event_id)
+        VALUES ($1, $2, $3)
+        RETURNING *`,
+      [t_name, g_id, e_id],
+    ).then((result) => {
+      //console.log("result of POST: ", result);
+    });
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
+};
+
+const updateTournamentJson = async (tourId, tourData) => {
+  try {
+    await pool.query(
+      `UPDATE tournaments
+      SET tournament_json = $1
+      WHERE tournament_id = $2`,
+      [tourData, tourId],
+    ).then((result) => {
+
+    });
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
 };
 
 const deleteTournament = async (id) => {
   // TODO
 };
 
+const testthing = await getAllTournaments();
+console.log('testthing json: ', testthing.tournament_json);
+manager.import(testthing.tournament_json);
+storage.setData(testthing.tournament_json);
+console.log("storage data", storage.data);
+
 export default {
   getTournamentById,
+  getTournamentsByEventId,
   createTournament,
-  updateTournament,
+  updateTournamentJson,
   deleteTournament,
+  getAllTournaments
 };

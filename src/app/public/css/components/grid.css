@@ -1,0 +1,51 @@
+@import url(../base.css);
+
+.grid-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+.grid-item {
+    border: 1px solid #394f70;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #2e3032;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.grid-item h3 {
+    margin: 0 0 10px 0;
+    color: #66a3ff;
+    text-align: center;
+}
+
+.grid-item p {
+    margin: 5px 0;
+    text-align: center;
+}
+
+.grid-item .button {
+    margin-top: 10px;
+    background-color: #66a3ff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.grid-item .button:hover {
+    background-color: #4c8bff;
+}
