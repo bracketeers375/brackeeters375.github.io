@@ -1,7 +1,7 @@
 @import url(base.css);
 @import url(components/brackets-viewer-custom.css);
 
-.modal {
+.modalMatch {
     display: none;
     /* Hidden by default */
     position: fixed;
@@ -22,12 +22,16 @@
     /* Black w/ opacity */
 }
 
-.modal-content {
-    background-color: #fefefe;
+.modalContentMatch {
+    background-color: #ffffff;
     margin: auto;
-    /* 15% from the top and centered */
     padding: 20px;
-    border: 1px solid #888;
     width: 80%;
-    /* Could be more or less, depending on screen size */
+    max-width: 500px;
+    position: absolute;
+    left: 50%;
+    bottom: -100%;
+    transform: translateX(-50%);
+    animation: animatebottom 0.3s ease-out forwards;
+    color: #000000;
 }

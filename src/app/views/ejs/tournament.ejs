@@ -11,12 +11,13 @@
 <body>
 <%- include('partials/sideNav') %>
 
-<div id="modal" class="modal">
-    <div id="modal-content" class="modal-content">
+<div id="modalMatch" class="modalMatch">
+    <div id="modal-content-match" class="modalContentMatch">
         <h3></h3>
         <label id="opponent1-label" for="opponent1">Player 1: </label><input type="number" id="opponent1"><br>
         <label id="opponent2-label" for="opponent2">Player 2: </label><input type="number" id="opponent2"><br>
         <button id="input-submit">Submit</button>
+        <button id="cancel-Btn">Cancel</button>
     </div>
 </div>
 
@@ -31,7 +32,14 @@
 </div>
 
 <script>
-    console.log("test 123");
+    window.onclick = function (event) {
+            console.log("test window");
+            console.log(event);
+            if (event.target == modalMatch) {
+                modal.style.display = "none";
+            }
+        };
+
     document.addEventListener('DOMContentLoaded', () => {
         fetch(`/api/tournaments/get/<%= tournament.tournament_id %>`)
             .then(response => response.json())

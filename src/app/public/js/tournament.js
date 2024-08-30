@@ -4,7 +4,7 @@ window.bracketsViewer.onMatchClicked = async (match) => {
 };
 
 function openModal(match) {
-    let modal = document.getElementById("modal");
+    let modal = document.getElementById("modalMatch");
     const matchTitle = document.querySelector(
         `[data-match-id="${match.id}"] .opponents > span`,
     ).textContent;
@@ -13,12 +13,18 @@ function openModal(match) {
 }
 
 function closeModal() {
-    let modal = document.getElementById("modal");
+    console.log("test close");
+    let modal = document.getElementById("modalMatch");
     modal.style.display = "none";
 }
 
-window.onclick = function (event) {
-        if (event.target == modal) {
+window.onclick = (event) => {
+    console.log("test window");
+    console.log(event);
+        if (event.target == modalMatch) {
             modal.style.display = "none";
         }
     };
+
+let cancelBtn = document.getElementById("cancel-Btn");
+cancelBtn.addEventListener("click", closeModal);
