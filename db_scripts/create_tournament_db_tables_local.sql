@@ -22,7 +22,7 @@ CREATE TABLE Users
     username      VARCHAR(100) UNIQUE NOT NULL,
     email         VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255)        NOT NULL,
-    full_name     VARCHAR(100)
+    full_name     VARCHAR(100),
     token 				VARCHAR(255) UNIQUE
 );
 

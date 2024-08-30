@@ -11,6 +11,15 @@
 <body>
 <%- include('partials/sideNav') %>
 
+<div id="modal" class="modal">
+    <div id="modal-content" class="modal-content">
+        <h3></h3>
+        <label id="opponent1-label" for="opponent1">Player 1: </label><input type="number" id="opponent1"><br>
+        <label id="opponent2-label" for="opponent2">Player 2: </label><input type="number" id="opponent2"><br>
+        <button id="input-submit">Submit</button>
+    </div>
+</div>
+
 <div class="content">
     <header class="page-header">
         <h1><%= event.event_name %></h1>
@@ -22,6 +31,7 @@
 </div>
 
 <script>
+    console.log("test 123");
     document.addEventListener('DOMContentLoaded', () => {
         fetch(`/api/tournaments/get/<%= tournament.tournament_id %>`)
             .then(response => response.json())
@@ -52,5 +62,7 @@
         );
     }
 </script>
+<script src="/js/tournament.js"></script>
+
 </body>
 </html>
