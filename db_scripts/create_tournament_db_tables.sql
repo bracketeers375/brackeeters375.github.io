@@ -1,3 +1,7 @@
+DROP DATABASE IF EXISTS local_tournament_db;
+CREATE DATABASE local_tournament_db;
+\c local_tournament_db;
+
 -- Clean out the database.
 DROP TABLE IF EXISTS Tournaments CASCADE;
 DROP TABLE IF EXISTS Events CASCADE;
@@ -14,31 +18,32 @@ CREATE TABLE Games
 -- Recreate Users table.
 CREATE TABLE Users
 (
-    user_id         SERIAL PRIMARY KEY,
-    username        VARCHAR(100) UNIQUE NOT NULL,
-    email           VARCHAR(100) UNIQUE NOT NULL,
-    password_hash   VARCHAR(255)        NOT NULL,
-    full_name       VARCHAR(100)
-    token			VARCHAR(255) UNIQUE
+    user_id       SERIAL PRIMARY KEY,
+    username      VARCHAR(100) UNIQUE NOT NULL,
+    email         VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255)        NOT NULL,
+    full_name     VARCHAR(100),
+    token 				VARCHAR(255) UNIQUE
 );
 
 -- Recreate Events table.
 CREATE TABLE Events
 (
     event_id   SERIAL PRIMARY KEY,
-    event_name            VARCHAR(100) NOT NULL,
-    -- start_date      DATE         NOT NULL,
-    -- end_date        DATE         NOT NULL,
-    description     TEXT
+    event_name VARCHAR(100) NOT NULL,
+    start_date DATE         NOT NULL,
+    end_date   DATE
 );
 
 CREATE TABLE Tournaments
 (
-    tournament_id    SERIAL PRIMARY KEY,
-    tournament_name  TEXT,
-    game_id     INT,
+    tournament_id   SERIAL PRIMARY KEY,
+    tournament_name VARCHAR(100) NOT NULL,
+    tournament_json JSON,
+    game_id         INT          NOT NULL,
     -- game_name   TEXT,
-    event_id INT,
+    event_id        INT,
+    has_started     BOOLEAN,
     FOREIGN KEY (game_id) REFERENCES Games (game_id),
     -- FOREIGN KEY (game_name) REFERENCES Games (game_name),
     FOREIGN KEY (event_id) REFERENCES Events (event_id)
