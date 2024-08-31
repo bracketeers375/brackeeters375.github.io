@@ -119,6 +119,12 @@ viewRouter.get("/tournament/:id", async (req, res) => {
   }
 });
 
+viewRouter.get("/event/create", (req, res) => {
+  res.render("event-create", {
+  	title: "Event Creation - Bracketeers"
+  });
+});
+
 viewRouter.use((req, res) => {
   res.status(404).render("404", {
     title: "404 - Page Not Found",
