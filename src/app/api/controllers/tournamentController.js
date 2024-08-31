@@ -55,7 +55,8 @@ const createTournament = async (req, res) => {
 };
 
 const updateTournamentJson = async (req, res) => {
-  let {tournament_id, tournament_json} = req.body;
+  let tournament_id = req.params.id;
+  let {tournament_json} = req.body;
   if (!tournament_id) {
       return res.status(400).send("Missing required fields");
   }
@@ -82,7 +83,7 @@ const tournamentRouter = express.Router();
 tournamentRouter.get("/get/:id", getTournamentById);
 tournamentRouter.get("/getAllTourFromEvent/:eventid", getAllTournamentsByEventId);
 tournamentRouter.post("/create", createTournament);
-tournamentRouter.put("/updateJson/:id", updateTournamentJson);
+tournamentRouter.post("/updateJson/:id", updateTournamentJson);
 tournamentRouter.delete("/delete/:id", deleteTournament);
 
 export default tournamentRouter;

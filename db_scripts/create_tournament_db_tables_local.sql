@@ -22,7 +22,7 @@ CREATE TABLE Users
     username      VARCHAR(100) UNIQUE NOT NULL,
     email         VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255)        NOT NULL,
-    full_name     VARCHAR(100)
+    full_name     VARCHAR(100),
     token 				VARCHAR(255) UNIQUE
 );
 
@@ -43,6 +43,7 @@ CREATE TABLE Tournaments
     game_id         INT          NOT NULL,
     -- game_name   TEXT,
     event_id        INT,
+    has_started     BOOLEAN,
     FOREIGN KEY (game_id) REFERENCES Games (game_id),
     -- FOREIGN KEY (game_name) REFERENCES Games (game_name),
     FOREIGN KEY (event_id) REFERENCES Events (event_id)

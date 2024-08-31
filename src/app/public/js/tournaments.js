@@ -15,7 +15,7 @@ function createTest() {
             }),
     })
     .then((response) => {
-        console.log("response: ", response);
+        //console.log("response: ", response);
 
     })
     .catch((error) => {
