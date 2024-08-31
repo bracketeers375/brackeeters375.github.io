@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS Tournaments CASCADE;
 DROP TABLE IF EXISTS Events CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
 DROP TABLE IF EXISTS Games CASCADE;
+DROP TABLE IF EXISTS Admins CASCADE;
 
 -- Recreate Games table.
 CREATE TABLE Games
@@ -25,6 +26,8 @@ CREATE TABLE Users
     full_name     VARCHAR(100),
     token 				VARCHAR(255) UNIQUE
 );
+
+
 
 -- Recreate Events table.
 CREATE TABLE Events
@@ -46,6 +49,15 @@ CREATE TABLE Tournaments
     has_started     BOOLEAN,
     FOREIGN KEY (game_id) REFERENCES Games (game_id),
     -- FOREIGN KEY (game_name) REFERENCES Games (game_name),
+    FOREIGN KEY (event_id) REFERENCES Events (event_id)
+);
+
+CREATE TABLE Admins
+(
+  	admin_id			SERIAL PRIMARY KEY,
+    user_id				INT NOT NULL,
+    event_id      INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES Users (user_id),
     FOREIGN KEY (event_id) REFERENCES Events (event_id)
 );
 

@@ -68,7 +68,10 @@ const getUserByToken = async (token) => {
 
   try {
     let result = await pool.query(
-      `SELECT *
+      `SELECT 
+      user_id,
+      username,
+      email
       FROM Users
       WHERE token=$1`,
       [token],

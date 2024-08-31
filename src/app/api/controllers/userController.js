@@ -27,7 +27,7 @@ const getUserByToken = async (req, res) => {
         .send("Account does not exist or no token was found");
 
     if (user.length > 1) return res.status(400).send("Duplicate token");
-
+    
     return res.status(200).send(user[0]);
   } catch (error) {
     console.log(error);
