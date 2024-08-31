@@ -1,7 +1,3 @@
-DROP DATABASE IF EXISTS local_tournament_db;
-CREATE DATABASE local_tournament_db;
-\c local_tournament_db;
-
 -- Clean out the database.
 DROP TABLE IF EXISTS Tournaments CASCADE;
 DROP TABLE IF EXISTS Events CASCADE;
