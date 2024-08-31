@@ -1,3 +1,20 @@
+document.addEventListener("DOMContentLoaded", function () {
+  fetch('/api/search/all')
+    .then(response => response.json())
+    .then(data => {
+      let searchResultsContainer = document.getElementById("search-results-body");
+      searchResultsContainer.textContent = ""; 
+
+      let tourneyData = getTableData(data.tourneys, "Tournaments");
+
+      addTableRows(tourneyData);
+    })
+    .catch(error => {
+      let errorDiv = document.getElementById("search-results-body");
+      errorDiv.textContent = `Error getting results: ${error.message}`;
+    });
+});
+
 // Event listeners for the search functionality
 let searchInput = document.getElementById("search-input");
 let button = document.getElementById("search-button");
@@ -26,11 +43,9 @@ function search() {
           );
           searchResultsContainer.textContent = ""; // Clear previous results
 
-          let tourneyData = getTableData(data.tourneys, "Tournaments");
-          let gameData = getTableData(data.games, "Games");
+          let tourneyData = getTableData(data.tourneys, "Tournament");
 
-          addTableRows(tourneyData, "Tournaments");
-          addTableRows(gameData, "Games");
+          addTableRows(tourneyData);
         });
       }
     })
@@ -45,11 +60,10 @@ function getTableData(itemsArray, type) {
   let tableData = {};
 
   itemsArray.forEach((item) => {
-    let id = type === "Tournaments" ? item.tournament_id : item.game_id;
+    let id = item.tournament_id;
     tableData[id] = {
-      name: type === "Tournaments" ? item.tournament_name : item.game_name,
-      details: item.description,
-      genre: item.genre,
+      type: type, // This will be "Tournaments"
+      name: item.tournament_name,
     };
   });
 
@@ -57,32 +71,39 @@ function getTableData(itemsArray, type) {
 }
 
 // Function to add table rows
-function addTableRows(tableData, displayType) {
+function addTableRows(tableData) {
   let searchResultsContainer = document.getElementById("search-results-body");
-  console.log(searchResultsContainer);
 
   if (Object.keys(tableData).length === 0) {
-    let emptyMessage = document.createElement("th");
-    emptyMessage.textContent =
-      displayType === "Tournaments"
-        ? "No tournaments found."
-        : "No games found.";
-    searchResultsContainer.appendChild(emptyMessage);
+    let emptyMessageRow = document.createElement("tr");
+    let emptyMessage = document.createElement("td");
+    emptyMessage.colSpan = 2;
+    emptyMessage.textContent = "No tournaments found.";
+    emptyMessageRow.appendChild(emptyMessage);
+    searchResultsContainer.appendChild(emptyMessageRow);
   } else {
     for (const [key, value] of Object.entries(tableData)) {
       let bodyRow = document.createElement("tr");
-      let name = value.name;
-      let details = value.details;
-      let genre = value.genre;
+      let typeCell = document.createElement("td");
+      let titleCell = document.createElement("td");
 
-      let title = document.createElement("td");
-      let detailsText = document.createElement("td");
+      // Set the type (e.g., "Tournament") in the first cell
+      typeCell.textContent = value.type;
 
-      title.textContent = `${name}`;
-      bodyRow.appendChild(title);
-      detailsText.textContent =
-        displayType === "Tournaments" ? `${details}` : `${genre}`;
-      bodyRow.appendChild(detailsText);
+      // Wrap the title in an anchor tag
+      let anchor = document.createElement("a");
+      anchor.href = `/tournament/${key}`;
+      anchor.style.textDecoration = "none";
+      anchor.textContent = value.name;
+
+      // Append the anchor to the title cell
+      titleCell.appendChild(anchor);
+
+      // Append cells to the row
+      bodyRow.appendChild(typeCell);
+      bodyRow.appendChild(titleCell);
+
+      // Append the row to the table body
       searchResultsContainer.appendChild(bodyRow);
     }
   }

@@ -18,7 +18,22 @@ const searchByName = async (req, res) => {
   }
 };
 
+const getAllTournaments = async (req, res) => {
+  try {
+    const tournaments = await searchService.getAllTournaments();
+    let body = {
+      tourneys: tournaments || [],
+      games: [],
+    };
+    return res.json(body);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("An error occurred while fetching all tournaments.");
+  }
+};
+
 const searchRouter = express.Router();
 searchRouter.get("/getAll/:name", searchByName);
+searchRouter.get("/all", getAllTournaments);
 
 export default searchRouter;
