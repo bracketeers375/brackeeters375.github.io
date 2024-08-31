@@ -14,10 +14,10 @@
 <div id="modalMatch" class="modalMatch">
     <div id="modal-content-match" class="modalContentMatch">
         <h3></h3>
-        <label id="opponent1-label" for="opponent1">Player 1: </label><input type="number" id="opponent1"><br>
-        <label id="opponent2-label" for="opponent2">Player 2: </label><input type="number" id="opponent2"><br>
-        <button id="input-submit">Submit</button>
-        <button id="cancel-Btn">Cancel</button>
+        <label id="opponent1-label" for="opponent1">Top Player: </label><input type="number" id="opponent1"><br>
+        <label id="opponent2-label" for="opponent2">Bot Player: </label><input type="number" id="opponent2"><br>
+        <button id="modal-submit">Submit</button>
+        <button id="modal-cancel">Exit</button>
     </div>
 </div>
 
@@ -32,11 +32,12 @@
 </div>
 
 <script>
+    let tournament_data;
     window.onclick = function (event) {
             console.log("test window");
             console.log(event);
             if (event.target == modalMatch) {
-                modal.style.display = "none";
+                modalMatch.style.display = "none";
             }
         };
 
@@ -44,6 +45,8 @@
         fetch(`/api/tournaments/get/<%= tournament.tournament_id %>`)
             .then(response => response.json())
             .then(body => {
+                tournament_data = body.tournament_json;
+                console.log("tournament_data", tournament_data);
                 renderBracket(body.tournament_json);
             })
             .catch(error => console.error('Error loading tournament:', error));
@@ -69,8 +72,96 @@
             }
         );
     }
+
+    window.bracketsViewer.onMatchClicked = async (match) => {
+        console.log("match: ", match);
+        openModal(match);
+        
+        const updateMatch = async () => {
+            const p1Score = parseInt(document.getElementById("opponent1").value);
+            const p2Score = parseInt(document.getElementById("opponent2").value);
+            console.log("P1: ", p1Score + " P2: " + p2Score);
+            console.log("tournament data update", tournament_data);
+            await window.bracketsManager.import(tournament_data);
+            await window.bracketsManager.update.match({
+                id: match.id,
+                status: 4,
+                opponent1: { score: p1Score },
+                opponent2: { score: p2Score },
+            });
+
+            const newData = await window.bracketsManager.export();
+            tournament_data = newData;
+
+            console.log("new data", tournament_data);
+
+            renderBracket(newData);
+            fetch(`/api/tournaments/updateJson/<%= tournament.tournament_id %>`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    tournament_json: tournament_data
+                }),
+            })
+            .then((response) => {
+                console.log("Response received: ", response.status);
+                console.log("responese: ", response);
+
+                if (response.status == 200) {
+                    response.json().then((body) => {
+                        console.log("body: ", body);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
+        }
+
+        let modalCancel = document.getElementById("modal-cancel");
+        modalCancel.addEventListener("click", closeModal);
+
+        let modalSubmit = document.getElementById("modal-submit");
+        modalSubmit.addEventListener("click", updateMatch);
+    };
+
+        function openModal(match) {
+            if(match.opponent1.hasOwnProperty("score") && match.opponent2.hasOwnProperty("score")) {
+                document.getElementById("opponent1").value = match.opponent1.score;
+                document.getElementById("opponent2").value = match.opponent2.score;
+            } else {
+                document.getElementById("opponent1").value = 0;
+                document.getElementById("opponent2").value = 0;
+            }
+
+            let modal = document.getElementById("modalMatch");
+            const matchTitle = document.querySelector(
+                `[data-match-id="${match.id}"] .opponents > span`,
+            ).textContent;
+            modal.querySelector("h3").innerText = matchTitle;
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            // console.log("test close");
+            let modal = document.getElementById("modalMatch");
+            modal.style.display = "none";
+        }
+
+        window.onclick = (event) => {
+            console.log("test window");
+            console.log(event);
+            if (event.target == modalMatch) {
+                modal.style.display = "none";
+            }
+        };
+
+
 </script>
-<script src="/js/tournament.js"></script>
+<!-- <script src="/js/tournament.js"></script> -->
 
 </body>
 </html>

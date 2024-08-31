@@ -102,11 +102,6 @@ const deleteTournament = async (id) => {
   // TODO
 };
 
-const testthing = await getAllTournaments();
-console.log('testthing json: ', testthing.tournament_json);
-manager.import(testthing.tournament_json);
-storage.setData(testthing.tournament_json);
-console.log("storage data", storage.data);
 
 export default {
   getTournamentById,
