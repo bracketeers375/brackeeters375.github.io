@@ -2,8 +2,6 @@ import pool from "./connection.js";
 
 
 const addAdminToEvent = async (user_id, event_id) => {
-    console.log(`User ID: ${user_id}`);
-    console.log(`Event ID: ${event_id}`);
     try{
         const result = await pool.query(
             `INSERT INTO Admins (user_id, event_id)
