@@ -3,12 +3,14 @@ let startElem = document.getElementById("start");
 let endElem = document.getElementById("end");
 let btn = document.getElementById("submit");
 btn.addEventListener("click", async () => {
-
+    let user;
     try{
-        let user = await fetch("../../api/users/token").then((response) => {
+        user = await fetch("../../api/users/token").then((response) => {
             return response.json();
+        }).catch(error => {
+            console.log(error);
+            return error;
         });
-        console.log(user);
         if(!user)
             throw new Error("No token available");
     } catch(error){
@@ -33,12 +35,13 @@ btn.addEventListener("click", async () => {
         }
         return eventResponse.json();
     }).then((body) => {
+        console.log(body);
 		fetch(`../../api/admins/add/${body.event_id}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ user_id: body.user_id}),
+            body: JSON.stringify({ user_id: user.user_id}),
         }).then((adminResponse) => {
 			return adminResponse;
         }).catch(error => {

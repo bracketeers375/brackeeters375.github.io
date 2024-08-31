@@ -3,10 +3,10 @@ import adminsService from "../services/adminsService.js";
 
 const addAdminToEvent = async (req, res) => {
     const event_id = req.params.event_id;
-    const user = req.body;
-    console.log(user);
+    const user_id = req.body.user_id;
+    console.log(req.body);
     try{
-        let result = await adminsService.addAdminToEvent(user.user_id, event_id);
+        let result = await adminsService.addAdminToEvent(user_id, event_id);
         if(!result)
             return res.status(500).send("Could not add admin");
 
