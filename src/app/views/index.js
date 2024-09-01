@@ -43,7 +43,7 @@ viewRouter.get("/events", async (req, res) => {
 viewRouter.get("/events/open", async (req, res) => {
   try {
     const openEvents = await eventsService.getAllOpenEvents();
-    res.render("partials/events/eventsList", { events: openEvents });
+    res.render("components/events/eventList", { events: openEvents });
   } catch (error) {
     console.error("Error fetching open events:", error);
     res.status(500).send("Error retrieving open events.");
@@ -53,7 +53,7 @@ viewRouter.get("/events/open", async (req, res) => {
 viewRouter.get("/events/upcoming", async (req, res) => {
   try {
     const upcomingEvents = await eventsService.getAllUpcomingEvents();
-    res.render("partials/events/eventsList", { events: upcomingEvents });
+    res.render("components/events/eventList", { events: upcomingEvents });
   } catch (error) {
     console.error("Error fetching upcoming events:", error);
     res.status(500).send("Error retrieving upcoming events.");
@@ -63,7 +63,7 @@ viewRouter.get("/events/upcoming", async (req, res) => {
 viewRouter.get("/events/closed", async (req, res) => {
   try {
     const closedEvents = await eventsService.getAllClosedEvents();
-    res.render("partials/events/eventsList", { events: closedEvents });
+    res.render("components/events/eventList", { events: closedEvents });
   } catch (error) {
     console.error("Error fetching closed events:", error);
     res.status(500).send("Error retrieving closed events.");

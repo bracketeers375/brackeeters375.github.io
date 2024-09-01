@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/css/events.css">
 </head>
 <body>
-<%- include('partials/sideNav') %>
+<%- include('components/layout/sideNav') %>
 
 <div class="content">
     <header class="page-header">
@@ -21,7 +21,7 @@
         <button id="closedTab">Closed Events</button>
     </div>
     <div id="eventsContainer">
-        <%- include('partials/events/eventsList', { events: openEvents }) %>
+        <%- include('components/events/eventList', { events: openEvents }) %>
     </div>
 </div>
 </body>
