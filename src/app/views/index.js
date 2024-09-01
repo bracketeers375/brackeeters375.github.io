@@ -3,6 +3,18 @@ import eventsService from "../api/services/eventsService.js";
 import tournamentService from "../api/services/tournamentService.js";
 const viewRouter = express.Router();
 
+viewRouter.use((req, res, next) => {
+  const userCookie = req.cookies.user;
+
+  if (userCookie && userCookie.username) {
+    res.locals.userName = userCookie.username;
+  } else {
+    res.locals.userName = null;
+  }
+
+  next();
+});
+
 viewRouter.get("/", (req, res) => {
   res.render(`index`, {
     title: "finish.gg - Community through competition",

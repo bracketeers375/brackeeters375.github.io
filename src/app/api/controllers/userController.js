@@ -46,7 +46,8 @@ const loginUser = async (req, res) => {
     if (user) {
       if (user.token) {
         console.log(`Preexisting token ${user.token}`);
-        return res.cookie("token", user.token, cookieOptions).send();
+        const userCookie = { token: user.token, username: user.username };
+        return res.cookie("user", userCookie, cookieOptions).send();
       }
 
       return res.status(404).send("No token found on account");
@@ -92,7 +93,8 @@ const createUser = async (req, res) => {
     });
     let updatedUser = result[0];
     console.log(`Generated token ${updatedUser.token}`);
-    return res.cookie("token", updatedUser.token, cookieOptions).send();
+    const userCookie = { token: updatedUser.token, username: updatedUser.username };
+    return res.cookie("user", userCookie, cookieOptions).send();
   } catch (error) {
     console.log(error);
     return res.send(error);

@@ -1,0 +1,49 @@
+<style>
+    .top-nav-wrapper {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        right: 0;
+        display: flex;
+        justify-content: flex-end;
+        padding: 10px;
+    }
+
+    .top-nav {
+        display: flex;
+        width: 100%;
+    }
+
+    .left-section {
+        flex: 1;
+    }
+
+    .right-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+</style>
+
+<div class="top-nav-wrapper">
+    <div class="top-nav">
+        <div class="left-section"></div>
+        <div class="right-section">
+            <div id="liveTime"></div>
+            <div>
+                Logged in as: <%= userName || 'Guest' %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateTime() {
+        const liveTime = document.getElementById('liveTime');
+        const now = new Date();
+        liveTime.textContent = now.toLocaleTimeString();
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+</script>
