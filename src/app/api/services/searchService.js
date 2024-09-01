@@ -36,23 +36,8 @@
     }
   };
 
-  const getAllTournaments = async () => {
-    try {
-      const result = await pool.query(`SELECT * FROM tournaments`);
-  
-      if (result.rows.length === 0) {
-        return [];
-      }
-  
-      return result.rows;
-    } catch (error) {
-      console.error("Error querying all tournaments:", error);
-      throw new Error(`Database error: ${error.message}`);
-    }
-  };
 
   export default {
     getTournamentsByName,
     getGamesByName,
-    getAllTournaments,
   };
