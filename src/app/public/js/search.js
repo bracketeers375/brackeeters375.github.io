@@ -5,9 +5,13 @@ document.addEventListener("DOMContentLoaded", function () {
       let searchResultsContainer = document.getElementById("search-results-body");
       searchResultsContainer.textContent = ""; 
 
-      let tourneyData = getTableData(data.tourneys, "Tournaments");
-
-      addTableRows(tourneyData);
+      if (data.tourneys) {
+        let tourneyData = getTableData(data.tourneys, "Tournaments");
+        addTableRows(tourneyData);
+      } else {
+        // If there are no tournaments, display the 'No tournaments found.' message
+        addTableRows({});
+      }
     })
     .catch(error => {
       let errorDiv = document.getElementById("search-results-body");
@@ -59,10 +63,14 @@ function search() {
 function getTableData(itemsArray, type) {
   let tableData = {};
 
+  if (!Array.isArray(itemsArray)) {
+    itemsArray = [itemsArray];
+  }
+
   itemsArray.forEach((item) => {
     let id = item.tournament_id;
     tableData[id] = {
-      type: type, // This will be "Tournaments"
+      type: type,
       name: item.tournament_name,
     };
   });
@@ -70,7 +78,6 @@ function getTableData(itemsArray, type) {
   return tableData;
 }
 
-// Function to add table rows
 function addTableRows(tableData) {
   let searchResultsContainer = document.getElementById("search-results-body");
 
@@ -87,23 +94,18 @@ function addTableRows(tableData) {
       let typeCell = document.createElement("td");
       let titleCell = document.createElement("td");
 
-      // Set the type (e.g., "Tournament") in the first cell
       typeCell.textContent = value.type;
 
-      // Wrap the title in an anchor tag
       let anchor = document.createElement("a");
       anchor.href = `/tournament/${key}`;
       anchor.style.textDecoration = "none";
       anchor.textContent = value.name;
 
-      // Append the anchor to the title cell
       titleCell.appendChild(anchor);
 
-      // Append cells to the row
       bodyRow.appendChild(typeCell);
       bodyRow.appendChild(titleCell);
 
-      // Append the row to the table body
       searchResultsContainer.appendChild(bodyRow);
     }
   }

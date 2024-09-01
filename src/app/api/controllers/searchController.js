@@ -1,11 +1,12 @@
 import express from "express";
 import searchService from "../services/searchService.js";
+import tournamentService from "../services/tournamentService.js";
 
 const searchByName = async (req, res) => {
   const name = req.params.name; // Use req.params to get the route parameter
 
   try {
-    const tournaments = await searchService.getTournamentsByName(name);
+    const tournaments = await tournamentService.getTournamentsByName(name);
     const games = await searchService.getGamesByName(name);
     let body = {
       tourneys: tournaments || [], // Use the variable name `result`
@@ -21,6 +22,7 @@ const searchByName = async (req, res) => {
 const getAllTournaments = async (req, res) => {
   try {
     const tournaments = await searchService.getAllTournaments();
+    console.log("tournament: ", tournaments);
     let body = {
       tourneys: tournaments || [],
       games: [],
