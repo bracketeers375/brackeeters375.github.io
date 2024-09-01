@@ -1,18 +1,32 @@
 import express from "express";
 import eventsService from "../api/services/eventsService.js";
 import tournamentService from "../api/services/tournamentService.js";
+import userService from "../api/services/userService.js";
 const viewRouter = express.Router();
 
-viewRouter.use((req, res, next) => {
+viewRouter.use(async (req, res, next) => {
   const userCookie = req.cookies.user;
 
-  if (userCookie && userCookie.username) {
-    res.locals.userName = userCookie.username;
+  if (userCookie && userCookie.token) {
+    try {
+      const user = await userService.getUserByToken(userCookie.token);
+      if (user.length === 1) {
+        res.locals.userName = user[0].username;
+        next();
+      } else {
+        res.locals.userName = null;
+        res.clearCookie('user');
+        res.status(401).redirect('/login');
+      }
+    } catch (error) {
+      console.error("Error validating token:", error);
+      res.locals.userName = null;
+      res.status(500).send("Error validating user token.");
+    }
   } else {
     res.locals.userName = null;
+    next();
   }
-
-  next();
 });
 
 viewRouter.get("/", (req, res) => {
