@@ -16,7 +16,7 @@ viewRouter.use(async (req, res, next) => {
       } else {
         res.locals.userName = null;
         res.clearCookie('user');
-        res.status(401).redirect('/login');
+        res.status(401).redirect('/');
       }
     } catch (error) {
       console.error("Error validating token:", error);
