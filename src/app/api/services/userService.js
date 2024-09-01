@@ -1,145 +1,126 @@
 import pool from "./connection.js";
 import argon2 from "argon2";
 
+const handleDatabaseError = (error, customMessage) => {
+  console.error(customMessage, error);
+  throw new Error(customMessage || "Database error");
+};
+
 const createUser = async (username, email, password) => {
-  let hash;
   try {
-    hash = await argon2.hash(password);
+    const hash = await argon2.hash(password);
+    const query = `
+      INSERT INTO users(username, email, password_hash)
+      VALUES ($1, $2, $3)
+      RETURNING *`;
+    const values = [username, email, hash];
+
+    await pool.query(query, values);
   } catch (error) {
-    console.log(error);
-    throw new Error("HASH FAILED");
-  }
-  try {
-    await pool.query(
-      `INSERT INTO users(username, email, password_hash)
-             VALUES ($1, $2, $3)
-             RETURNING *`,
-      [username, email, hash],
-    );
-  } catch (error) {
-    switch (error.code) {
-      case "23505": // i.e. Duplicate key constraint violated
-        throw new Error("Username or email already exists");
-      default:
-        console.log(error);
-        throw new Error("Database error");
+    if (error.code === "23505") {
+      throw new Error("Username or email already exists");
     }
+    handleDatabaseError(error, "Error creating user");
   }
 };
 
 const loginUser = async (username, password) => {
-  let result;
   try {
-    result = await pool.query(
-      `
+    const query = `
       SELECT * FROM Users 
-      WHERE UPPER(username)=$1`,
-      [username.toUpperCase()],
-    );
+      WHERE UPPER(username) = $1`;
+    const values = [username.toUpperCase()];
+    const result = await pool.query(query, values);
+    const user = result.rows[0];
+
+    if (!user) {
+      throw new Error("Account does not exist");
+    }
+
+    const isCorrectPass = await argon2.verify(user.password_hash, password);
+
+    if (!isCorrectPass) {
+      return undefined;
+    }
+
+    return user;
   } catch (error) {
-    console.log(error);
-    throw new Error("SELECT FAILED");
+    handleDatabaseError(error, "Login failed");
   }
+};
 
-  let users = result.rows;
-  if (users.length > 1) {
-    throw new Error("Name already exists");
-  }
-
-  if (users.length == 0) {
-    throw new Error("Account does not exist");
-  }
-
-  let user = users[0];
-  let hash = user.password_hash;
-  let isCorrectPass;
+const invalidateToken = async (token) => {
   try {
-    isCorrectPass = await argon2.verify(hash, password);
+    const query = `
+      UPDATE Users 
+      SET token = NULL 
+      WHERE token = $1`;
+    await pool.query(query, [token]);
   } catch (error) {
-    console.log(error);
-    throw new Error("Verification failed");
+    handleDatabaseError(error, "Error invalidating token");
   }
-
-  return isCorrectPass ? user : undefined;
 };
 
 const getUserByToken = async (token) => {
-  if (token === undefined) throw new Error("No token for this site");
+  if (!token) {
+    throw new Error("No token for this site");
+  }
 
   try {
-    let result = await pool.query(
-      `SELECT 
-      user_id,
-      username,
-      email
-      FROM Users
-      WHERE token=$1`,
-      [token],
-    );
+    const query = `
+      SELECT user_id, username, email 
+      FROM Users 
+      WHERE token = $1`;
+    const result = await pool.query(query, [token]);
     return result.rows;
   } catch (error) {
-    throw new Error("Problem querying database");
+    handleDatabaseError(error, "Problem querying database");
+  }
+};
+
+const updateUser = async (id, details) => {
+  if (!details || Object.keys(details).length === 0) {
+    throw new Error("No details provided");
+  }
+
+  const fields = [];
+  const values = [];
+  let paramNumber = 1;
+
+  Object.keys(details).forEach((key) => {
+    fields.push(`${key} = $${paramNumber}`);
+    values.push(details[key]);
+    paramNumber++;
+  });
+
+  const query = `
+    UPDATE Users 
+    SET ${fields.join(", ")} 
+    WHERE user_id = $${paramNumber} 
+    RETURNING *`;
+  values.push(parseInt(id));
+
+  try {
+    const result = await pool.query(query, values);
+    if (result.rows.length === 0) {
+      throw new Error("Account does not exist");
+    }
+    return result.rows;
+  } catch (error) {
+    handleDatabaseError(error, "Could not update user");
   }
 };
 
 const getUserById = async (id) => {
-  // TODO
+  throw new Error("Not implemented");
 };
 
-const updateUser = async (id, details) => {
-  let queryString = "UPDATE Users SET ";
-  if (!details) throw new Error("No details provided");
-
-  let paramNumber = 1;
-
-  let args = [];
-  if (details.hasOwnProperty("username")) {
-    queryString += `username= \$${paramNumber}, `;
-    args.push(details.username);
-    paramNumber++;
-  }
-
-  if (details.hasOwnProperty("email")) {
-    queryString += `email= \$${paramNumber}, `;
-    args.push(details.email);
-    paramNumber++;
-  }
-
-  if (details.hasOwnProperty("full_name")) {
-    queryString += `full_name= \$${paramNumber}, `;
-    args.push(details.full_name);
-    paramNumber++;
-  }
-
-  if (details.hasOwnProperty("token")) {
-    queryString += `token= \$${paramNumber}`;
-    args.push(details.token);
-    paramNumber++;
-  }
-
-  queryString += ` WHERE user_id= \$${paramNumber} RETURNING *`;
-  args.push(parseInt(id));
-
-  try {
-    console.log(queryString);
-    console.log(args);
-    let result = await pool.query(queryString, args);
-    console.log("Success");
-    return result.rows;
-  } catch (error) {
-    console.log("Could not query database");
-  }
-};
-
-const deleteUser = async (id) => {
-  // TODO
-};
 
 export default {
   createUser,
   loginUser,
+  invalidateToken,
   getUserById,
   getUserByToken,
   updateUser,
-  deleteUser,
 };

@@ -1,0 +1,25 @@
+<head>
+    <meta charset="utf-8">
+    <title>Login Modal</title>
+    <link rel="stylesheet" type="text/css" href="/css/components/auth/loginModal.css">
+</head>
+
+<div class="modal-container">
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="tab-switch">
+                    <button id="loginTab" class="active">Login</button>
+                    <button id="registerTab">Register</button>
+                </div>
+                <%- include('loginForm') %>
+                <%- include('registerForm') %>
+            </div>
+            <div class="modal-footer">
+                <button class="btn cancel" id="authCancelBtn">Cancel</button>
+                <a href="#"><p>Forgot Password?</p></a>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="/js/components/auth/loginModal.js"></script>
+</div>

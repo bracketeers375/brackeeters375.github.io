@@ -26,6 +26,7 @@
         const emailIn = document.getElementById("registerEmail");
         const passwordIn = document.getElementById("registerPassword");
         const cpasswordIn = document.getElementById("registerConfirmPassword");
+        const modal = document.getElementById("authModal");
 
         form.addEventListener("submit", async function(event) {
             event.preventDefault(); // Prevent form from submitting the traditional way
@@ -54,8 +55,11 @@
                     message.appendChild(pEle);
                 }
 
-                console.log("Response received: ", response.status);
-                console.log("Response: ", response);
+                if (response.status === 200) {
+                    modal.classList.remove("show");
+                    window.location.reload();
+                }
+
             } catch (error) {
                 console.error(error);
             }

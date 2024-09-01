@@ -28,13 +28,20 @@
         border-radius: 4px;
     }
 
-    .sidenav a#authModalTrigger {
-        background-color: #1947A4;
+    #sidenav-container {
+        display: flex;
+    }
+
+    #loginLogoutTrigger {
         margin-top: auto;
     }
 
-    #sidenav-container {
-        display: flex;
+    #loginLogoutTrigger.logged-out {
+        background-color: #1947A4;
+    }
+
+    #loginLogoutTrigger.logged-in {
+        background-color: #d9534f;
     }
 </style>
 
@@ -49,10 +56,14 @@
         <a href="/events">
             <%- include('icons/_exploreIcon') %>
         </a>
-        <a style="cursor: pointer" id="authModalTrigger">
-            <%- include('icons/_loginIcon') %>
+        <a style="cursor: pointer" id="loginLogoutTrigger" class="<%= userName ? 'logged-in' : 'logged-out' %>">
+            <%- include('icons/_loginLogoutIcon') %>
         </a>
     </div>
 </div>
 
-<%- include('loginModal') %>
+<% if (!userName) { %>
+    <%- include('../auth/loginModal') %>
+<% } else { %>
+    <%- include('../auth/logoutPrompt') %>
+<% } %>

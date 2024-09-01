@@ -1,0 +1,42 @@
+@import url(../modal.css);
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    color: #333;
+    font-size: 14px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    font-size: 16px;
+    color: #333;
+}
+
+.checkbox {
+    margin-bottom: 15px;
+}
+
+.checkbox label {
+    display: inline-flex;
+    color: #333;
+}
+
+.checkbox input {
+    margin-right: 5px;
+    width: auto;
+    height: auto;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}

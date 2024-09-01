@@ -19,6 +19,7 @@
         const form = document.getElementById("loginFormElement");
         const usernameIn = document.getElementById("authUsername");
         const passwordIn = document.getElementById("authPassword");
+        const modal = document.getElementById("authModal");
 
         form.addEventListener("submit", async function(event) {
             event.preventDefault(); // Prevent form from submitting the traditional way
@@ -37,8 +38,13 @@
                     body: JSON.stringify(payload),
                 });
 
-                console.log("Response received: ", response.status);
-                console.log("Response: ", response);
+                if (response.status === 200) {
+                    modal.classList.remove("show");
+                    window.location.reload();
+                } else {
+                    console.log("Failed to login");
+                }
+
             } catch (error) {
                 console.error(error);
             }
