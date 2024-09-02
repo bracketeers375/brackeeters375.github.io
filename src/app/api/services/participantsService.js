@@ -22,8 +22,11 @@ const getParticipantsByEventId = async (event_id) => {
 const getParticipantsByTourId = async (tournament_id) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM Participants
-            WHERE tournament_id =$1`,
+      `SELECT participants.*, tournaments.tournament_name
+      FROM participants
+      JOIN tournaments
+      ON tournaments.tournament_id = participants.tournament_id
+      WHERE tournaments.tournament_id=$1`,
       [tournament_id],
     );
 
@@ -42,23 +45,17 @@ const addParticipant2Tournament = async (
   user_id,
   username,
   event_id,
-  tournament_id,
-  game_id,
-  game_name,
+  tournament_id
 ) => {
   console.log(user_id);
   console.log(username);
   console.log(event_id);
   console.log(tournament_id);
-  console.log(game_id);
-  console.log(game_name);
   if (
     !user_id ||
     !username ||
     !event_id ||
-    !tournament_id ||
-    !game_id ||
-    !game_name
+    !tournament_id
   ) {
     throw new Error("Missing features");
     return;
@@ -68,11 +65,11 @@ const addParticipant2Tournament = async (
     let result = await pool.query(
       `
       INSERT INTO 
-      Participants(user_id, username, event_id, tournament_id, game_id, game_name)
-      VALUES($1, $2, $3, $4, $5, $6)
+      Participants(user_id, username, event_id, tournament_id)
+      VALUES($1, $2, $3, $4)
       RETURNING *
       `,
-      [user_id, username, event_id, tournament_id, game_id, game_name],
+      [user_id, username, event_id, tournament_id],
     );
 
     return result.rows;
@@ -87,8 +84,23 @@ const addParticipant2Tournament = async (
   }
 };
 
+const removeParticipantFromTour = async (participants_id) => {
+  try {
+    const result = await pool.query(
+      `DELETE FROM Participants
+      WHERE participants_id = $1`,
+      [participants_id],
+    );
+  }  catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
+
+}
+
 export default {
   getParticipantsByEventId,
   getParticipantsByTourId,
   addParticipant2Tournament,
+  removeParticipantFromTour
 };

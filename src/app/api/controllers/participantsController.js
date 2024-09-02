@@ -56,9 +56,28 @@ const addParticipant2Tournament = async (req, res) => {
   }
 };
 
+const removeParticipantFromTour = async (req, res) => {
+  let participants_id = req.params.participants_id;
+  try {
+
+    if(Number.isNaN(participants_id)) {
+      return res.status(400).send("Participants ID must be a number")
+    }
+
+    await participantsService.removeParticipantFromTour(participants_id);
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+
+
+};
+
 const participantRouter = express.Router();
 participantRouter.get("/getByTour/:tournament_id", getParticipantsByTourId);
 participantRouter.get("/getByEvent/:event_id", getParticipantsByEventId);
 participantRouter.post("/add/:tournament_id", addParticipant2Tournament);
+participantRouter.post("/remove/:participants_id", removeParticipantFromTour);
 
 export default participantRouter;

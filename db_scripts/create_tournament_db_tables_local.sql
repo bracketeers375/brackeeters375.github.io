@@ -71,15 +71,11 @@ CREATE TABLE Participants
     username        VARCHAR(100),
     seed            INT,
     event_id        INT,
-    game_id         INT,
-    game_name       VARCHAR(100),
     tournament_id   INT,
     FOREIGN KEY (user_id) REFERENCES Users (user_id),
     FOREIGN KEY (username) REFERENCES Users (username),
     FOREIGN KEY (event_id) REFERENCES Events (event_id),
-    FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id),
-    FOREIGN KEY (game_id) REFERENCES Games (game_id),
-    FOREIGN KEY (game_name) REFERENCES Games (game_name)
+    FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id)
 );
 
 -- dummy data
@@ -793,7 +789,9 @@ VALUES ('TEST TOURNEY 2', 2, 1, '{
   "match_game": []
 }');
 
-INSERT INTO Participants(user_id, username, event_id, tournament_id, game_id, game_name)
-VALUES(1, 'bob', 1, 1, 1, 'GUILTY GEAR -STRIVE-');
-INSERT INTO Participants(user_id, username, event_id, tournament_id, game_id, game_name)
-VALUES(2, 'alice', 1, 1, 1, 'GUILTY GEAR -STRIVE-');
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(1, 'bob', 1, 1);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(2, 'alice', 1, 1);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(3, 'God', 1, 2);

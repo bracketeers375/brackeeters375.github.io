@@ -7,7 +7,7 @@ if (process.env.NODE_ENV === "production") {
 } else {
   databaseConfig = {
     user: "postgres",
-    password: "6548472#sm",
+    password: "astronaut",
     host: "localhost",
     database: "local_tournament_db",
     port: 5432,

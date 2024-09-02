@@ -3,8 +3,8 @@ let tourIdVal = tourIdInput.value;
 // let button = document.getElementById("search");
 // button.addEventListener("click", getPartByTourId);
 
-tourneySelect = document.getElementById("toursInEvent");
-tourneySelect.addEventListener("change", getPartByTourId);
+tourIdInput.addEventListener("change", getPartByTourId);
+
 
 function getPartByTourId() {
   tourIdVal = tourIdInput.value;
