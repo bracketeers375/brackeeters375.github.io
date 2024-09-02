@@ -63,7 +63,7 @@ const invalidateToken = async (token) => {
 
 const getUserByToken = async (token) => {
   if (!token) {
-    throw new Error("No token for this site");
+    throw new Error("No token provided for this site");
   }
 
   try {
@@ -72,7 +72,16 @@ const getUserByToken = async (token) => {
       FROM Users 
       WHERE token = $1`;
     const result = await pool.query(query, [token]);
-    return result.rows;
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    if (result.rows.length > 1) {
+      throw new Error("Non-unique result: multiple users found with the same token.");
+    }
+
+    return result.rows[0];
   } catch (error) {
     handleDatabaseError(error, "Problem querying database");
   }

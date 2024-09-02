@@ -29,14 +29,7 @@ const getUserByToken = async (req, res) => {
 
   try {
     const user = await userService.getUserByToken(token);
-    if (user.length === 0) {
-      return handleError(res, "Account does not exist or no user was found", 404);
-    }
-    if (user.length > 1) {
-      console.error("Duplicate tokens found for users: ", user)
-      return handleError(res);
-    }
-    res.status(200).send(user[0]);
+    res.status(200).send(user);
   } catch (error) {
     handleError(res);
   }
