@@ -11,8 +11,8 @@ viewRouter.use(async (req, res, next) => {
   if (userCookie && userCookie.token) {
     try {
       const user = await userService.getUserByToken(userCookie.token);
-      if (user.length === 1) {
-        res.locals.userName = user[0].username;
+      if (user) {
+        res.locals.userName = user.username;
         next();
       } else {
         res.locals.userName = null;
@@ -97,6 +97,39 @@ viewRouter.get("/events/closed", async (req, res) => {
   }
 });
 
+viewRouter.get("/events/create", async (req, res) => {
+  res.render("eventCreation", {
+    title: "Event Creation - Bracketeers"
+  });
+});
+
+viewRouter.post("/events/create", async (req, res) => {
+  const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).send("User must be logged in to perform this action.");
+  }
+
+  const { eventName, startDate, endDate } = req.body;
+  if (!eventName || !startDate) {
+    return res.status(400).send("Missing one or more required fields.");
+  }
+
+  try {
+    // Retrieve user ID from the token
+    const { user_id: userId } = await userService.getUserByToken(token);
+
+    // Create the new event
+    const newEvent = await eventsService.createEvent(eventName, startDate, endDate, userId);
+
+    // Redirect to the new event's detail page after creation
+    res.redirect(`/events/${newEvent.event_id}`);
+  } catch (error) {
+    console.error("Error creating event:", error);
+    res.status(500).send("An error occurred while creating the event.");
+  }
+});
+
 viewRouter.get("/events/:event_id", async (req, res) => {
   const eventId = parseInt(req.params.event_id);
 
@@ -169,12 +202,6 @@ viewRouter.get("/tournament/:id", async (req, res) => {
     console.error("Error fetching tournament:", error);
     res.status(500).send("Error retrieving the tournament.");
   }
-});
-
-viewRouter.get("/events/create", (req, res) => {
-  res.render("event-create", {
-  	title: "Event Creation - Bracketeers"
-  });
 });
 
 viewRouter.use((req, res) => {
