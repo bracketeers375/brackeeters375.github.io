@@ -46,8 +46,10 @@ const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return handleError(res, "Missing features", 400);
+    return handleError(res, "Missing credentials", 400);
   }
+
+  const existingToken = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
 
   try {
     const user = await userService.loginUser(username, password);
@@ -56,12 +58,14 @@ const loginUser = async (req, res) => {
       return handleError(res, "Incorrect password", 400);
     }
 
-    if (!user.token) {
-      return handleError(res, "No token found on account", 404);
+    if (existingToken && user.token === existingToken) {
+      console.log(`Reusing existing token ${existingToken}`);
+      res.cookie("user", { token: existingToken, username: user.username }, cookieOptions).send();
+      return;
     }
 
-    console.log(`Preexisting token ${user.token}`);
-    res.cookie("user", { token: user.token, username: user.username }, cookieOptions).send();
+    const updatedUser = await updateToken(user.user_id);
+    res.cookie("user", { token: updatedUser.token, username: updatedUser.username }, cookieOptions).send();
   } catch (error) {
     handleError(res, error.message);
   }
@@ -85,7 +89,8 @@ const logoutUser = async (req, res) => {
 
 const updateToken = async (userId) => {
   try {
-    const result = await userService.updateUser(userId, { token: makeToken() });
+    const newToken = makeToken();
+    const result = await userService.updateUser(userId, { token: newToken });
     return result[0];
   } catch (error) {
     throw new Error("Error updating user token");
