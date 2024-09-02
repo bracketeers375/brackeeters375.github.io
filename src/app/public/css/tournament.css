@@ -30,8 +30,7 @@
     max-width: 500px;
     position: absolute;
     left: 50%;
-    bottom: -100%;
+    bottom: 50%;
     transform: translateX(-50%);
-    animation: animatebottom 0.3s ease-out forwards;
     color: #000000;
 }

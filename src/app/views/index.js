@@ -2,6 +2,7 @@ import express from "express";
 import eventsService from "../api/services/eventsService.js";
 import tournamentService from "../api/services/tournamentService.js";
 import userService from "../api/services/userService.js";
+import participantsService from "../api/services/participantsService.js";
 const viewRouter = express.Router();
 
 viewRouter.use(async (req, res, next) => {
@@ -121,6 +122,31 @@ viewRouter.get("/events/:event_id", async (req, res) => {
   }
 });
 
+viewRouter.get("/events/:event_id/attendees", async (req, res) => {
+  const eventId = parseInt(req.params.event_id);
+  try {
+    const event = await eventsService.getEventById(eventId);
+      if (!event) {
+      return res.status(404).render("404", {
+        title: "404 - Event Not Found",
+      });
+    }
+
+    const tournamentData = await tournamentService.getTournamentsByEventId(eventId);
+    console.log("tournamentData" , tournamentData);
+
+    res.render("attendees", {
+      title: `Attendees List - ${eventId}`,
+      tournamentData
+    });
+
+  } catch (error) {
+    console.error("Error fetching attendees:", error);
+    res.status(500).send("Error retrieving attendees.");
+  }
+
+});
+
 viewRouter.get("/tournament/:id", async (req, res) => {
   const tournamentId = parseInt(req.params.id);
 
@@ -145,7 +171,7 @@ viewRouter.get("/tournament/:id", async (req, res) => {
   }
 });
 
-viewRouter.get("/event/create", (req, res) => {
+viewRouter.get("/events/create", (req, res) => {
   res.render("event-create", {
   	title: "Event Creation - Bracketeers"
   });

@@ -3,6 +3,7 @@ CREATE DATABASE local_tournament_db;
 \c local_tournament_db;
 
 -- Clean out the database.
+DROP TABLE IF EXISTS Participants CASCADE;
 DROP TABLE IF EXISTS Tournaments CASCADE;
 DROP TABLE IF EXISTS Events CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
@@ -61,29 +62,35 @@ CREATE TABLE Admins
     FOREIGN KEY (event_id) REFERENCES Events (event_id)
 );
 
--- CREATE TABLE Participants
--- (
---     participants_id SERIAL PRIMARY KEY,
---     user_id         INT,
---     username        VARCHAR(100),
---     seed            INT,
---     event_id        INT,
---     game_id         INT,
---     game_name       VARCHAR(100),
---     tournament_id   INT,
---     FOREIGN KEY (user_id) REFERENCES Users (user_id),
---     FOREIGN KEY (username) REFERENCES Users (username),
---     FOREIGN KEY (event_id) REFERENCES Events (event_id),
---     FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id),
---     FOREIGN KEY (game_id) REFERENCES Games (game_id),
---     FOREIGN KEY (game_name) REFERENCES Games (game_name)
--- );
+CREATE TABLE Participants
+(
+    participants_id SERIAL PRIMARY KEY,
+    user_id         INT,
+    username        VARCHAR(100),
+    seed            INT,
+    event_id        INT,
+    game_id         INT,
+    game_name       VARCHAR(100),
+    tournament_id   INT,
+    FOREIGN KEY (user_id) REFERENCES Users (user_id),
+    FOREIGN KEY (username) REFERENCES Users (username),
+    FOREIGN KEY (event_id) REFERENCES Events (event_id),
+    FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id),
+    FOREIGN KEY (game_id) REFERENCES Games (game_id),
+    FOREIGN KEY (game_name) REFERENCES Games (game_name)
+);
 
 -- dummy data
 INSERT INTO Games(game_name)
-VALUES ('GGST');
+VALUES ('GUILTY GEAR -STRIVE-');
 INSERT INTO Games(game_name)
 VALUES ('SF6');
+
+
+INSERT INTO USERS(username, email, password_hash)
+VALUES('bob', 'bob@gmail.com', '$1$tQYTwdjo$T/JkKXeULiiSNyfp4du9j.');
+INSERT INTO USERS(username, email, password_hash)
+VALUES('alice', 'alice@gmail.com', 'fakeHash');
 
 INSERT INTO Events (event_name, start_date, end_date)
 VALUES ('Rocket League Championship 2024', '2024-08-01', '2024-08-03'),
@@ -445,3 +452,7 @@ VALUES ('TEST GGST', 1, 1, '{
   "match_game": []
 }');
 
+INSERT INTO Participants(user_id, username, event_id, tournament_id, game_id, game_name)
+VALUES(1, 'bob', 1, 1, 1, 'GUILTY GEAR -STRIVE-');
+INSERT INTO Participants(user_id, username, event_id, tournament_id, game_id, game_name)
+VALUES(2, 'alice', 1, 1, 1, 'GUILTY GEAR -STRIVE-');
