@@ -57,7 +57,8 @@ const addParticipant2Tournament = async (req, res) => {
 };
 
 const participantRouter = express.Router();
-participantRouter.get("/getAll/:tournament_id", getParticipantsByTourId);
+participantRouter.get("/getByTour/:tournament_id", getParticipantsByTourId);
+participantRouter.get("/getByEvent/:event_id", getParticipantsByEventId);
 participantRouter.post("/add/:tournament_id", addParticipant2Tournament);
 
 export default participantRouter;

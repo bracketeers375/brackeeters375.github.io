@@ -161,7 +161,7 @@ viewRouter.get("/events/:event_id/attendees", async (req, res) => {
     const event = await eventsService.getEventById(eventId);
       if (!event) {
       return res.status(404).render("404", {
-        title: "404 - Event Not Found",
+        title: "404 - Event Attendees Not Found",
       });
     }
 

@@ -1,7 +1,7 @@
-let tourIdInput = document.getElementById("tourId");
-let tourIdVal = tourIdInput.value;
-let button = document.getElementById("search");
-button.addEventListener("click", getPartByTourId);
+// let tourIdInput = document.getElementById("tourId");
+// let tourIdVal = tourIdInput.value;
+// let button = document.getElementById("search");
+// button.addEventListener("click", getPartByTourId);
 
 function getPartByTourId() {
   tourIdVal = tourIdInput.value;
