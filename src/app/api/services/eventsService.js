@@ -1,12 +1,12 @@
 import pool from "./connection.js";
 
-const createEvent = async (eventName, startDate, endDate = null) => {
+const createEvent = async (eventName, startDate, endDate = null, userId) => {
     try {
         const result = await pool.query(
-            `INSERT INTO Events(event_name, start_date, end_date)
-             VALUES ($1, $2, $3)
+            `INSERT INTO Events(event_name, start_date, end_date, created_by)
+             VALUES ($1, $2, $3, $4)
              RETURNING *`,
-            [eventName, startDate, endDate]
+            [eventName, startDate, endDate, userId]
         );
         return result.rows[0];
     } catch (error) {
@@ -68,7 +68,7 @@ const getAllOpenEvents = async () => {
         const result = await pool.query(`
       SELECT * 
       FROM Events
-      WHERE start_date < CURRENT_DATE AND
+      WHERE start_date <= CURRENT_DATE AND
             end_date >= CURRENT_DATE
       ORDER BY end_date DESC
     `);

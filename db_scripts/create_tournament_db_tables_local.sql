@@ -35,7 +35,9 @@ CREATE TABLE Events
     event_id   SERIAL PRIMARY KEY,
     event_name VARCHAR(100) NOT NULL,
     start_date DATE         NOT NULL,
-    end_date   DATE
+    end_date   DATE,
+    created_by INT NOT NULL,
+    FOREIGN KEY (created_by) REFERENCES Users (user_id)
 );
 
 CREATE TABLE Tournaments
@@ -54,7 +56,7 @@ CREATE TABLE Tournaments
 
 CREATE TABLE Admins
 (
-  	admin_id			SERIAL PRIMARY KEY,
+    admin_id			SERIAL PRIMARY KEY,
     user_id				INT NOT NULL,
     event_id      INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users (user_id),
@@ -85,29 +87,32 @@ VALUES ('GGST');
 INSERT INTO Games(game_name)
 VALUES ('SF6');
 
-INSERT INTO Events (event_name, start_date, end_date)
-VALUES ('Rocket League Championship 2024', '2024-08-01', '2024-08-03'),
-       ('Super Smash Bros Tournament', '2024-08-05', '2024-08-07'),
-       ('Street Fighter V Championship', '2024-08-10', '2024-08-12'),
-       ('Tekken World Tour', '2024-08-15', '2024-08-17'),
-       ('Call of Duty: Warzone Event', '2024-08-20', '2024-08-22'),
-       ('League of Legends Championship', '2024-08-25', '2024-08-27'),
-       ('Dota 2 International', '2024-09-01', '2024-09-03'),
-       ('FIFA World Cup eSports', '2024-09-05', '2024-09-07'),
-       ('Fortnite Battle Royale', '2024-09-10', '2024-09-12'),
-       ('Apex Legends Global Series', '2024-09-15', '2024-09-17'),
-       ('Overwatch League Finals', '2024-09-20', '2024-09-22'),
-       ('Valorant Champions Tour', '2024-09-25', '2024-09-27'),
-       ('PUBG Global Championship', '2024-10-01', '2024-10-03'),
-       ('Hearthstone Masters', '2024-10-05', '2024-10-07'),
-       ('Counter-Strike: Global Offensive Major', '2024-10-10', '2024-10-12'),
-       ('Rainbow Six Siege Invitational', '2024-10-15', '2024-10-17'),
-       ('Magic: The Gathering Arena Championship', '2024-10-20', '2024-10-22'),
-       ('Smite World Championship', '2024-10-25', '2024-10-27'),
-       ('Gears of War Pro Circuit', '2024-10-30', '2024-11-01'),
-       ('Mortal Kombat 11 Pro Kompetition', '2024-11-05', '2024-11-07'),
-       ('Halo Championship Series', '2024-11-10', '2024-11-12'),
-       ('Heroes of the Storm Global Championship', '2024-11-15', '2024-11-17');
+INSERT INTO Users (username, email, password_hash, full_name, token)
+VALUES ('God', 'god@gmail.com', '', 'God', '1');
+
+INSERT INTO Events (event_name, start_date, end_date, created_by)
+VALUES ('Rocket League Championship 2024', '2024-08-01', '2024-08-03', 1),
+       ('Super Smash Bros Tournament', '2024-08-05', '2024-08-07', 1),
+       ('Street Fighter V Championship', '2024-08-10', '2024-08-12', 1),
+       ('Tekken World Tour', '2024-08-15', '2024-08-17', 1),
+       ('Call of Duty: Warzone Event', '2024-08-20', '2024-08-22', 1),
+       ('League of Legends Championship', '2024-08-25', '2024-08-27', 1),
+       ('Dota 2 International', '2024-09-01', '2024-09-03', 1),
+       ('FIFA World Cup eSports', '2024-09-05', '2024-09-07', 1),
+       ('Fortnite Battle Royale', '2024-09-10', '2024-09-12', 1),
+       ('Apex Legends Global Series', '2024-09-15', '2024-09-17', 1),
+       ('Overwatch League Finals', '2024-09-20', '2024-09-22', 1),
+       ('Valorant Champions Tour', '2024-09-25', '2024-09-27', 1),
+       ('PUBG Global Championship', '2024-10-01', '2024-10-03', 1),
+       ('Hearthstone Masters', '2024-10-05', '2024-10-07', 1),
+       ('Counter-Strike: Global Offensive Major', '2024-10-10', '2024-10-12', 1),
+       ('Rainbow Six Siege Invitational', '2024-10-15', '2024-10-17', 1),
+       ('Magic: The Gathering Arena Championship', '2024-10-20', '2024-10-22', 1),
+       ('Smite World Championship', '2024-10-25', '2024-10-27', 1),
+       ('Gears of War Pro Circuit', '2024-10-30', '2024-11-01', 1),
+       ('Mortal Kombat 11 Pro Kompetition', '2024-11-05', '2024-11-07', 1),
+       ('Halo Championship Series', '2024-11-10', '2024-11-12', 1),
+       ('Heroes of the Storm Global Championship', '2024-11-15', '2024-11-17', 1);
 
 INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json)
 VALUES ('TEST GGST', 1, 1, '{

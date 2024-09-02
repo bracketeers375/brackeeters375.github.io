@@ -1,5 +1,6 @@
 import express from "express";
 import eventsService from "../services/eventsService.js";
+import userService from "../services/userService.js";
 
 const getAllEvents = async (req, res) => {
   try {
@@ -39,14 +40,27 @@ const getEventByTournamentId = async (req, res) => {
   }
 };
 
+const extractToken = (req) => req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+
 const createEvent = async (req, res) => {
-  const { event_name, start_date, end_date } = req.body;
+  const token = extractToken(req);
+
+  if (!token) {
+    return res.status(401).send("User must be logged in to perform this action.");
+  }
+
+  const { eventName, startDate, endDate } = req.body;
+  if (!eventName || !startDate) {
+    return res.status(400).send("Missing one or more required fields.")
+  }
+
   try {
-    const newEvent = await eventsService.createEvent(event_name, start_date, end_date);
-    return res.status(201).json(newEvent);
+    const { user_id: userId } = await userService.getUserByToken(token)
+    const event = await eventsService.createEvent(eventName, startDate, endDate, userId);
+    return res.status(201).json(event);
   } catch (error) {
     console.error(error);
-    res.status(500).send("An error occurred while creating the event");
+    return res.status(500).send("An error occurred while creating this event.");
   }
 };
 
