@@ -4,7 +4,6 @@ import { BracketsManager, helpers } from "brackets-manager";
 import { json } from "express";
 
 const storage = new InMemoryDatabase();
-console.log("storage: ", storage);
 const manager = new BracketsManager(storage);
 
 const createBracketTest = async (numPlayers, format) => {
