@@ -153,8 +153,8 @@ viewRouter.get("/events/:event_id", async (req, res) => {
 viewRouter.get("/admin/events/:event_id/attendees", async (req, res) => {
   const eventId = parseInt(req.params.event_id);
   try {
-    const event = await eventsService.getEventById(eventId);
-      if (!event) {
+    const eventData = await eventsService.getEventById(eventId);
+      if (!eventData) {
       return res.status(404).render("404", {
         title: "404 - Event Attendees Not Found",
       });
@@ -165,7 +165,8 @@ viewRouter.get("/admin/events/:event_id/attendees", async (req, res) => {
 
     res.render("admin_attendees", {
       title: `Attendees List - ${eventId}`,
-      tournamentData
+      tournamentData: tournamentData,
+      eventData: eventData
     });
 
   } catch (error) {
