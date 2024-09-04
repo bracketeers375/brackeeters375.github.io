@@ -19,6 +19,43 @@ const getParticipantsByEventId = async (event_id) => {
   }
 };
 
+const getParticipantsByEventIdFormatted = async (event_id) => {
+  try {
+    const result = await pool.query(
+      `SELECT participants.*, tournaments.tournament_name
+      FROM participants
+      JOIN tournaments
+      ON tournaments.tournament_id = participants.tournament_id
+      WHERE tournaments.event_id= $1;`,
+      [event_id],
+    );
+
+    if (result.rows.length === 0) {
+      return null; // Return null if no participants is found
+    }
+    console.log(result.rows);
+    let formattedList = {};
+    for(let i = 0; i < result.rows.length; i++) {
+      let current = result.rows[i];
+      if(!formattedList.hasOwnProperty(current.user_id)) {
+        let newObj = {
+          username: current.username,
+          enteredTournaments: [current.tournament_name],
+          participantId: current.participants_id,
+          eventId: current.event_id
+        }
+        formattedList[current.user_id] = newObj;
+      } else {
+        formattedList[current.user_id].enteredTournaments.push(current.tournament_name);
+      }
+    }
+    return formattedList;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
+};
+
 const getParticipantsByTourId = async (tournament_id) => {
   try {
     const result = await pool.query(
@@ -100,6 +137,7 @@ const removeParticipantFromTour = async (participants_id) => {
 
 export default {
   getParticipantsByEventId,
+  getParticipantsByEventIdFormatted,
   getParticipantsByTourId,
   addParticipant2Tournament,
   removeParticipantFromTour

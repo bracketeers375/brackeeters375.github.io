@@ -795,3 +795,5 @@ INSERT INTO Participants(user_id, username, event_id, tournament_id)
 VALUES(2, 'alice', 1, 1);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
 VALUES(3, 'God', 1, 2);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(2, 'alice', 1, 2);

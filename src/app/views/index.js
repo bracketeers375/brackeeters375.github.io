@@ -3,6 +3,7 @@ import eventsService from "../api/services/eventsService.js";
 import tournamentService from "../api/services/tournamentService.js";
 import userService from "../api/services/userService.js";
 import participantsService from "../api/services/participantsService.js";
+
 const viewRouter = express.Router();
 
 viewRouter.use(async (req, res, next) => {
@@ -39,12 +40,6 @@ viewRouter.get("/", (req, res) => {
 viewRouter.get("/search", (req, res) => {
   res.render(`search`, {
     title: "Search - Bracketeers",
-  });
-});
-
-viewRouter.get("/attendees", (req, res) => {
-  res.render(`attendees`, {
-    title: "Attendees List - Bracketeers",
   });
 });
 
@@ -155,7 +150,7 @@ viewRouter.get("/events/:event_id", async (req, res) => {
   }
 });
 
-viewRouter.get("/events/:event_id/attendees", async (req, res) => {
+viewRouter.get("/admin/events/:event_id/attendees", async (req, res) => {
   const eventId = parseInt(req.params.event_id);
   try {
     const event = await eventsService.getEventById(eventId);
@@ -166,11 +161,30 @@ viewRouter.get("/events/:event_id/attendees", async (req, res) => {
     }
 
     const tournamentData = await tournamentService.getTournamentsByEventId(eventId);
-    console.log("tournamentData" , tournamentData);
+    // console.log("tournamentData" , tournamentData);
+
+    res.render("admin_attendees", {
+      title: `Attendees List - ${eventId}`,
+      tournamentData
+    });
+
+  } catch (error) {
+    console.error("Error fetching attendees:", error);
+    res.status(500).send("Error retrieving attendees.");
+  }
+
+});
+
+viewRouter.get("/events/:event_id/attendees", async (req, res) => {
+  const eventId = parseInt(req.params.event_id);
+  try {
+    const eventData = await eventsService.getEventById(eventId);
+    const participantsData = await participantsService.getParticipantsByEventIdFormatted(eventId);
 
     res.render("attendees", {
       title: `Attendees List - ${eventId}`,
-      tournamentData
+      participantsData: participantsData,
+      eventData: eventData
     });
 
   } catch (error) {

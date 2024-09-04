@@ -7,9 +7,29 @@ const getParticipantsByEventId = async (req, res) => {
   try {
     const participants =
       await participantsService.getParticipantsByEventId(event_id);
+      console.log("participants RAW", participants)
     let body = {
       attendees: participants,
     };
+    return res.json(body);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send("An error occurred while retrieving the participants list");
+  }
+};
+
+const getParticipantsByEventIdFormatted = async (req, res) => {
+  const event_id = parseInt(req.params.event_id);
+  try {
+    const participants =
+      await participantsService.getParticipantsByEventIdFormatted(event_id);
+    let body = {
+      attendees: participants,
+    };
+
+
     return res.json(body);
   } catch (error) {
     console.log(error);
@@ -77,6 +97,7 @@ const removeParticipantFromTour = async (req, res) => {
 const participantRouter = express.Router();
 participantRouter.get("/getByTour/:tournament_id", getParticipantsByTourId);
 participantRouter.get("/getByEvent/:event_id", getParticipantsByEventId);
+participantRouter.get("/getByEventFormatted/:event_id", getParticipantsByEventIdFormatted);
 participantRouter.post("/add/:tournament_id", addParticipant2Tournament);
 participantRouter.post("/remove/:participants_id", removeParticipantFromTour);
 
