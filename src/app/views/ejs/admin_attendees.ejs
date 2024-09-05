@@ -10,18 +10,13 @@
 <body>
     <%- include('components/layout/base-layout') %>
 <div id="mainContainer">
-    <p id="titleText"><%= eventData.event_name%> - Attendees List</p>
-        <div>
-            <label for="userSearch">Search users:</label>
-            <input id="userSearch" type="text" />
-            <button id="searchBtn">Search</button>
-        </div>
-                    <label for="toursInEvent">Tournaments:</label>
-                    <select id="toursInEvent" name="toursInEvent">
-                        <% tournamentData.forEach(tournament => { %>
-                        <option value='<%= tournament.tournament_id %>'> <%= tournament.tournament_name %> </option>
-                        <% }); %>
-                    </select>
+    <p id="titleText"><%= eventData.event_name%> - Attendees List Edit</p>
+        <label for="toursInEvent">Tournaments:</label>
+        <select id="toursInEvent" name="toursInEvent">
+            <% tournamentData.forEach(tournament => { %>
+            <option value='<%= tournament.tournament_id %>'> <%= tournament.tournament_name %> </option>
+            <% }); %>
+        </select>
 </div>
 <div id="errorContainer"></div>
 <div id="tableContainer">
@@ -29,10 +24,7 @@
         <thead>
         <tr>
             <th>Player Name</th>
-            <th>Entered Tournaments</th>
-            <% if(true) { %>
-                <th>Remove?</th>
-            <% } %>
+            <th>Remove?</th>
         </tr>
         </thead>
         <tbody id="attendeesTBody">
@@ -132,20 +124,16 @@
                 let attendeesTBody = document.getElementById("attendeesTBody");
                 let newR = document.createElement("tr");
                 let nameTd = document.createElement("td");
-                let gamesTd = document.createElement("td");
                 nameTd.textContent = entrantName;
-                gamesTd.textContent = gamesStr;
                 newR.append(nameTd);
-                newR.append(gamesTd);
-                if (true) {
-                    let removeTd = document.createElement("td");
-                    let removeBtn = document.createElement("a");
-                    removeBtn.href = "#";
-                    removeBtn.text = "Remove?";
-                    removeBtn.addEventListener("click", () => {removePart(entrantId)});
-                    removeTd.append(removeBtn);
-                    newR.append(removeTd);
-                }
+                let removeTd = document.createElement("td");
+                let removeBtn = document.createElement("a");
+                removeBtn.href = "#";
+                removeBtn.text = "Remove?";
+                removeBtn.addEventListener("click", () => {removePart(entrantId)});
+                removeTd.append(removeBtn);
+                newR.append(removeTd);
+                
                 attendeesTBody.append(newR);
             }
         }
