@@ -127,11 +127,15 @@ viewRouter.post("/events/create", async (req, res) => {
 
 viewRouter.get("/events/:event_id", async (req, res) => {
   const eventId = parseInt(req.params.event_id);
+  const token = req.cookies?.user?.token;
+  console.log("token ", token);
 
   try {
     const event = await eventsService.getEventById(eventId);
     const tournaments =
       await tournamentService.getTournamentsByEventId(eventId);
+    const currUser = await userService.getUserByToken(token);
+    const isAdmin = currUser.user_id === event.created_by;
 
     if (!event) {
       return res.status(404).render("404", {
@@ -143,6 +147,7 @@ viewRouter.get("/events/:event_id", async (req, res) => {
       title: `Event - ${event.event_name}`,
       event,
       tournaments,
+      isAdmin
     });
   } catch (error) {
     console.error("Error fetching event:", error);

@@ -502,7 +502,7 @@ VALUES ('TEST TOURNEY 2', 2, 1, '{
       "id": 0,
       "tournament_id": 0,
       "name": "Example name",
-      "type": "double_elimination",
+      "type": "single_elimination",
       "number": 1,
       "settings": {
         "roundRobinMode": "simple",
