@@ -1,6 +1,44 @@
 import express from "express";
 import participantsService from "../services/participantsService.js";
 
+
+const getParticipantsByEventId = async (req, res) => {
+  const event_id = parseInt(req.params.event_id);
+  try {
+    const participants =
+      await participantsService.getParticipantsByEventId(event_id);
+      console.log("participants RAW", participants)
+    let body = {
+      attendees: participants,
+    };
+    return res.json(body);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send("An error occurred while retrieving the participants list");
+  }
+};
+
+const getParticipantsByEventIdFormatted = async (req, res) => {
+  const event_id = parseInt(req.params.event_id);
+  try {
+    const participants =
+      await participantsService.getParticipantsByEventIdFormatted(event_id);
+    let body = {
+      attendees: participants,
+    };
+
+
+    return res.json(body);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send("An error occurred while retrieving the participants list");
+  }
+};
+
 const getParticipantsByTourId = async (req, res) => {
   const tournament_id = parseInt(req.params.tournament_id);
   try {
@@ -18,12 +56,12 @@ const getParticipantsByTourId = async (req, res) => {
   }
 };
 
-const addParticipantToEvent = async (req, res) => {
+const addParticipant2Tournament = async (req, res) => {
   let args = req.body;
   console.log(args);
 
   try {
-    await participantsService.addParticipantToEvent(
+    await participantsService.addParticipant2Tournament(
       args.user_id,
       args.username,
       args.event_id,
@@ -38,8 +76,29 @@ const addParticipantToEvent = async (req, res) => {
   }
 };
 
+const removeParticipantFromTour = async (req, res) => {
+  let participants_id = req.params.participants_id;
+  try {
+
+    if(Number.isNaN(participants_id)) {
+      return res.status(400).send("Participants ID must be a number")
+    }
+
+    await participantsService.removeParticipantFromTour(participants_id);
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+
+
+};
+
 const participantRouter = express.Router();
-participantRouter.get("/getAll/:tournament_id", getParticipantsByTourId);
-participantRouter.post("/add/:event_id", addParticipantToEvent);
+participantRouter.get("/getByTour/:tournament_id", getParticipantsByTourId);
+participantRouter.get("/getByEvent/:event_id", getParticipantsByEventId);
+participantRouter.get("/getByEventFormatted/:event_id", getParticipantsByEventIdFormatted);
+participantRouter.post("/add/:tournament_id", addParticipant2Tournament);
+participantRouter.post("/remove/:participants_id", removeParticipantFromTour);
 
 export default participantRouter;

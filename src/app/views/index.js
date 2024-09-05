@@ -2,6 +2,8 @@ import express from "express";
 import eventsService from "../api/services/eventsService.js";
 import tournamentService from "../api/services/tournamentService.js";
 import userService from "../api/services/userService.js";
+import participantsService from "../api/services/participantsService.js";
+
 const viewRouter = express.Router();
 
 viewRouter.use(async (req, res, next) => {
@@ -38,12 +40,6 @@ viewRouter.get("/", (req, res) => {
 viewRouter.get("/search", (req, res) => {
   res.render(`search`, {
     title: "Search - Bracketeers",
-  });
-});
-
-viewRouter.get("/attendees", (req, res) => {
-  res.render(`attendees`, {
-    title: "Attendees List - Bracketeers",
   });
 });
 
@@ -97,8 +93,15 @@ viewRouter.get("/events/closed", async (req, res) => {
 });
 
 viewRouter.get("/events/create", async (req, res) => {
+  let isLoggedIn = true
+  const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+  if(!token) {
+    isLoggedIn = false;
+  }
+
   res.render("eventCreation", {
-    title: "Event Creation - Bracketeers"
+    title: "Event Creation - Bracketeers",
+    isUserLoggedIn: isLoggedIn
   });
 });
 
@@ -131,11 +134,15 @@ viewRouter.post("/events/create", async (req, res) => {
 
 viewRouter.get("/events/:event_id", async (req, res) => {
   const eventId = parseInt(req.params.event_id);
+  const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+
 
   try {
     const event = await eventsService.getEventById(eventId);
     const tournaments =
       await tournamentService.getTournamentsByEventId(eventId);
+    const currUser = await userService.getUserByToken(token);
+    const isAdmin = currUser.user_id === event.created_by;
 
     if (!event) {
       return res.status(404).render("404", {
@@ -147,6 +154,7 @@ viewRouter.get("/events/:event_id", async (req, res) => {
       title: `Event - ${event.event_name}`,
       event,
       tournaments,
+      isAdmin
     });
   } catch (error) {
     console.error("Error fetching event:", error);
@@ -154,12 +162,62 @@ viewRouter.get("/events/:event_id", async (req, res) => {
   }
 });
 
+viewRouter.get("/admin/events/:event_id/attendees", async (req, res) => {
+  const eventId = parseInt(req.params.event_id);
+  try {
+    const eventData = await eventsService.getEventById(eventId);
+      if (!eventData) {
+      return res.status(404).render("404", {
+        title: "404 - Event Attendees Not Found",
+      });
+    }
+
+    const tournamentData = await tournamentService.getTournamentsByEventId(eventId);
+    // console.log("tournamentData" , tournamentData);
+
+    res.render("admin_attendees", {
+      title: `Attendees List - ${eventId}`,
+      tournamentData: tournamentData,
+      eventData: eventData
+    });
+
+  } catch (error) {
+    console.error("Error fetching attendees:", error);
+    res.status(500).send("Error retrieving attendees.");
+  }
+
+});
+
+viewRouter.get("/events/:event_id/attendees", async (req, res) => {
+  const eventId = parseInt(req.params.event_id);
+  try {
+    const eventData = await eventsService.getEventById(eventId);
+    const participantsData = await participantsService.getParticipantsByEventIdFormatted(eventId);
+
+    res.render("attendees", {
+      title: `Attendees List - ${eventId}`,
+      participantsData: participantsData,
+      eventData: eventData
+    });
+
+  } catch (error) {
+    console.error("Error fetching attendees:", error);
+    res.status(500).send("Error retrieving attendees.");
+  }
+
+});
+
 viewRouter.get("/tournament/:id", async (req, res) => {
   const tournamentId = parseInt(req.params.id);
+  const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+
+
 
   try {
     const event = await eventsService.getEventByTournamentId(tournamentId);
     const tournament = await tournamentService.getTournamentById(tournamentId);
+    const currUser = await userService.getUserByToken(token);
+    const isAdmin = currUser.user_id === event.created_by;
 
     if (!event || !tournament) {
       return res.status(404).render("404", {
@@ -171,7 +229,9 @@ viewRouter.get("/tournament/:id", async (req, res) => {
       title: `Tournament - ${tournament.tournament_name}`,
       tournament,
       event,
+      isAdmin
     });
+    
   } catch (error) {
     console.error("Error fetching tournament:", error);
     res.status(500).send("Error retrieving the tournament.");

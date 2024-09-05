@@ -98,6 +98,22 @@ const updateTournamentJson = async (tourId, tourData) => {
   }
 };
 
+const updateHasStarted = async (tourId, newStatus) => {
+  try {
+  await pool.query(
+    `UPDATE tournaments
+    SET has_started = $1
+    WHERE tournament_id = $2`,
+    [newStatus, tourId],
+  ).then((result) => {
+
+  });
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
+}
+
 const deleteTournament = async (id) => {
   // TODO
 };
@@ -109,5 +125,6 @@ export default {
   createTournament,
   updateTournamentJson,
   deleteTournament,
-  getAllTournaments
+  getAllTournaments,
+  updateHasStarted
 };

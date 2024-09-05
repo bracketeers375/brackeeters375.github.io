@@ -1,11 +1,14 @@
-let tourIdInput = document.getElementById("tourId");
+let tourIdInput = document.getElementById("toursInEvent");
 let tourIdVal = tourIdInput.value;
-let button = document.getElementById("search");
-button.addEventListener("click", getPartByTourId);
+// let button = document.getElementById("search");
+// button.addEventListener("click", getPartByTourId);
+
+tourIdInput.addEventListener("change", getPartByTourId);
+
 
 function getPartByTourId() {
   tourIdVal = tourIdInput.value;
-  fetch(`/api/participants/getAll/${tourIdVal}`).then((response) => {
+  fetch(`/api/participants/getByTour/${tourIdVal}`).then((response) => {
     if (response.status >= 400) {
       response.json().then((errorBody) => {
         let errorDiv = document.getElementById("errorContainer");
@@ -24,7 +27,12 @@ function getPartByTourId() {
 
 function getTableData(attendeesArray) {
   let smallerList = {};
+  attendeesTBody.innerHTML = '';
+  if(attendeesArray === null) {
+    return {};
+  }
   // userId: {username: str, games: []}
+  //To clear rows?
 
   for (let i = 0; i < attendeesArray.length; i++) {
     let currAttendee = attendeesArray[i];
@@ -46,6 +54,7 @@ function getTableData(attendeesArray) {
 }
 
 function addTableRows(tableData) {
+  
   for (const [key, value] of Object.entries(tableData)) {
     let entrantName = value.username;
     let gamesArray = value.games;
@@ -61,4 +70,8 @@ function addTableRows(tableData) {
     newR.append(gamesTd);
     attendeesTBody.append(newR);
   }
+}
+
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
 }

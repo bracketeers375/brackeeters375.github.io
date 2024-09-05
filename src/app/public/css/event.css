@@ -1,2 +1,24 @@
 @import url(base.css);
 @import url(components/grid.css);
+
+
+#eventLinks {
+    margin-bottom: 10px;
+}
+.event-link {
+    margin-top: 10px;
+    background-color: #66a3ff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.event-link  {
+    background-color: #4c8bff;
+}

@@ -14,23 +14,28 @@
     <div class="divider-bar"></div>
 </header>
 
-<form action="/events/create" method="POST">
-    <div class="form-group">
-        <label for="eventName" style="color: white">Event Name</label>
-        <input type="text" id="eventName" name="eventName" class="form-control" required>
-    </div>
+<% if(isUserLoggedIn) { %>
+    <form action="/events/create" method="POST">
+        <div class="form-group">
+            <label for="eventName" style="color: white">Event Name</label>
+            <input type="text" id="eventName" name="eventName" class="form-control" required>
+        </div>
 
-    <div class="form-group">
-        <label for="startDate" style="color: white">Start Date</label>
-        <input type="date" id="startDate" name="startDate" class="form-control" required>
-    </div>
+        <div class="form-group">
+            <label for="startDate" style="color: white">Start Date</label>
+            <input type="date" id="startDate" name="startDate" class="form-control" required>
+        </div>
 
-    <div class="form-group">
-        <label for="endDate" style="color: white">End Date</label>
-        <input type="date" id="endDate" name="endDate" class="form-control">
-    </div>
+        <div class="form-group">
+            <label for="endDate" style="color: white">End Date</label>
+            <input type="date" id="endDate" name="endDate" class="form-control">
+        </div>
 
-    <button type="submit" class="btn">Create Event</button>
-</form>
+        <button type="submit" class="btn">Create Event</button>
+    </form>
+<% } %>
+<% if(!isUserLoggedIn) { %>
+    <h1> Must be logged in to create an event</h1>
+<% } %>
 </body>
 </html>

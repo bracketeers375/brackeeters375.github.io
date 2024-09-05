@@ -8,27 +8,33 @@
 </head>
 
 <body>
+<%- include('components/layout/base-layout') %>
 <div id="mainContainer">
-    <p id="titleText">Attendees List</p>
-    <label for="tourId">Enter tournament ID here:</label>
-    <input id="tourId" type="text" />
+    <p id="titleText"><%= eventData.event_name%> - Attendees List</p>
 </div>
-<button id="search">Search for attendees:</button>
 <div id="errorContainer"></div>
 <div id="tableContainer">
     <table id="myTable">
         <thead>
         <tr>
             <th>Player Name</th>
-            <th>Entered Games</th>
+            <th>Entered Tournaments</th>
         </tr>
         </thead>
         <tbody id="attendeesTBody">
+        <% if(participantsData) { %>
+            <% for (const [key, value] of Object.entries(participantsData)) { %>
+                <tr>
+                    <td><%= value.username %></td>
+                    <td><%= value.enteredTournaments.join(", ")%></td>
+                </tr>
+            <% } %>
+        <% } %>
         </tbody>
     </table>
 </div>
 
-<script src="/js/attendees.js"></script>
+<!-- <script src="/js/attendees.js"></script> -->
 </body>
 
 </html>

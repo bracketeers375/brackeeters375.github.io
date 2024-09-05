@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/admin_attendees.css">
+</head>
+
+<body>
+    <%- include('components/layout/base-layout') %>
+<div id="mainContainer">
+    <p id="titleText"><%= eventData.event_name%> - Attendees List Edit</p>
+        <label for="toursInEvent">Tournaments:</label>
+        <select id="toursInEvent" name="toursInEvent">
+            <% tournamentData.forEach(tournament => { %>
+            <option value='<%= tournament.tournament_id %>'> <%= tournament.tournament_name %> </option>
+            <% }); %>
+        </select>
+</div>
+<div id="errorContainer"></div>
+<div id="tableContainer">
+    <table id="myTable">
+        <thead>
+        <tr>
+            <th>Player Name</th>
+            <th>Remove?</th>
+        </tr>
+        </thead>
+        <tbody id="attendeesTBody">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const isAdmin = true;
+    document.addEventListener('DOMContentLoaded', () => {
+        let tourneyVal = document.getElementById("toursInEvent").value;
+        
+        fetch(`/api/participants/getByTour/${tourneyVal}`).then((response) => {
+              if (response.status >= 400) {
+                response.json().then((errorBody) => {
+                    let errorDiv = document.getElementById("errorContainer");
+                    errorDiv.textContent = errorBody.error;
+                });
+            } else {
+                response.json().then((body) => {
+                    let tableData = getTableData(body.attendees);
+                    addTableRows(tableData, isAdmin);
+                });
+            }
+
+        });
+    });
+
+    let tourIdInput = document.getElementById("toursInEvent");
+        let tourIdVal = tourIdInput.value;
+        // let button = document.getElementById("search");
+        // button.addEventListener("click", getPartByTourId);
+
+        tourIdInput.addEventListener("change", getPartByTourId);
+
+
+        function getPartByTourId() {
+            tourIdVal = tourIdInput.value;
+            fetch(`/api/participants/getByTour/${tourIdVal}`).then((response) => {
+                if (response.status >= 400) {
+                    response.json().then((errorBody) => {
+                        let errorDiv = document.getElementById("errorContainer");
+                        errorDiv.textContent = errorBody.error;
+                    });
+                } else {
+                    response.json().then((body) => {
+                        console.log("BODY!!!", body);
+                        let tableData = getTableData(body.attendees);
+                        addTableRows(tableData);
+                    });
+                }
+                console.log("response: ", response);
+            });
+        }
+
+        function getTableData(attendeesArray) {
+            let smallerList = {};
+            attendeesTBody.innerHTML = '';
+            if (attendeesArray === null) {
+                return {};
+            }
+            // userId: {username: str, games: []}
+            //To clear rows?
+            console.log("attendeesArray: ", attendeesArray);
+            for (let i = 0; i < attendeesArray.length; i++) {
+                let currAttendee = attendeesArray[i];
+                let cUID = currAttendee.user_id;
+                let cUN = currAttendee.username;
+                let cGamename = currAttendee.tournament_name;
+                let cHasStarted = currAttendee.has_started;
+                if (!smallerList.hasOwnProperty(cUID)) {
+                    let newObj = {
+                        username: cUN,
+                        games: [cGamename],
+                        participantsId: currAttendee.participants_id,
+                        tournamentId: currAttendee.tournament_id,
+                        has_started: currAttendee.has_started
+                    };
+                    smallerList[cUID] = newObj;
+                } else {
+                    smallerList[cUID].games.push(cGamename);
+                }
+            }
+            //console.log("smallerList: ", smallerList);
+            return smallerList;
+        }
+
+        function addTableRows(tableData, isAdmin) {
+
+            for (const [key, value] of Object.entries(tableData)) {
+                let entrantName = value.username;
+                let entrantId = value.participantsId;
+                let gamesArray = value.games;
+                let tourId = value.tournamentId;
+                let hasStarted = value.has_started;
+                let gamesStr = gamesArray.join(", ");
+
+                let attendeesTBody = document.getElementById("attendeesTBody");
+                let newR = document.createElement("tr");
+                let nameTd = document.createElement("td");
+                nameTd.textContent = entrantName;
+                newR.append(nameTd);
+                let removeTd = document.createElement("td");
+                if(!hasStarted) {
+                    let removeBtn = document.createElement("a");
+                    removeBtn.href = "#";
+                    removeBtn.text = "Remove?";
+                    removeBtn.addEventListener("click", () => {removePart(entrantId)});
+                    removeTd.append(removeBtn);
+                } else {
+                    removeTd.textContent = "Tournament has started. Cannot remove";
+                }
+                newR.append(removeTd);
+                
+                attendeesTBody.append(newR);
+            }
+        }
+
+        function isEmpty(obj) {
+            return Object.keys(obj).length === 0;
+        }
+
+        function removePart(participants_id) {
+            participants_id_string = participants_id.toString();
+            console.log("part id: ", participants_id);
+            fetch(`/api/participants/remove/${participants_id_string}`, {
+                method: "POST",
+                    headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+            ).then((response) => {
+                if (response.status >= 400) {
+                    response.json().then((errorBody) => {
+                        let errorDiv = document.getElementById("errorContainer");
+                        errorDiv.textContent = errorBody.error;
+                    });
+                } else {
+                    getPartByTourId();
+                }
+            })
+        }
+            
+
+</script>
+</body>
+
+</html>
