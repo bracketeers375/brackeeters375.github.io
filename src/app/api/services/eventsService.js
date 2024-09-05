@@ -24,7 +24,7 @@ const getEventById = async (eventId) => {
             [eventId]
         );
         if (result.rows.length === 0) {
-            throw new Error("Event not found");
+            return null;
         }
         return result.rows[0];
     } catch (error) {
