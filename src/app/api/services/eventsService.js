@@ -1,4 +1,5 @@
 import pool from "./connection.js";
+import userService from "./userService.js";
 
 const createEvent = async (eventName, startDate, endDate = null, userId) => {
     try {
@@ -178,6 +179,91 @@ const getEventByTournamentId = async (tournamentId) => {
     }
 };
 
+const registerUserForEvent = async (event_id, token) => {
+    const user = await userService.getUserByToken(token);
+    if (!user) {
+        throw new Error("No user found.");
+    }
+
+    const event = getEventById(event_id);
+    if (!event) {
+        throw new Error("No event found.");
+    }
+
+    const query = 'INSERT INTO EventRegistrants(user_id, event_id) VALUES($1, $2)';
+
+    try {
+        await pool.query(query, [user.user_id, event_id]);
+    } catch (error) {
+        console.log(error);
+        throw new Error("Database error");
+    }
+};
+
+const dropUserFromEvent = async(event_id, token) => {
+    const user = await userService.getUserByToken(token);
+    if (!user) {
+        throw new Error("No user found.");
+    }
+
+    const event = getEventById(event_id);
+    if (!event) {
+        throw new Error("No event found.");
+    }
+
+    const query = {
+        text: "DELETE FROM EventRegistrants WHERE user_id = $1 AND event_id = $2",
+        values: [user.user_id, event_id]
+    };
+
+    try {
+        await pool.query(query);
+    } catch (error) {
+        console.log(error);
+        throw new Error("Database error");
+    }
+};
+
+const getRegisteredUsersForEvent = async (event_id) => {
+    const event = getEventById(event_id);
+    if (!event) {
+        throw new Error("No event found.");
+    }
+
+    const query = 'SELECT * FROM EventRegistrants WHERE event_id = $1';
+    try {
+        const result = await pool.query(query, [event_id]);
+        return result.rows;
+    } catch (error) {
+        console.log(error);
+        throw new Error("Database error");
+    }
+}
+
+const isUserRegisteredForEvent = async (event_id, token) => {
+    const user = await userService.getUserByToken(token);
+    if (!user) {
+        throw new Error("No user found.");
+    }
+
+    const event = getEventById(event_id);
+    if (!event) {
+        throw new Error("No event found.");
+    }
+
+    const query = {
+        text: "SELECT EXISTS (SELECT 1 FROM EventRegistrants WHERE user_id = $1 AND event_id = $2)",
+        values: [user.user_id, event_id]
+    };
+    try {
+        const result = await pool.query(query);
+        return result.rows[0].exists;
+    } catch (error) {
+        console.log(error);
+        throw new Error("Database error");
+    }
+}
+
 export default {
     createEvent,
     getEventById,
@@ -188,5 +274,9 @@ export default {
     updateEvent,
     deleteEvent,
     getTournamentsForEvent,
-    getEventByTournamentId
+    getEventByTournamentId,
+    registerUserForEvent,
+    dropUserFromEvent,
+    getRegisteredUsersForEvent,
+    isUserRegisteredForEvent
 };

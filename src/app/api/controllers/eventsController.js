@@ -90,6 +90,66 @@ const deleteEvent = async (req, res) => {
   }
 };
 
+const registerForEvent = async (req, res) => {
+  const token = extractToken(req);
+  if (!token) {
+    return res.status(401).send("User must be logged in to perform this action.");
+  }
+
+  const eventId = parseInt(req.params.event_id);
+  try {
+    await eventsService.registerUserForEvent(eventId, token);
+    res.sendStatus(200);
+  } catch (error) {
+    switch (error.message) {
+      case "No event found.":
+      case "No user found.":
+        return res.status(404).send("User or event not found.");
+    }
+
+    console.error(error);
+    res.status(500).send("An error occurred while registering for the event.");
+  }
+}
+
+const leaveEvent = async (req, res) => {
+  const token = extractToken(req);
+  if (!token) {
+    return res.status(401).send("User must be logged in to perform this action.");
+  }
+
+  const eventId = parseInt(req.params.event_id);
+
+  try {
+    await eventsService.dropUserFromEvent(eventId, token);
+    res.sendStatus(200);
+  } catch (error) {
+    switch (error.message) {
+      case "No event found.":
+      case "No user found.":
+        return res.status(404).send("User or event not found.");
+    }
+
+    console.error(error);
+    res.status(500).send("An error occurred while registering for the event.");
+  }
+}
+
+const getRegisteredUsersForEvent = async (req, res) => {
+  const eventId = parseInt(req.params.event_id);
+  try {
+    return await eventsService.getRegisteredUsersForEvent(eventId);
+  } catch (error) {
+    switch (error.message) {
+      case "No event found.":
+        return res.status(404).send("Event not found.")
+    }
+
+    console.error(error);
+    res.status(500).send("An error occurred while fetching registered users for the event.");
+  }
+}
+
 const eventRouter = express.Router();
 
 eventRouter.get("/getAll", getAllEvents);
@@ -98,5 +158,8 @@ eventRouter.get("/byTournament/:tournament_id", getEventByTournamentId);
 eventRouter.post("/create", createEvent);
 eventRouter.put("/update/:event_id", updateEvent);
 eventRouter.delete("/delete/:event_id", deleteEvent);
+eventRouter.post("/:event_id/register", registerForEvent);
+eventRouter.post("/:event_id/leave", leaveEvent);
+eventRouter.get("/:event_id/registrants", getRegisteredUsersForEvent);
 
 export default eventRouter;

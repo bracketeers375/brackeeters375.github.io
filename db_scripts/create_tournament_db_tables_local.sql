@@ -3,12 +3,19 @@ CREATE DATABASE local_tournament_db;
 \c local_tournament_db;
 
 -- Clean out the database.
-DROP TABLE IF EXISTS Participants CASCADE;
-DROP TABLE IF EXISTS Tournaments CASCADE;
-DROP TABLE IF EXISTS Events CASCADE;
-DROP TABLE IF EXISTS Users CASCADE;
-DROP TABLE IF EXISTS Games CASCADE;
-DROP TABLE IF EXISTS Admins CASCADE;
+DO $$
+    DECLARE
+        drop_query TEXT;
+    BEGIN
+        SELECT string_agg(format('DROP TABLE IF EXISTS %I.%I CASCADE;', schemaname, tablename), ' ')
+        INTO drop_query
+        FROM pg_tables
+        WHERE schemaname NOT IN ('pg_catalog', 'information_schema');
+
+        IF drop_query IS NOT NULL THEN
+            EXECUTE drop_query;
+        END IF;
+END $$;
 
 -- Recreate Games table.
 CREATE TABLE Games
@@ -39,6 +46,14 @@ CREATE TABLE Events
     end_date   DATE,
     created_by INT NOT NULL,
     FOREIGN KEY (created_by) REFERENCES Users (user_id)
+);
+
+CREATE TABLE EventRegistrants (
+    registrant_id SERIAL PRIMARY KEY,
+    user_id       INT NOT NULL,
+    event_id      INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES Users (user_id),
+    FOREIGN KEY (event_id) REFERENCES Events (event_id)
 );
 
 CREATE TABLE Tournaments

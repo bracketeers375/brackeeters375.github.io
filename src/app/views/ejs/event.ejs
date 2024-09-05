@@ -13,12 +13,19 @@
     <header class="page-header">
         <h1><%= event.event_name %></h1>
         <h2>Start: <%= new Date(event.start_date).toDateString() %> - End: <%= event.end_date ? new Date(event.end_date).toDateString() : 'Ongoing' %></h2>
-        <div id="eventLinks">
+        <span id="eventLinks">
             <a href="/events/<%= event.event_id %>/attendees" class="event-link">Attendees</a>
-            <% if(isAdmin) { %>
-            <a href="/admin/events/<%= event.event_id %>/attendees" class="event-link">Admin - Attendees</a>
+
+            <% if (isRegistered) { %>
+                <a id="event-leave-button" class="event-link">Leave Event</a>
+            <% } else { %>
+                <a id="event-register-button" class="event-link">Register For Event</a>
             <% } %>
-        </div>
+
+            <% if (isAdmin) { %>
+                <a href="/admin/events/<%= event.event_id %>/attendees" class="event-link">Admin - Attendees</a>
+            <% } %>
+        </span>
         <br>
         <div class="divider-bar"></div>
     </header>
@@ -33,5 +40,43 @@
         <% }); %>
     </div>
 </div>
+
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const eventJoinButton = document.getElementById('event-register-button');
+        if (eventJoinButton) {
+            eventJoinButton.addEventListener('click', () => {
+                fetch(`/api/events/<%= event.event_id %>/register`, {
+                    method: "POST",
+                    credentials: "include"
+                }).then((response) => {
+                    if (response.status >= 400) {
+                        return response.text().then((text) => {
+                            throw new Error(text);
+                        });
+                    }
+                    window.location.reload();
+                }).catch(error => console.error('Error during registration:', error.message));
+            });
+        }
+
+        const eventLeaveButton = document.getElementById('event-leave-button');
+        if (eventLeaveButton) {
+            eventLeaveButton.addEventListener('click', () => {
+                fetch(`/api/events/<%= event.event_id %>/leave`, {
+                    method: "POST",
+                    credentials: "include"
+                }).then((response) => {
+                    if (response.status >= 400) {
+                        return response.text().then((text) => {
+                            throw new Error(text);
+                        });
+                    }
+                    window.location.reload();
+                }).catch(error => console.error('Error during leaving:', error.message));
+            });
+        }
+    });
+</script>
 </html>
