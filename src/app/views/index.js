@@ -139,10 +139,9 @@ viewRouter.get("/events/:event_id", async (req, res) => {
 
   try {
     const event = await eventsService.getEventById(eventId);
-    const tournaments =
-      await tournamentService.getTournamentsByEventId(eventId);
-    const currUser = await userService.getUserByToken(token);
-    const isAdmin = currUser.user_id === event.created_by;
+    const tournaments = await tournamentService.getTournamentsByEventId(eventId);
+    const currUser = token ? await userService.getUserByToken(token) : null;
+    const isAdmin = token ? currUser.user_id === event.created_by : false;
 
     if (!event) {
       return res.status(404).render("404", {
@@ -192,6 +191,13 @@ viewRouter.get("/events/:event_id/attendees", async (req, res) => {
   const eventId = parseInt(req.params.event_id);
   try {
     const eventData = await eventsService.getEventById(eventId);
+
+    if (!eventData) {
+      return res.status(404).render("404", {
+        title: "404 - Event Not Found",
+      });
+    }
+
     const participantsData = await participantsService.getParticipantsByEventIdFormatted(eventId);
 
     res.render("attendees", {
@@ -216,8 +222,8 @@ viewRouter.get("/tournament/:id", async (req, res) => {
   try {
     const event = await eventsService.getEventByTournamentId(tournamentId);
     const tournament = await tournamentService.getTournamentById(tournamentId);
-    const currUser = await userService.getUserByToken(token);
-    const isAdmin = currUser.user_id === event.created_by;
+    const currUser = token ? await userService.getUserByToken(token) : null;
+    const isAdmin = token ? currUser.user_id === event.created_by : false;
 
     if (!event || !tournament) {
       return res.status(404).render("404", {
