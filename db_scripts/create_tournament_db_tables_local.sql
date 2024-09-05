@@ -46,13 +46,11 @@ CREATE TABLE Tournaments
     tournament_id   SERIAL PRIMARY KEY,
     tournament_name VARCHAR(100) NOT NULL,
     tournament_json JSON,
-
+    tournament_format VARCHAR(100),
     game_id         INT          NOT NULL,
-    -- game_name   TEXT,
     event_id        INT,
     has_started     BOOLEAN,
     FOREIGN KEY (game_id) REFERENCES Games (game_id),
-    -- FOREIGN KEY (game_name) REFERENCES Games (game_name),
     FOREIGN KEY (event_id) REFERENCES Events (event_id)
 );
 
@@ -90,9 +88,18 @@ INSERT INTO Users (username, email, password_hash, full_name, token)
 VALUES('bob', 'bob@gmail.com', '', 'Bob Barker', '2');
 INSERT INTO Users (username, email, password_hash, full_name, token)
 VALUES('alice', 'alice@gmail.com', '', 'Alice Wonderland', '3');
-
 INSERT INTO Users (username, email, password_hash, full_name, token)
 VALUES ('God', 'god@gmail.com', '', 'God', '1');
+INSERT INTO Users (username, email, password_hash, full_name, token)
+VALUES ('four', 'four@gmail.com', '', 'God', '4');
+INSERT INTO Users (username, email, password_hash, full_name, token)
+VALUES ('five', 'five@gmail.com', '', 'God', '5');
+INSERT INTO Users (username, email, password_hash, full_name, token)
+VALUES ('six', 'six@gmail.com', '', 'God', '6');
+INSERT INTO Users (username, email, password_hash, full_name, token)
+VALUES ('seven', 'seven@gmail.com', '', 'God', '7');
+INSERT INTO Users (username, email, password_hash, full_name, token)
+VALUES ('eight', 'eight@gmail.com', '', 'God', '8');
 
 INSERT INTO Events (event_name, start_date, end_date, created_by)
 VALUES ('Rocket League Championship 2024', '2024-08-01', '2024-08-03', 1),
@@ -118,7 +125,7 @@ VALUES ('Rocket League Championship 2024', '2024-08-01', '2024-08-03', 1),
        ('Halo Championship Series', '2024-11-10', '2024-11-12', 1),
        ('Heroes of the Storm Global Championship', '2024-11-15', '2024-11-17', 1);
 
-INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json, has_started)
+INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json, has_started, tournament_format)
 VALUES ('TEST GGST', 1, 1, '{
   "participant": [
     {
@@ -452,9 +459,9 @@ VALUES ('TEST GGST', 1, 1, '{
     }
   ],
   "match_game": []
-}', 'false');
+}', 'false', 'double_elimination');
 
-INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json, has_started)
+INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json, has_started, tournament_format)
 VALUES ('TEST TOURNEY 2', 2, 1, '{
   "participant": [
     {
@@ -510,6 +517,7 @@ VALUES ('TEST TOURNEY 2', 2, 1, '{
         "groupCount": 1,
         "size": 8,
         "grandFinal": "none",
+        "consolationFinal" : false,
         "matchesChildCount": 0,
         "seedOrdering": [
           "inner_outer",
@@ -788,12 +796,28 @@ VALUES ('TEST TOURNEY 2', 2, 1, '{
     }
   ],
   "match_game": []
-}', 'true');
+}', 'false', 'single_elimination');
 
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
 VALUES(1, 'bob', 1, 1);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
 VALUES(2, 'alice', 1, 1);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(3, 'God', 1, 1);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(4, 'four', 1, 1);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(5, 'five', 1, 1);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(6, 'six', 1, 1);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(7, 'seven', 1, 1);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(8, 'eight', 1, 1);
+
+
+
+
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
 VALUES(3, 'God', 1, 2);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)

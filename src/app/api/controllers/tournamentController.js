@@ -4,6 +4,7 @@ import tournamentService from "../services/tournamentService.js";
 const getTournamentById = async (req, res) => {
   const id = parseInt(req.params.id);
   try {
+    const otherThing = await tournamentService.genAndUpdateTournamentJson(id);
     const tournament = await tournamentService.getTournamentById(id);
 
     if (!tournament) {
@@ -74,6 +75,26 @@ const updateTournamentJson = async (req, res) => {
   }
 };
 
+const updateTournamentJsonForMatch = async (req, res) => {
+  let tournament_id = req.params.id;
+  let {tournament_json} = req.body;
+  if (!tournament_id) {
+      return res.status(400).send("Missing required fields");
+  }
+
+  if(Number.isNaN(tournament_id)) {
+    return res.status(400).send("Tournament ID must be a number");
+  }
+
+  try {
+    const result = await tournamentService.updateTournamentJsonForMatch(tournament_id, tournament_json);
+    res.status(200).send();
+  } catch {
+      console.log(error);
+      res.status(500).send("An error occurred while creating tournament");
+  }
+};
+
 const deleteTournament = async (req, res) => {
   res.send("Not yet implemented.");
 };
@@ -84,6 +105,7 @@ tournamentRouter.get("/get/:id", getTournamentById);
 tournamentRouter.get("/getAllTourFromEvent/:eventid", getAllTournamentsByEventId);
 tournamentRouter.post("/create", createTournament);
 tournamentRouter.post("/updateJson/:id", updateTournamentJson);
+tournamentRouter.post("/updateJsonForMatch/:id", updateTournamentJsonForMatch);
 tournamentRouter.delete("/delete/:id", deleteTournament);
 
 export default tournamentRouter;
