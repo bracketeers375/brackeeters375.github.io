@@ -134,7 +134,8 @@ viewRouter.post("/events/create", async (req, res) => {
 
 viewRouter.get("/events/:event_id", async (req, res) => {
   const eventId = parseInt(req.params.event_id);
-  const token = req.cookies?.user?.token;
+  const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+
 
   try {
     const event = await eventsService.getEventById(eventId);
@@ -208,10 +209,15 @@ viewRouter.get("/events/:event_id/attendees", async (req, res) => {
 
 viewRouter.get("/tournament/:id", async (req, res) => {
   const tournamentId = parseInt(req.params.id);
+  const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+
+
 
   try {
     const event = await eventsService.getEventByTournamentId(tournamentId);
     const tournament = await tournamentService.getTournamentById(tournamentId);
+    const currUser = await userService.getUserByToken(token);
+    const isAdmin = currUser.user_id === event.created_by;
 
     if (!event || !tournament) {
       return res.status(404).render("404", {
@@ -223,7 +229,9 @@ viewRouter.get("/tournament/:id", async (req, res) => {
       title: `Tournament - ${tournament.tournament_name}`,
       tournament,
       event,
+      isAdmin
     });
+    
   } catch (error) {
     console.error("Error fetching tournament:", error);
     res.status(500).send("Error retrieving the tournament.");
