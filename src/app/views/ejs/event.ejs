@@ -9,27 +9,24 @@
 <body>
 <%- include('components/layout/base-layout') %>
 
-<div class="content">
+<div class="content" style="text-align: center">
     <header class="page-header">
         <h1><%= event.event_name %></h1>
         <h2>Start: <%= new Date(event.start_date).toDateString() %> - End: <%= event.end_date ? new Date(event.end_date).toDateString() : 'Ongoing' %></h2>
-        <span id="eventLinks">
-            <a href="/events/<%= event.event_id %>/attendees" class="event-link">Attendees</a>
-
-            <% if (isRegistered) { %>
-                <a id="event-leave-button" class="event-link">Leave Event</a>
-            <% } else { %>
-                <a id="event-register-button" class="event-link">Register For Event</a>
-            <% } %>
-
-            <% if (isAdmin) { %>
-                <a href="/admin/events/<%= event.event_id %>/attendees" class="event-link">Admin - Attendees</a>
-            <% } %>
-        </span>
-        <br>
         <div class="divider-bar"></div>
     </header>
+    <span id="eventLinks">
+            <a href="/events/<%= event.event_id %>/registrants" class="event-link">View Registrants</a>
+        <% if (isRegistered) { %>
+            <a id="event-leave-button" class="event-link">Leave Event</a>
+        <% } else { %>
+            <a id="event-register-button" class="event-link">Register For Event</a>
+        <% } %>
 
+        <% if (isAdmin) { %>
+            <a href="/admin/events/<%= event.event_id %>/attendees" class="event-link">Admin - Attendees</a>
+        <% } %>
+    </span>
     <div class="grid-list">
         <% tournaments.forEach(tournament => { %>
             <div class="grid-item">

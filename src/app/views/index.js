@@ -163,6 +163,31 @@ viewRouter.get("/events/:event_id", async (req, res) => {
   }
 });
 
+viewRouter.get("/events/:event_id/registrants", async (req, res) => {
+  const eventId = parseInt(req.params.event_id);
+
+  try {
+    const eventData = await eventsService.getEventById(eventId);
+    if (!eventData) {
+      return res.status(404).render("404", {
+        title: "404 - Event Not Found",
+      });
+    }
+
+    const registrantsData = await eventsService.getRegisteredUsersForEvent(eventId);
+
+    res.render("registrants", {
+      title: `Registrants List - ${eventData.event_name}`,
+      registrantsData,
+      eventData,
+    });
+
+  } catch (error) {
+    console.error('Error fetching registrants:', error);
+    res.status(500).send("Error retrieving registrants.");
+  }
+});
+
 viewRouter.get("/admin/events/:event_id/attendees", async (req, res) => {
   const eventId = parseInt(req.params.event_id);
   try {
@@ -189,30 +214,29 @@ viewRouter.get("/admin/events/:event_id/attendees", async (req, res) => {
 
 });
 
-viewRouter.get("/events/:event_id/attendees", async (req, res) => {
-  const eventId = parseInt(req.params.event_id);
-  try {
-    const eventData = await eventsService.getEventById(eventId);
+viewRouter.get("/tournaments/:tournament_id/participants", async (req, res) => {
+  const tournamentId = parseInt(req.params.tournament_id);
 
-    if (!eventData) {
+  try {
+    const tournament = await tournamentService.getTournamentById(tournamentId);
+    const participantsData = await participantsService.getParticipantsByTournamentId(tournamentId);
+
+    if (!participantsData) {
       return res.status(404).render("404", {
-        title: "404 - Event Not Found",
+        title: "404 - Participants Not Found",
       });
     }
 
-    const participantsData = await participantsService.getParticipantsByEventIdFormatted(eventId);
-
     res.render("attendees", {
-      title: `Attendees List - ${eventId}`,
-      participantsData: participantsData,
-      eventData: eventData
+      title: `Participants List - Tournament ${tournamentId}`,
+      participantsData,
+      tournament
     });
 
   } catch (error) {
-    console.error("Error fetching attendees:", error);
-    res.status(500).send("Error retrieving attendees.");
+    console.error('Error fetching participants:', error);
+    res.status(500).send("Error retrieving participants.");
   }
-
 });
 
 viewRouter.get("/tournament/:id", async (req, res) => {
@@ -226,6 +250,7 @@ viewRouter.get("/tournament/:id", async (req, res) => {
     const tournament = await tournamentService.getTournamentById(tournamentId);
     const currUser = token ? await userService.getUserByToken(token) : null;
     const isAdmin = token ? currUser.user_id === event.created_by : false;
+    const isParticipant = token ? await participantsService.isUserParticipantOfTournament() : false;
 
     if (!event || !tournament) {
       return res.status(404).render("404", {
@@ -237,7 +262,8 @@ viewRouter.get("/tournament/:id", async (req, res) => {
       title: `Tournament - ${tournament.tournament_name}`,
       tournament,
       event,
-      isAdmin
+      isAdmin,
+      isParticipant
     });
     
   } catch (error) {

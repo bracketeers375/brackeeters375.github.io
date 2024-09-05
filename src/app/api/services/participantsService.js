@@ -1,4 +1,6 @@
 import pool from "./connection.js";
+import userService from "./userService.js";
+import tournamentService from "./tournamentService.js";
 
 const getParticipantsByEventId = async (event_id) => {
   try {
@@ -9,7 +11,7 @@ const getParticipantsByEventId = async (event_id) => {
     );
 
     if (result.rows.length === 0) {
-      return null; // Return null if no participants is found
+      return null;
     }
 
     return result.rows;
@@ -56,22 +58,45 @@ const getParticipantsByEventIdFormatted = async (event_id) => {
   }
 };
 
-const getParticipantsByTourId = async (tournament_id) => {
+const getParticipantsByTournamentId = async (tournament_id) => {
   try {
     const result = await pool.query(
-      `SELECT participants.*, tournaments.tournament_name, tournaments.has_started
-      FROM participants
-      JOIN tournaments
-      ON tournaments.tournament_id = participants.tournament_id
-      WHERE tournaments.tournament_id=$1`,
-      [tournament_id],
+        `SELECT * 
+       FROM ParticipantDetails
+       WHERE tournament_id = $1`,
+        [tournament_id]
     );
 
     if (result.rows.length === 0) {
-      return null; // Return null if no participants is found
+      return null;
     }
 
     return result.rows;
+  } catch (error) {
+    console.log("Database error during participant retrieval by tournament ID:", error);
+    throw new Error("Database error during participant retrieval by tournament ID");
+  }
+};
+
+const isUserParticipantOfTournament = async (tournament_id, token) => {
+  const user = await userService.getUserByToken(token);
+  if (!user) {
+    throw new Error("No user found.");
+  }
+
+  const tournament = await tournamentService.getTournamentById(tournament_id);
+  if (!tournament) {
+    throw new Error("No tournament found.");
+  }
+
+  const query = {
+    text: "SELECT EXISTS (SELECT 1 FROM Participants p JOIN EventRegistrants er ON p.registrant_id = er.registrant_id WHERE er.user_id = $1 AND p.tournament_id = $2)",
+    values: [user.user_id, tournament_id]
+  };
+
+  try {
+    const result = await pool.query(query);
+    return result.rows[0].exists;
   } catch (error) {
     console.log(error);
     throw new Error("Database error");
@@ -137,8 +162,9 @@ const removeParticipantFromTour = async (participants_id) => {
 
 export default {
   getParticipantsByEventId,
+  isUserParticipantOfTournament,
   getParticipantsByEventIdFormatted,
-  getParticipantsByTourId,
+  getParticipantsByTournamentId,
   addParticipant2Tournament,
   removeParticipantFromTour
 };

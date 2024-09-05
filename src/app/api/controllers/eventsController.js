@@ -138,7 +138,8 @@ const leaveEvent = async (req, res) => {
 const getRegisteredUsersForEvent = async (req, res) => {
   const eventId = parseInt(req.params.event_id);
   try {
-    return await eventsService.getRegisteredUsersForEvent(eventId);
+    const result = await eventsService.getRegisteredUsersForEvent(eventId);
+    res.status(200).send(result);
   } catch (error) {
     switch (error.message) {
       case "No event found.":

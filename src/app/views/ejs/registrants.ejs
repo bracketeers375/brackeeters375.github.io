@@ -3,40 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <title><%= title %></title>
-    <link rel="stylesheet" href="/css/attendees.css">
+    <link rel="stylesheet" href="/css/registrants.css">
 </head>
 <body>
 <%- include('components/layout/base-layout') %>
 
 <header class="page-header">
-    <h1><%= tournament.tournament_name %></h1>
-    <h2>Attendees</h2>
+    <h1><%= eventData.event_name %></h1>
+    <h2>Registrants</h2>
     <div class="divider-bar"></div>
 </header>
 
 <div id="errorContainer" class="error-message"></div>
 <div id="tableContainer">
-    <table id="myTable">
+    <table id="registrantsTable">
         <thead>
         <tr>
             <th>Username</th>
+            <th>Email</th>
         </tr>
         </thead>
-        <tbody id="attendeesTBody">
-        <% if (participantsData && participantsData.length > 0) { %>
-            <% for (const participant of participantsData) { %>
+        <tbody id="registrantsTBody">
+        <% if (registrantsData && registrantsData.length > 0) { %>
+            <% for (const registrant of registrantsData) { %>
                 <tr>
-                    <td><%= participant.username %></td>
+                    <td><%= registrant.username %></td>
+                    <td><%= registrant.email %></td>
                 </tr>
             <% } %>
         <% } else { %>
             <tr>
-                <td colspan="2">No attendees found.</td>
+                <td colspan="3">No registrants found.</td>
             </tr>
         <% } %>
         </tbody>
     </table>
 </div>
-<script src="/js/attendees.js"></script>
+<script src="/js/registrants.js"></script>
 </body>
 </html>

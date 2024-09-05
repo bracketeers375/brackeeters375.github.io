@@ -1,77 +1,60 @@
-let tourIdInput = document.getElementById("toursInEvent");
-let tourIdVal = tourIdInput.value;
-// let button = document.getElementById("search");
-// button.addEventListener("click", getPartByTourId);
+document.addEventListener("DOMContentLoaded", () => {
+  const tourIdInput = document.getElementById("toursInEvent");
+  tourIdInput.addEventListener("change", handleTourChange);
+});
 
-tourIdInput.addEventListener("change", getPartByTourId);
-
-
-function getPartByTourId() {
-  tourIdVal = tourIdInput.value;
-  fetch(`/api/participants/getByTour/${tourIdVal}`).then((response) => {
-    if (response.status >= 400) {
-      response.json().then((errorBody) => {
-        let errorDiv = document.getElementById("errorContainer");
-        errorDiv.textContent = errorBody.error;
-      });
-    } else {
-      response.json().then((body) => {
-        console.log("BODY!!!", body);
-        let tableData = getTableData(body.attendees);
-        addTableRows(tableData);
-      });
+async function handleTourChange(event) {
+  const tourId = event.target.value;
+  try {
+    const response = await fetch(`/tournaments/${tourId}/participants`);
+    if (!response.ok) {
+      const errorBody = await response.json();
+      displayError(errorBody.error);
+      return;
     }
-    console.log("response: ", response);
-  });
+    const participants = await response.json();
+    const tableData = formatParticipants(participants);
+    renderTableRows(tableData);
+  } catch (error) {
+    console.error("Error fetching participants:", error);
+    displayError("Failed to fetch participants. Please try again.");
+  }
 }
 
-function getTableData(attendeesArray) {
-  let smallerList = {};
-  attendeesTBody.innerHTML = '';
-  if(attendeesArray === null) {
-    return {};
-  }
-  // userId: {username: str, games: []}
-  //To clear rows?
+function displayError(message) {
+  const errorDiv = document.getElementById("errorContainer");
+  errorDiv.textContent = message;
+}
 
-  for (let i = 0; i < attendeesArray.length; i++) {
-    let currAttendee = attendeesArray[i];
-    let cUID = currAttendee.user_id;
-    let cUN = currAttendee.username;
-    let cGamename = currAttendee.game_name;
-    if (!smallerList.hasOwnProperty(cUID)) {
-      let newObj = {
-        username: cUN,
-        games: [cGamename],
+function formatParticipants(participantsArray) {
+  const formattedParticipants = {};
+
+  if (!participantsArray) return formattedParticipants;
+
+  participantsArray.forEach(({ user_id, username, tournament_name }) => {
+    if (!formattedParticipants[user_id]) {
+      formattedParticipants[user_id] = {
+        username,
+        tournaments: [tournament_name],
       };
-      smallerList[cUID] = newObj;
     } else {
-      smallerList[cUID].games.push(cGamename);
+      formattedParticipants[user_id].tournaments.push(tournament_name);
     }
-  }
-  //console.log("smallerList: ", smallerList);
-  return smallerList;
+  });
+
+  return formattedParticipants;
 }
 
-function addTableRows(tableData) {
-  
-  for (const [key, value] of Object.entries(tableData)) {
-    let entrantName = value.username;
-    let gamesArray = value.games;
-    let gamesStr = gamesArray.join(", ");
+function renderTableRows(tableData) {
+  const attendeesTBody = document.getElementById("attendeesTBody");
+  attendeesTBody.innerHTML = ''; // Clear previous rows
 
-    let attendeesTBody = document.getElementById("attendeesTBody");
-    let newR = document.createElement("tr");
-    let nameTd = document.createElement("td");
-    let gamesTd = document.createElement("td");
-    nameTd.textContent = entrantName;
-    gamesTd.textContent = gamesStr;
-    newR.append(nameTd);
-    newR.append(gamesTd);
-    attendeesTBody.append(newR);
-  }
-}
-
-function isEmpty(obj) {
-    return Object.keys(obj).length === 0;
+  Object.values(tableData).forEach(({ username, tournaments }) => {
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `
+      <td>${username}</td>
+      <td>${tournaments.join(", ")}</td>
+    `;
+    attendeesTBody.appendChild(newRow);
+  });
 }

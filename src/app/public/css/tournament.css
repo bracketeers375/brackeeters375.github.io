@@ -1,6 +1,24 @@
 @import url(base.css);
 @import url(components/brackets-viewer-custom.css);
 
+#tournamentLinks {
+    margin-bottom: 10px;
+}
+
+.tournament-link {
+    margin-top: 10px;
+    background-color: #4c8bff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
 .modalMatch {
     display: none;
     /* Hidden by default */

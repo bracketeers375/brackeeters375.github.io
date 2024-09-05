@@ -230,7 +230,7 @@ const getRegisteredUsersForEvent = async (event_id) => {
         throw new Error("No event found.");
     }
 
-    const query = 'SELECT * FROM EventRegistrants WHERE event_id = $1';
+    const query = 'SELECT * FROM EventRegistrantDetails WHERE event_id = $1';
     try {
         const result = await pool.query(query, [event_id]);
         return result.rows;

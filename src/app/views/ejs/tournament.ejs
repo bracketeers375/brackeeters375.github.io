@@ -28,6 +28,15 @@
         <h1><%= event.event_name %></h1>
         <h2><%= tournament.tournament_name %></h2>
         <div class="divider-bar"></div>
+        <span id="tournamentLinks" style="text-align: center">
+            <a href="/tournaments/<%= tournament.tournament_id %>/participants" class="tournament-link">View Participants</a>
+            <% if (isParticipant) { %>
+                <a id="tournament-leave-button" class="tournament-link">Leave Event</a>
+            <% } %>
+            <% if (isAdmin) { %>
+                <a href="/admin/events/<%= event.event_id %>/attendees" class="tournament-link">Admin - Participants</a>
+            <% } %>
+        </span>
     </header>
 
     <div id="bracketsViewer" class="brackets-viewer"></div>

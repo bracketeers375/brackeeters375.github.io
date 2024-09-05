@@ -1,5 +1,8 @@
 import express from "express";
 import tournamentService from "../services/tournamentService.js";
+import participantsService from "../services/participantsService.js";
+
+const tournamentRouter = express.Router();
 
 const getTournamentById = async (req, res) => {
   const id = parseInt(req.params.id);
@@ -78,7 +81,16 @@ const deleteTournament = async (req, res) => {
   res.send("Not yet implemented.");
 };
 
-const tournamentRouter = express.Router();
+tournamentRouter.get("/:tournament_id/participants/", async (req, res) => {
+  const tournamentId = req.params.tournament_id;
+  try {
+    const result = await participantsService.getParticipantsByTournamentId(tournamentId);
+    res.status(200).send(result);
+  } catch (error) {
+    console.error('Error fetching participants:', error);
+    res.sendStatus(500);
+  }
+});
 
 tournamentRouter.get("/get/:id", getTournamentById);
 tournamentRouter.get("/getAllTourFromEvent/:eventid", getAllTournamentsByEventId);

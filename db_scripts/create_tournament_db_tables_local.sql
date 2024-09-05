@@ -17,14 +17,12 @@ DO $$
         END IF;
 END $$;
 
--- Recreate Games table.
 CREATE TABLE Games
 (
     game_id   SERIAL PRIMARY KEY,
     game_name VARCHAR(100) UNIQUE NOT NULL
 );
 
--- Recreate Users table.
 CREATE TABLE Users
 (
     user_id       SERIAL PRIMARY KEY,
@@ -35,9 +33,6 @@ CREATE TABLE Users
     token 				VARCHAR(255) UNIQUE
 );
 
-
-
--- Recreate Events table.
 CREATE TABLE Events
 (
     event_id   SERIAL PRIMARY KEY,
@@ -56,6 +51,20 @@ CREATE TABLE EventRegistrants (
     FOREIGN KEY (event_id) REFERENCES Events (event_id)
 );
 
+CREATE VIEW EventRegistrantDetails AS
+SELECT
+    er.registrant_id,
+    u.user_id,
+    e.event_id,
+    u.username,
+    u.email
+FROM
+    EventRegistrants er
+        JOIN
+    Users u ON er.user_id = u.user_id
+        JOIN
+    Events e ON er.event_id = e.event_id;
+
 CREATE TABLE Tournaments
 (
     tournament_id   SERIAL PRIMARY KEY,
@@ -71,28 +80,41 @@ CREATE TABLE Tournaments
     FOREIGN KEY (event_id) REFERENCES Events (event_id)
 );
 
-CREATE TABLE Admins
-(
-    admin_id			SERIAL PRIMARY KEY,
-    user_id				INT NOT NULL,
-    event_id      INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users (user_id),
-    FOREIGN KEY (event_id) REFERENCES Events (event_id)
-);
-
 CREATE TABLE Participants
 (
     participants_id SERIAL PRIMARY KEY,
-    user_id         INT,
-    username        VARCHAR(100),
+    registrant_id   INT UNIQUE NOT NULL,
+    tournament_id   INT NOT NULL,
     seed            INT,
-    event_id        INT,
-    tournament_id   INT,
-    FOREIGN KEY (user_id) REFERENCES Users (user_id),
-    FOREIGN KEY (username) REFERENCES Users (username),
-    FOREIGN KEY (event_id) REFERENCES Events (event_id),
+    FOREIGN KEY (registrant_id) REFERENCES EventRegistrants (registrant_id),
     FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id)
 );
+
+CREATE VIEW ParticipantDetails AS
+SELECT
+    p.participants_id,
+    p.seed,
+    u.user_id,
+    u.username,
+    u.email,
+    t.tournament_id,
+    t.tournament_name,
+    e.event_id,
+    e.event_name,
+    g.game_name,
+    t.has_started
+FROM
+    Participants p
+        JOIN
+    EventRegistrants er ON p.registrant_id = er.registrant_id
+        JOIN
+    Users u ON er.user_id = u.user_id
+        JOIN
+    Tournaments t ON p.tournament_id = t.tournament_id
+        JOIN
+    Events e ON t.event_id = e.event_id
+        JOIN
+    Games g ON t.game_id = g.game_id;
 
 -- dummy data
 INSERT INTO Games(game_name)
@@ -805,11 +827,16 @@ VALUES ('TEST TOURNEY 2', 2, 1, '{
   "match_game": []
 }', 'true');
 
-INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(1, 'bob', 1, 1);
-INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(2, 'alice', 1, 1);
-INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(3, 'God', 1, 2);
-INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(2, 'alice', 1, 2);
+INSERT INTO EventRegistrants (user_id, event_id)
+VALUES
+    (1, 1),  -- Bob registered for the first event
+    (2, 1),  -- Alice registered for the first event
+    (3, 2),  -- God registered for the second event
+    (2, 2);  -- Alice registered for the second event
+
+INSERT INTO Participants (registrant_id, tournament_id, seed)
+VALUES
+    (1, 1, 1),  -- Corresponding registrant_id for Bob in the first tournament
+    (2, 1, 2),  -- Corresponding registrant_id for Alice in the first tournament
+    (3, 2, 1),  -- Corresponding registrant_id for God in the second tournament
+    (4, 2, 2);  -- Corresponding registrant_id for Alice in the second tournament
