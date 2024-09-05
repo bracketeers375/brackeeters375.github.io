@@ -178,6 +178,22 @@ const getEventByTournamentId = async (tournamentId) => {
     }
 };
 
+const getEventsByUserId = async (userId) => {
+    try {
+        const result = await pool.query(
+            `SELECT *
+             FROM Events
+             WHERE created_by = $1
+             ORDER BY start_date DESC`,
+            [userId]
+        );
+        return result.rows;
+    } catch (error) {
+        console.error("Database error during events retrieval by user ID:", error);
+        throw new Error("Database error during events retrieval by user ID");
+    }
+};
+
 export default {
     createEvent,
     getEventById,
@@ -188,5 +204,6 @@ export default {
     updateEvent,
     deleteEvent,
     getTournamentsForEvent,
-    getEventByTournamentId
+    getEventByTournamentId,
+    getEventsByUserId
 };
