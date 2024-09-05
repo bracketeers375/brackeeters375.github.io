@@ -93,8 +93,15 @@ viewRouter.get("/events/closed", async (req, res) => {
 });
 
 viewRouter.get("/events/create", async (req, res) => {
+  let isLoggedIn = true
+  const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+  if(!token) {
+    isLoggedIn = false;
+  }
+
   res.render("eventCreation", {
-    title: "Event Creation - Bracketeers"
+    title: "Event Creation - Bracketeers",
+    isUserLoggedIn: isLoggedIn
   });
 });
 
