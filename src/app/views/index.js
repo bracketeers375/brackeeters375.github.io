@@ -135,7 +135,6 @@ viewRouter.post("/events/create", async (req, res) => {
 viewRouter.get("/events/:event_id", async (req, res) => {
   const eventId = parseInt(req.params.event_id);
   const token = req.cookies?.user?.token;
-  console.log("token ", token);
 
   try {
     const event = await eventsService.getEventById(eventId);

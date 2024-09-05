@@ -45,12 +45,10 @@
                 });
             } else {
                 response.json().then((body) => {
-                    console.log("BODY!!!", body);
                     let tableData = getTableData(body.attendees);
                     addTableRows(tableData, isAdmin);
                 });
             }
-            console.log("response: ", response);
 
         });
     });
@@ -96,12 +94,14 @@
                 let cUID = currAttendee.user_id;
                 let cUN = currAttendee.username;
                 let cGamename = currAttendee.tournament_name;
+                let cHasStarted = currAttendee.has_started;
                 if (!smallerList.hasOwnProperty(cUID)) {
                     let newObj = {
                         username: cUN,
                         games: [cGamename],
                         participantsId: currAttendee.participants_id,
-                        tournamentId: currAttendee.tournament_id
+                        tournamentId: currAttendee.tournament_id,
+                        has_started: currAttendee.has_started
                     };
                     smallerList[cUID] = newObj;
                 } else {
@@ -119,6 +119,7 @@
                 let entrantId = value.participantsId;
                 let gamesArray = value.games;
                 let tourId = value.tournamentId;
+                let hasStarted = value.has_started;
                 let gamesStr = gamesArray.join(", ");
 
                 let attendeesTBody = document.getElementById("attendeesTBody");
@@ -127,11 +128,15 @@
                 nameTd.textContent = entrantName;
                 newR.append(nameTd);
                 let removeTd = document.createElement("td");
-                let removeBtn = document.createElement("a");
-                removeBtn.href = "#";
-                removeBtn.text = "Remove?";
-                removeBtn.addEventListener("click", () => {removePart(entrantId)});
-                removeTd.append(removeBtn);
+                if(!hasStarted) {
+                    let removeBtn = document.createElement("a");
+                    removeBtn.href = "#";
+                    removeBtn.text = "Remove?";
+                    removeBtn.addEventListener("click", () => {removePart(entrantId)});
+                    removeTd.append(removeBtn);
+                } else {
+                    removeTd.textContent = "Tournament has started. Cannot remove";
+                }
                 newR.append(removeTd);
                 
                 attendeesTBody.append(newR);

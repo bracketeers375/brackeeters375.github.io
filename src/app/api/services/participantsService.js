@@ -59,7 +59,7 @@ const getParticipantsByEventIdFormatted = async (event_id) => {
 const getParticipantsByTourId = async (tournament_id) => {
   try {
     const result = await pool.query(
-      `SELECT participants.*, tournaments.tournament_name
+      `SELECT participants.*, tournaments.tournament_name, tournaments.has_started
       FROM participants
       JOIN tournaments
       ON tournaments.tournament_id = participants.tournament_id

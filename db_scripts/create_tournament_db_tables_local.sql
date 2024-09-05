@@ -46,6 +46,7 @@ CREATE TABLE Tournaments
     tournament_id   SERIAL PRIMARY KEY,
     tournament_name VARCHAR(100) NOT NULL,
     tournament_json JSON,
+
     game_id         INT          NOT NULL,
     -- game_name   TEXT,
     event_id        INT,
@@ -117,7 +118,7 @@ VALUES ('Rocket League Championship 2024', '2024-08-01', '2024-08-03', 1),
        ('Halo Championship Series', '2024-11-10', '2024-11-12', 1),
        ('Heroes of the Storm Global Championship', '2024-11-15', '2024-11-17', 1);
 
-INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json)
+INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json, has_started)
 VALUES ('TEST GGST', 1, 1, '{
   "participant": [
     {
@@ -451,9 +452,9 @@ VALUES ('TEST GGST', 1, 1, '{
     }
   ],
   "match_game": []
-}');
+}', 'false');
 
-INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json)
+INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json, has_started)
 VALUES ('TEST TOURNEY 2', 2, 1, '{
   "participant": [
     {
@@ -787,7 +788,7 @@ VALUES ('TEST TOURNEY 2', 2, 1, '{
     }
   ],
   "match_game": []
-}');
+}', 'true');
 
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
 VALUES(1, 'bob', 1, 1);
