@@ -51,6 +51,7 @@ CREATE TABLE Tournaments
     tournament_format VARCHAR(100),
     game_id         INT          NOT NULL,
     event_id        INT NOT NULL,
+    registration_deadline   DATE,
     has_started     BOOLEAN,
     FOREIGN KEY (game_id) REFERENCES Games (game_id),
     FOREIGN KEY (event_id) REFERENCES Events (event_id)

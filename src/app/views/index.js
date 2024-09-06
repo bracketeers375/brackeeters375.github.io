@@ -325,7 +325,7 @@ viewRouter.post("/tournaments/create", async (req, res) => {
   }
 
   // Destructure the form data from req.body
-  const { tournamentName, gameId, eventId, formatId} = req.body;
+  const { tournamentName, gameId, eventId, formatId, registrationDeadline} = req.body;
 
   // Validate the form fields
   if (!tournamentName || !eventId || !gameId || !formatId) {
@@ -343,7 +343,7 @@ viewRouter.post("/tournaments/create", async (req, res) => {
     }
 
     // Create the new tournament
-    const newTournament = await tournamentService.createTournament(tournamentName, gameId, eventId, false, formatId);
+    await tournamentService.createTournament(tournamentName, gameId, eventId, false, formatId, registrationDeadline);
 
     // Redirect to event page after creation
     res.redirect(`/events/${eventId}`);
