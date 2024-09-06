@@ -46,7 +46,7 @@ const getTournamentById = async (id) => {
 const getTournamentsByEventId = async (event_id) => {
     try {
         const result = await pool.query(
-            `SELECT t.tournament_id, t.tournament_name, g.game_name, t.registration_deadline 
+            `SELECT t.tournament_id, t.tournament_name, g.game_name, t.registration_deadline, t.participant_cap 
        FROM Tournaments t
        JOIN Games g ON t.game_id = g.game_id
        WHERE t.event_id = $1`,
@@ -64,15 +64,15 @@ const getTournamentsByEventId = async (event_id) => {
     }
 };
 
-const createTournament = async (t_name, g_id, e_id, h_id, t_id, registrationDeadline) => {
+const createTournament = async (t_name, g_id, e_id, h_id, t_id, participantCap, registrationDeadline) => {
   try {
     const deadline = registrationDeadline || null;
 
     await pool.query(
-        `INSERT INTO tournaments(tournament_name, game_id, event_id, has_started, tournament_format, registration_deadline)
-       VALUES ($1, $2, $3, $4, $5, $6)
+        `INSERT INTO tournaments(tournament_name, game_id, event_id, has_started, tournament_format, participant_cap, registration_deadline)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-        [t_name, g_id, e_id, h_id, t_id, deadline]
+        [t_name, g_id, e_id, h_id, t_id, participantCap, deadline]
     ).then((result) => {
       console.log("Tournament created:", result.rows[0]);
     });

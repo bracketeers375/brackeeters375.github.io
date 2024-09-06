@@ -63,6 +63,28 @@ const getParticipantsByEventIdFormatted = async (event_id) => {
   }
 };
 
+const getParticipantCountByTourId = async (tournament_id) => {
+  try {
+    const result = await pool.query(
+        `SELECT COUNT(*) AS participant_count
+       FROM participants
+       JOIN tournaments
+       ON tournaments.tournament_id = participants.tournament_id
+       WHERE tournaments.tournament_id = $1`,
+        [tournament_id]
+    );
+
+    if (result.rows.length === 0) {
+      return 0;
+    }
+
+    return parseInt(result.rows[0].participant_count);
+  } catch (error) {
+    console.log("Database error during participant count retrieval by tournament ID:", error);
+    throw new Error("Database error during participant count retrieval by tournament ID");
+  }
+};
+
 const getParticipantsByTourId = async (tournament_id) => {
   try {
     const result = await pool.query(
@@ -277,6 +299,7 @@ export default {
   getParticipantsByEventIdFormatted,
   getParticipantsByTourId,
   getParticipantsByTourIdSeedOrder,
+  getParticipantCountByTourId,
   addParticipant2Tournament,
   removeParticipantFromTour,
   joinTournament,

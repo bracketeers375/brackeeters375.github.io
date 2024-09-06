@@ -28,23 +28,26 @@
                 <h3><%= tournament.tournament_name %></h3>
                 <p>Game: <%= tournament.game_name %></p>
                 <% if (tournament.registration_deadline) { %>
-                <p>Registration Deadline: <%= tournament.registration_deadline %> </p>
+                    <p>Registration Deadline: <%= new Date(tournament.registration_deadline).toLocaleString() %></p>
                 <% } %>
+                <p>Participant Cap: <%= tournament.participant_cap %></p>
                 <a href="/tournament/<%= tournament.tournament_id %>" class="button">View Tournament</a>
                 <%
                     const now = new Date();
                     const isDeadlineAfterToday = tournament.registration_deadline
                             ? new Date(tournament.registration_deadline) > now
                             : false;
-                    console.log(tournament);
+                    const isParticipantCapMet = tournament.participantCount >= tournament.participant_cap;
                 %>
 
                 <% if (!tournament.registration_deadline || isDeadlineAfterToday) { %>
                     <% if (tournament.isRegistered) { %>
                         <a href="#" class="tournament-leave-button button" data-event-id="<%= event.event_id %>" data-tournament-id="<%= tournament.tournament_id %>">Leave Tournament</a>
-                    <% } else { %>
+                    <% } else if (!isParticipantCapMet) { %>
                         <a href="#" class="tournament-join-button button" data-event-id="<%= event.event_id %>" data-tournament-id="<%= tournament.tournament_id %>">Register For Tournament</a>
                     <% } %>
+                <% } else if (tournament.isRegistered) { %>
+                    <a href="#" class="tournament-leave-button button" data-event-id="<%= event.event_id %>" data-tournament-id="<%= tournament.tournament_id %>">Leave Tournament</a>
                 <% } %>
 
                 <% if(isAdmin) { %>

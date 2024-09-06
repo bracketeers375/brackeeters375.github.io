@@ -51,6 +51,7 @@ CREATE TABLE Tournaments
     tournament_format VARCHAR(100),
     game_id         INT          NOT NULL,
     event_id        INT NOT NULL,
+    participant_cap INT NOT NULL,
     registration_deadline   DATE,
     has_started     BOOLEAN,
     FOREIGN KEY (game_id) REFERENCES Games (game_id),
@@ -128,8 +129,8 @@ VALUES ('Rocket League Championship 2024', '2024-08-01', '2024-08-03', 1),
        ('Halo Championship Series', '2024-11-10', '2024-11-12', 1),
        ('Heroes of the Storm Global Championship', '2024-11-15', '2024-11-17', 1);
 
-INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json, has_started, tournament_format)
-VALUES ('TEST GGST', 1, 1, '{
+INSERT INTO Tournaments(tournament_name, game_id, event_id, participant_cap, tournament_json, has_started, tournament_format)
+VALUES ('TEST GGST', 1, 1, 50, '{
   "participant": [
     {
       "id": 0,
@@ -464,8 +465,8 @@ VALUES ('TEST GGST', 1, 1, '{
   "match_game": []
 }', 'false', 'double_elimination');
 
-INSERT INTO Tournaments(tournament_name, game_id, event_id, tournament_json, has_started, tournament_format)
-VALUES ('TEST TOURNEY 2', 2, 1, '{
+INSERT INTO Tournaments(tournament_name, game_id, event_id, participant_cap, tournament_json, has_started, tournament_format)
+VALUES ('TEST TOURNEY 2', 2, 1, 50, '{
   "participant": [
     {
       "id": 0,
