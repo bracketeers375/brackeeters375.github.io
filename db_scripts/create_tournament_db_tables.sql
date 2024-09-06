@@ -81,6 +81,13 @@ CREATE TABLE Participants
     FOREIGN KEY (tournament_id) REFERENCES Tournaments (tournament_id)
 );
 
+ALTER TABLE Games OWNER TO service_user;
+ALTER TABLE Users OWNER TO service_user;
+ALTER TABLE Events OWNER TO service_user;
+ALTER TABLE Tournaments OWNER TO service_user;
+ALTER TABLE Admins OWNER TO service_user;
+ALTER TABLE Participants OWNER TO service_user;
+
 -- dummy data
 INSERT INTO Games(game_name)
 VALUES ('GUILTY GEAR -STRIVE-');
