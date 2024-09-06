@@ -38,12 +38,6 @@ viewRouter.get("/", (req, res) => {
   });
 });
 
-viewRouter.get("/search", (req, res) => {
-  res.render(`search`, {
-    title: "Search - Bracketeers",
-  });
-});
-
 viewRouter.get("/bracket-setup", (req, res) => {
   res.render(`bracket-setup`, {
     title: "Bracket Setup - Bracketeers",
