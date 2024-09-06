@@ -142,3 +142,4 @@ VALUES(5, 'David', 1, 2),
 
 (2, 'Alice', 2, 3),
 (4, 'Charlie', 2, 3);
+\q
