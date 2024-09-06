@@ -325,10 +325,10 @@ viewRouter.post("/tournaments/create", async (req, res) => {
   }
 
   // Destructure the form data from req.body
-  const { tournamentName, gameId, eventId } = req.body;
+  const { tournamentName, gameId, eventId, formatId} = req.body;
 
   // Validate the form fields
-  if (!tournamentName || !eventId || !gameId) {
+  if (!tournamentName || !eventId || !gameId || !formatId) {
     return res.status(400).send("Missing one or more required fields.");
   }
 
@@ -343,7 +343,7 @@ viewRouter.post("/tournaments/create", async (req, res) => {
     }
 
     // Create the new tournament
-    const newTournament = await tournamentService.createTournament(tournamentName, gameId, eventId);
+    const newTournament = await tournamentService.createTournament(tournamentName, gameId, eventId, false, formatId);
 
     // Redirect to event page after creation
     res.redirect(`/events/${eventId}`);

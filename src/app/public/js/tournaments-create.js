@@ -2,6 +2,7 @@
 let tournamentNameElem = document.getElementById("tournamentName");
 let gameIdElem = document.getElementById("gameId");
 let eventIdElem = document.getElementById("eventId");
+let formatIdElem = document.getElementById("formatId");
 let btn = document.querySelector("form button[type='submit']"); // Select the form's submit button
 
 btn.addEventListener("click", async (e) => {
@@ -34,6 +35,9 @@ btn.addEventListener("click", async (e) => {
             tournament_name: tournamentNameElem.value,
             game_id: gameIdElem.value,
             event_id: eventIdElem.value,
+            tournament_format: formatIdElem.value,
+            has_started: false,
+
         }),
     }).then((tournamentResponse) => {
         if (tournamentResponse.status !== 201) {
@@ -45,22 +49,6 @@ btn.addEventListener("click", async (e) => {
         console.log("Tournament created successfully:", body);
 
         // Optionally, add the current user as an admin for the tournament
-        fetch(`../../api/admins/add/${body.tournament_id}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ user_id: user.user_id }),
-        }).then((adminResponse) => {
-            if (adminResponse.status !== 201) {
-                console.error("Failed to add admin for the tournament");
-            }
-            return adminResponse.json();
-        }).then((adminBody) => {
-            console.log("Admin added:", adminBody);
-        }).catch(error => {
-            console.error("Error adding admin:", error);
-        });
     }).catch(error => {
         console.error("Error creating tournament:", error);
     });

@@ -41,14 +41,14 @@ const getAllTournamentsByEventId = async (req, res) => {
 
 const createTournament = async (req, res) => {
 
-    let {t_name, g_id, e_id} = req.body;
+    let {t_name, g_id, e_id, h_id, t_id} = req.body;
 
-    if(!t_name || !g_id || !e_id) {
+    if(!t_name || !g_id || !e_id || !h_id || t_id) {
       return res.status(400).send("Missing required fields");
     }
 
     try {
-      const result = await tournamentService.createTournament(t_name, g_id, e_id);
+      const result = await tournamentService.createTournament(t_name, g_id, e_id, h_id, t_id);
       console.log("result:", result);
       res.status(200).send();
     } catch {
