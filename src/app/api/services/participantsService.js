@@ -12,7 +12,7 @@ const getParticipantsByEventId = async (event_id) => {
     );
 
     if (result.rows.length === 0) {
-      return null; // Return null if no participants is found
+      return []; // Return null if no participants is found
     }
 
     return result.rows;
@@ -75,7 +75,7 @@ const getParticipantCountByTourId = async (tournament_id) => {
     );
 
     if (result.rows.length === 0) {
-      return 0;
+      return [];
     }
 
     return parseInt(result.rows[0].participant_count);
@@ -97,7 +97,7 @@ const getParticipantsByTourId = async (tournament_id) => {
     );
 
     if (result.rows.length === 0) {
-      return null; // Return null if no participants is found
+      return []; // Return null if no participants is found
     }
 
     return result.rows;
@@ -201,7 +201,7 @@ const getParticipantsByTourIdSeedOrder = async (tournament_id) => {
     );
 
     if (result.rows.length === 0) {
-      return null; // Return null if no participants is found
+      return []; // Return null if no participants is found
     }
 
     return result.rows;
