@@ -189,6 +189,32 @@ const getParticipantsByTourIdSeedOrder = async (tournament_id) => {
   }
 };
 
+const seedParticipant = async (part_id, seed) => {
+
+  try{
+    let participant = await pool.query(
+      `UPDATE Participants
+      SET seed = $2
+      WHERE participants_id = $1
+      RETURNING *`,
+      [part_id, seed]
+    );
+
+    if(participant.rows.length == 0)
+      throw new Error("No participant found");
+
+    if(participant.rows.length > 1)
+      throw new Error("Too many participants found");
+
+    return participant.rows[0];
+  }catch(error){
+		console.log("error");
+    throw new Error("Database error");
+  }
+}
+
+
+
 const addParticipant2Tournament = async (
   user_id,
   username,
@@ -255,5 +281,6 @@ export default {
   removeParticipantFromTour,
   joinTournament,
   leaveTournament,
-  isUserParticipantOfTournament
+  isUserParticipantOfTournament,
+  seedParticipant
 };

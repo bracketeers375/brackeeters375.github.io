@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><%= title %></title>
+	<link rel="stylesheet" type="text/css" href="/css/seeding.css">
+</head>
+<body>
+<%- include('components/layout/base-layout') %>
+
+<div class="content">
+	<header class="page-header">
+		<h1>Seed the Participants</h1>
+		<div class="divider-bar"></div>
+	</header>
+</div>
+
+<div id="seedErrorContainer"></div>
+<div id="seedTableContainer">
+	<table id="seed-table">
+		<thead>
+		<tr>
+			<th>Player Name</th>
+			<th>Seed</th>
+		</tr>
+		</thead>
+		<tbody id="seedTBody">
+		<% participantsData.forEach(participant => { %>
+			<tr>
+				<td><%= participant.username %></td>
+				<td>
+					<input 	autocomplete="off"
+							type="number"
+							placeholder="<%= participant.seed %>"
+							id="<%= participant.participants_id %>"
+							max="<%= participantsData.length %>"
+							min="1"
+							aria-label="Seed for <%= participant.username %>" />
+				</td>
+			</tr>
+		<% }) %>
+		</tbody>
+	</table>
+</div>
+
+<button id="submit" class="button">Submit</button>
+<div id="text"></div>
+
+<script>
+	document.getElementById("submit").addEventListener("click", async () => {
+		const messageContainer = document.getElementById("text");
+		const rows = document.querySelectorAll("#seedTBody tr");
+
+		for (const row of rows) {
+			const inputElem = row.querySelector("input[type='number']");
+			const newSeed = inputElem.value;
+			const partId = inputElem.id;
+
+			if (newSeed) {
+				try {
+					const response = await fetch(`/api/participants/seed/${partId}`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ seed: newSeed }),
+					});
+
+					if (!response.ok) {
+						console.error("Error:", response.statusText);
+						messageContainer.textContent = "Error updating seeds.";
+					} else {
+						console.log("Success:", response);
+					}
+				} catch (error) {
+					console.error("Error:", error);
+					messageContainer.textContent = "An error occurred while updating seeds.";
+				}
+			}
+		}
+		window.location.reload();
+	});
+</script>
+</body>
+</html>
