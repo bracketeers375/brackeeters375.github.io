@@ -1,6 +1,7 @@
 import pool from "./connection.js";
 import { InMemoryDatabase } from "brackets-memory-db";
 import { BracketsManager, helpers } from "brackets-manager";
+import participantsService from "./participantsService.js";
 
 const storage = new InMemoryDatabase();
 const manager = new BracketsManager(storage);
@@ -98,6 +99,23 @@ const updateTournamentJson = async (tourId, tourData) => {
   }
 };
 
+const updateTournamentJsonForMatch = async (tourId, tourData) => {
+  try {
+    await pool.query(
+      `UPDATE tournaments
+      SET tournament_json = $1, has_started = $3
+      WHERE tournament_id = $2`,
+      [tourData, tourId, 'true'],
+    ).then((result) => {
+
+    });
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
+};
+
+
 const updateHasStarted = async (tourId, newStatus) => {
   try {
   await pool.query(
@@ -118,13 +136,102 @@ const deleteTournament = async (id) => {
   // TODO
 };
 
+const genAndUpdateTournamentJson = async (tournament_id) => {
+  try {
+    let config;
+    let seedOrder;
+    const tournamentData = await getTournamentById(tournament_id);
+    const particpantsList = await participantsService.getParticipantsByTourIdSeedOrder(tournament_id);
+    let formattedPartList = [];
+    const format = tournamentData.tournament_format;
+    const hasStarted = tournamentData.has_started;
+
+
+    if(hasStarted) {
+      return "Has started";
+    }
+
+    for(let i = 0; i < particpantsList.length; i++) {
+      let currPart = particpantsList[i];
+      formattedPartList.push(currPart.username);
+    }
+
+    console.log("format: ", format);
+    switch (format) {
+    case "single_elimination":
+      seedOrder = ["inner_outer"];
+      const singleEliminationSettings = {
+        seedOrdering: seedOrder,
+        consolationFinal: false,
+      };
+      config = {
+        tournamentId: tournamentData.tournament_id,
+        type: format,
+        name: tournamentData.tournament_name,
+        settings: singleEliminationSettings,
+        seeding: formattedPartList,
+      };
+      break;
+    case "double_elimination":
+      seedOrder = ["inner_outer"];
+      const doubleEliminationSettings = {
+        seedOrdering: seedOrder,
+        consolationFinal: false,
+        skipFirstRound: false,
+        grandFinal: 'double',
+        size: helpers.getNearestPowerOfTwo(formattedPartList.length),
+      };
+
+      config = {
+        tournamentId: tournamentData.tournament_id,
+        name: tournamentData.tournament_name,
+        type: format,
+        settings: doubleEliminationSettings,
+        seeding: formattedPartList,
+      };
+      break;
+
+    case "round_robin":
+      const roundRobinSettings = {
+        roundRobinMode: "simple",
+        groupCount: 1,
+        size: helpers.getNearestPowerOfTwo(formattedPartList.length),
+      };
+
+      config = {
+        tournamentId: tournamentData.tournament_id,
+        name: tournamentData.tournament_name,
+        type: format,
+        settings: roundRobinSettings,
+        seeding: formattedPartList,
+      };
+      break;
+  }
+
+    storage.reset();
+    await manager.create.stage(config);
+    let jsonData = await manager.export();
+
+    await updateTournamentJson(tournament_id, jsonData);
+    return jsonData;
+
+
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
+
+};
+
 
 export default {
   getTournamentById,
   getTournamentsByEventId,
   createTournament,
   updateTournamentJson,
+  updateTournamentJsonForMatch,
   deleteTournament,
   getAllTournaments,
-  updateHasStarted
+  updateHasStarted,
+  genAndUpdateTournamentJson,
 };

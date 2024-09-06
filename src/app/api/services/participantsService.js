@@ -1,4 +1,5 @@
 import pool from "./connection.js";
+import tournamentService from "./tournamentService.js";
 
 const getParticipantsByEventId = async (event_id) => {
   try {
@@ -78,6 +79,29 @@ const getParticipantsByTourId = async (tournament_id) => {
   }
 };
 
+const getParticipantsByTourIdSeedOrder = async (tournament_id) => {
+  try {
+    const result = await pool.query(
+      `SELECT participants.*, tournaments.tournament_name, tournaments.has_started
+      FROM participants
+      JOIN tournaments
+      ON tournaments.tournament_id = participants.tournament_id
+      WHERE tournaments.tournament_id=$1
+      ORDER BY participants.seed`,
+      [tournament_id],
+    );
+
+    if (result.rows.length === 0) {
+      return null; // Return null if no participants is found
+    }
+
+    return result.rows;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Database error");
+  }
+};
+
 const addParticipant2Tournament = async (
   user_id,
   username,
@@ -139,6 +163,7 @@ export default {
   getParticipantsByEventId,
   getParticipantsByEventIdFormatted,
   getParticipantsByTourId,
+  getParticipantsByTourIdSeedOrder,
   addParticipant2Tournament,
   removeParticipantFromTour
 };

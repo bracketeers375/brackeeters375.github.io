@@ -98,7 +98,7 @@
             console.log("new data", tournament_data);
 
             renderBracket(newData);
-            fetch(`/api/tournaments/updateJson/<%= tournament.tournament_id %>`, {
+            fetch(`/api/tournaments/updateJsonForMatch/<%= tournament.tournament_id %>`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
