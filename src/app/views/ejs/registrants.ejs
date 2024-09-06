@@ -21,6 +21,7 @@
         <tr>
             <th>Username</th>
             <th>Email</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody id="registrantsTBody">
@@ -29,6 +30,10 @@
                 <tr>
                     <td><%= registrant.username %></td>
                     <td><%= registrant.email %></td>
+                    <td class="actions-cell">
+                        <%- include('components/event/addRegistrantToEventButton') %>
+                        <%- include('components/event/removeRegistrantFromEventButton') %>
+                    </td>
                 </tr>
             <% } %>
         <% } else { %>

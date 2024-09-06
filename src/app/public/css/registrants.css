@@ -1,2 +1,13 @@
 @import url(base.css);
 @import url(components/tableView.css);
+
+.actions-cell {
+    display: flex;
+    background-color: #1947A4;
+    gap: 2px;
+}
+
+.actions-cell > * {
+    border: 2px solid white;
+    box-sizing: border-box;
+}

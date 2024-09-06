@@ -250,7 +250,7 @@ viewRouter.get("/tournament/:id", async (req, res) => {
     const tournament = await tournamentService.getTournamentById(tournamentId);
     const currUser = token ? await userService.getUserByToken(token) : null;
     const isAdmin = token ? currUser.user_id === event.created_by : false;
-    const isParticipant = token ? await participantsService.isUserParticipantOfTournament() : false;
+    const isParticipant = token ? await participantsService.isUserParticipantOfTournament(token) : false;
 
     if (!event || !tournament) {
       return res.status(404).render("404", {
