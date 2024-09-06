@@ -156,9 +156,11 @@ viewRouter.get("/events/:event_id", async (req, res) => {
           const isRegistered = currUser
               ? await participantsService.isUserParticipantOfTournament(tournamentId, token)
               : false;
+          const participantCount = await participantsService.getParticipantCountByTourId(tournamentId);
           return {
             ...tournament,
             isRegistered,
+            participantCount
           };
         })
     );
@@ -325,10 +327,10 @@ viewRouter.post("/tournaments/create", async (req, res) => {
   }
 
   // Destructure the form data from req.body
-  const { tournamentName, gameId, eventId, formatId} = req.body;
+  const { tournamentName, gameId, eventId, formatId, participantCap, registrationDeadline} = req.body;
 
   // Validate the form fields
-  if (!tournamentName || !eventId || !gameId || !formatId) {
+  if (!tournamentName || !eventId || !gameId || !formatId || !participantCap) {
     return res.status(400).send("Missing one or more required fields.");
   }
 
@@ -343,7 +345,7 @@ viewRouter.post("/tournaments/create", async (req, res) => {
     }
 
     // Create the new tournament
-    const newTournament = await tournamentService.createTournament(tournamentName, gameId, eventId, false, formatId);
+    await tournamentService.createTournament(tournamentName, gameId, eventId, false, formatId, participantCap, registrationDeadline);
 
     // Redirect to event page after creation
     res.redirect(`/events/${eventId}`);

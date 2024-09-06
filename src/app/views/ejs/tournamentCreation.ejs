@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/css/tournamentCreation.css">
 </head>
 
+<body>
 <%- include('components/layout/base-layout') %>
 
 <header class="page-header">
@@ -14,13 +15,13 @@
     <div class="divider-bar"></div>
 </header>
 
-<% if(isUserLoggedIn) { %>
+<% if (isUserLoggedIn) { %>
     <form action="/tournaments/create" method="POST">
         <div class="form-group">
             <label for="tournamentName" style="color: white">Tournament Name</label>
             <input type="text" id="tournamentName" name="tournamentName" class="form-control" required>
         </div>
-    
+
         <div class="form-group">
             <label for="gameId" style="color: white">Select Game</label>
             <select id="gameId" name="gameId" class="form-control" required>
@@ -29,7 +30,7 @@
                 <% }); %>
             </select>
         </div>
-    
+
         <div class="form-group">
             <label for="eventId" style="color: white">Select Event</label>
             <select id="eventId" name="eventId" class="form-control" required>
@@ -42,21 +43,26 @@
         <div class="form-group">
             <label for="formatId" style="color: white">Select Format</label>
             <select id="formatId" name="formatId" class="form-control" required>
-                <% events.forEach(event => { %>
-                    <option value="single_elimination">Single Elimination</option>
-                    <option value="double_elimination">Double Elimination</option>
-                    <option value="round_robin">Round Robin</option>
-                <% }); %>
+                <option value="single_elimination">Single Elimination</option>
+                <option value="double_elimination">Double Elimination</option>
+                <option value="round_robin">Round Robin</option>
             </select>
         </div>
-    
+
+        <div class="form-group">
+            <label for="participantCap" style="color: white">Participant Cap</label>
+            <input type="number" id="participantCap" name="participantCap" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="registrationDeadline" style="color: white">Registration Deadline</label>
+            <input type="datetime-local" id="registrationDeadline" name="registrationDeadline" class="form-control">
+        </div>
+
         <button type="submit" class="btn">Create Tournament</button>
     </form>
-    
-<% } %>
-<% if(!isUserLoggedIn) { %>
-    <h1> Must be logged in to create a tournament</h1>
+<% } else { %>
+    <h1>Must be logged in to create a tournament</h1>
 <% } %>
 </body>
-
 </html>
