@@ -149,10 +149,23 @@ viewRouter.get("/events/:event_id", async (req, res) => {
       });
     }
 
+    const enrichedTournaments = await Promise.all(
+        tournaments.map(async (tournament) => {
+          const tournamentId = parseInt(tournament.tournament_id);
+          const isRegistered = currUser
+              ? await participantsService.isUserParticipantOfTournament(tournamentId, token)
+              : false;
+          return {
+            ...tournament,
+            isRegistered,
+          };
+        })
+    );
+
     res.render("event", {
       title: `Event - ${event.event_name}`,
       event,
-      tournaments,
+      tournaments: enrichedTournaments,
       isAdmin
     });
   } catch (error) {
