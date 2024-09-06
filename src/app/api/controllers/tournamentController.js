@@ -1,5 +1,8 @@
 import express from "express";
 import tournamentService from "../services/tournamentService.js";
+import participantsService from "../services/participantsService.js";
+
+const extractToken = (req) => req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
 
 const getTournamentById = async (req, res) => {
   const id = parseInt(req.params.id);
@@ -95,6 +98,56 @@ const updateTournamentJsonForMatch = async (req, res) => {
   }
 };
 
+const joinTournament = async (req, res) => {
+  const token = extractToken(req);
+  if (!token) {
+    return res.status(401).send("User must be logged in to perform this action.");
+  }
+
+  const tournamentId = parseInt(req.params.tournament_id);
+  const eventId = parseInt(req.body.event_id);
+
+  try {
+    await participantsService.joinTournament(eventId, tournamentId, token);
+    res.sendStatus(200);
+  } catch (error) {
+    switch (error.message) {
+      case "No event found.":
+      case "No user found.":
+      case "No tournament found.":
+        return res.status(404).send("User, event, or tournament not found.");
+    }
+
+    console.error(error);
+    res.status(500).send("An error occurred while registering for the tournament.");
+  }
+};
+
+const leaveTournament = async (req, res) => {
+  const token = extractToken(req);
+  if (!token) {
+    return res.status(401).send("User must be logged in to perform this action.");
+  }
+
+  const tournamentId = parseInt(req.params.tournament_id);
+  const eventId = parseInt(req.body.event_id);
+
+  try {
+    await participantsService.leaveTournament(eventId, tournamentId, token);
+    res.sendStatus(200);
+  } catch (error) {
+    switch (error.message) {
+      case "No event found.":
+      case "No user found.":
+      case "No tournament found.":
+        return res.status(404).send("User, event, or tournament not found.");
+    }
+
+    console.error(error);
+    res.status(500).send("An error occurred while leaving the tournament.");
+  }
+};
+
 const deleteTournament = async (req, res) => {
   res.send("Not yet implemented.");
 };
@@ -103,6 +156,8 @@ const tournamentRouter = express.Router();
 
 tournamentRouter.get("/get/:id", getTournamentById);
 tournamentRouter.get("/getAllTourFromEvent/:eventid", getAllTournamentsByEventId);
+tournamentRouter.post("/:tournament_id/join", joinTournament)
+tournamentRouter.post("/:tournament_id/leave", leaveTournament)
 tournamentRouter.post("/create", createTournament);
 tournamentRouter.post("/updateJson/:id", updateTournamentJson);
 tournamentRouter.post("/updateJsonForMatch/:id", updateTournamentJsonForMatch);

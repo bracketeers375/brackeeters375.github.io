@@ -163,6 +163,7 @@ const genAndUpdateTournamentJson = async (tournament_id) => {
       const singleEliminationSettings = {
         seedOrdering: seedOrder,
         consolationFinal: false,
+        size: helpers.getNearestPowerOfTwo(formattedPartList.length)
       };
       config = {
         tournamentId: tournamentData.tournament_id,

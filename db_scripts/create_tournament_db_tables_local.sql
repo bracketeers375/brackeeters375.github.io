@@ -3,21 +3,26 @@ CREATE DATABASE local_tournament_db;
 \c local_tournament_db;
 
 -- Clean out the database.
-DROP TABLE IF EXISTS Participants CASCADE;
-DROP TABLE IF EXISTS Tournaments CASCADE;
-DROP TABLE IF EXISTS Events CASCADE;
-DROP TABLE IF EXISTS Users CASCADE;
-DROP TABLE IF EXISTS Games CASCADE;
-DROP TABLE IF EXISTS Admins CASCADE;
+DO $$
+    DECLARE
+        drop_query TEXT;
+    BEGIN
+        SELECT string_agg(format('DROP TABLE IF EXISTS %I.%I CASCADE;', schemaname, tablename), ' ')
+        INTO drop_query
+        FROM pg_tables
+        WHERE schemaname NOT IN ('pg_catalog', 'information_schema');
 
--- Recreate Games table.
+        IF drop_query IS NOT NULL THEN
+            EXECUTE drop_query;
+        END IF;
+    END $$;
+
 CREATE TABLE Games
 (
     game_id   SERIAL PRIMARY KEY,
     game_name VARCHAR(100) UNIQUE NOT NULL
 );
 
--- Recreate Users table.
 CREATE TABLE Users
 (
     user_id       SERIAL PRIMARY KEY,
@@ -28,9 +33,6 @@ CREATE TABLE Users
     token 				VARCHAR(255) UNIQUE
 );
 
-
-
--- Recreate Events table.
 CREATE TABLE Events
 (
     event_id   SERIAL PRIMARY KEY,
@@ -48,7 +50,7 @@ CREATE TABLE Tournaments
     tournament_json JSON,
     tournament_format VARCHAR(100),
     game_id         INT          NOT NULL,
-    event_id        INT,
+    event_id        INT NOT NULL,
     has_started     BOOLEAN,
     FOREIGN KEY (game_id) REFERENCES Games (game_id),
     FOREIGN KEY (event_id) REFERENCES Events (event_id)

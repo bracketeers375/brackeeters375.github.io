@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title><%= title %></title>
     <link rel="stylesheet" href="/css/attendees.css">
 </head>
-
 <body>
 <%- include('components/layout/base-layout') %>
-<div id="mainContainer">
-    <p id="titleText"><%= eventData.event_name%> - Attendees List</p>
-</div>
+
+<header class="page-header">
+    <h1><%= eventData.event_name %></h1>
+    <h2>Attendees</h2>
+    <div class="divider-bar"></div>
+</header>
+
 <div id="errorContainer"></div>
 <div id="tableContainer">
     <table id="myTable">
@@ -22,19 +24,21 @@
         </tr>
         </thead>
         <tbody id="attendeesTBody">
-        <% if(participantsData) { %>
-            <% for (const [key, value] of Object.entries(participantsData)) { %>
+        <% if (participantsData && participantsData.length > 0) { %>
+            <% for (const participant of participantsData) { %>
                 <tr>
-                    <td><%= value.username %></td>
-                    <td><%= value.enteredTournaments.join(", ")%></td>
+                    <td><%= participant.username %></td>
+                    <td><%= participant.enteredTournaments.join(", ")%></td>
                 </tr>
             <% } %>
+        <% } else { %>
+            <tr>
+                <td colspan="2">No attendees found.</td>
+            </tr>
         <% } %>
         </tbody>
     </table>
 </div>
-
-<!-- <script src="/js/attendees.js"></script> -->
+<script src="/js/attendees.js"></script>
 </body>
-
 </html>

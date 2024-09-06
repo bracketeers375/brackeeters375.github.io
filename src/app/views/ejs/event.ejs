@@ -9,29 +9,84 @@
 <body>
 <%- include('components/layout/base-layout') %>
 
-<div class="content">
+<div class="content" style="text-align: center">
     <header class="page-header">
         <h1><%= event.event_name %></h1>
         <h2>Start: <%= new Date(event.start_date).toDateString() %> - End: <%= event.end_date ? new Date(event.end_date).toDateString() : 'Ongoing' %></h2>
-        <div id="eventLinks">
-            <a href="/events/<%= event.event_id %>/attendees" class="event-link">Attendees</a>
-            <% if(isAdmin) { %>
-            <a href="/admin/events/<%= event.event_id %>/attendees" class="event-link">Admin - Attendees</a>
-            <% } %>
-        </div>
-        <br>
         <div class="divider-bar"></div>
     </header>
-
+    <span id="eventLinks">
+        <a href="/events/<%= event.event_id %>/attendees" class="event-link">View Attendees</a>
+        <% if (isAdmin) { %>
+            <a href="/admin/events/<%= event.event_id %>/attendees" class="event-link">Admin - Attendees</a>
+        <% } %>
+    </span>
     <div class="grid-list">
         <% tournaments.forEach(tournament => { %>
             <div class="grid-item">
                 <h3><%= tournament.tournament_name %></h3>
                 <p>Game: <%= tournament.game_name %></p>
                 <a href="/tournament/<%= tournament.tournament_id %>" class="button">View Tournament</a>
+                <% if (tournament.isRegistered) { %>
+                    <a href="#" class="tournament-leave-button button" data-event-id="<%= event.event_id %>" data-tournament-id="<%= tournament.tournament_id %>">Leave Tournament</a>
+                <% } else { %>
+                    <a href="#" class="tournament-join-button button" data-event-id="<%= event.event_id %>" data-tournament-id="<%= tournament.tournament_id %>">Register For Tournament</a>
+                <% } %>
             </div>
         <% }); %>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll('.tournament-join-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const eventId = button.getAttribute('data-event-id');
+                const tournamentId = button.getAttribute('data-tournament-id');
+
+                fetch(`/api/tournaments/${tournamentId}/join`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ event_id: eventId })
+                }).then((response) => {
+                    if (response.status >= 400) {
+                        return response.text().then((text) => {
+                            throw new Error(text);
+                        });
+                    }
+                    window.location.reload();
+                }).catch(error => console.error('Error during registration:', error.message));
+            });
+        });
+
+        document.querySelectorAll('.tournament-leave-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const eventId = button.getAttribute('data-event-id');
+                const tournamentId = button.getAttribute('data-tournament-id');
+
+                fetch(`/api/tournaments/${tournamentId}/leave`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ event_id: eventId })
+                }).then((response) => {
+                    if (response.status >= 400) {
+                        return response.text().then((text) => {
+                            throw new Error(text);
+                        });
+                    }
+                    window.location.reload();
+                }).catch(error => console.error('Error during leaving:', error.message));
+            });
+        });
+    });
+</script>
 </body>
 </html>
