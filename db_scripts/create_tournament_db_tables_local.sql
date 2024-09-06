@@ -85,52 +85,43 @@ CREATE TABLE Participants
 INSERT INTO Games(game_name)
 VALUES ('GUILTY GEAR -STRIVE-');
 INSERT INTO Games(game_name)
-VALUES ('SF6');
+VALUES ('Street Fighter 6');
+INSERT INTO Games(game_name)
+VALUES ('TEKKEN 8');
+INSERT INTO Games(game_name)
+VALUES ('UNDER NIGHT IN-BIRTH II Sys:Celes');
+INSERT INTO Games(game_name)
+VALUES ('Super Smash Bros. Ultimate');
 
 
 INSERT INTO Users (username, email, password_hash, full_name, token)
-VALUES('bob', 'bob@gmail.com', '', 'Bob Barker', '2');
+VALUES('Steven', 'steven@gmail.com', '$argon2id$v=19$m=65536,t=3,p=4$FiTQA4f5zL6rj3E0cjjaGg$LhNtzB/144jhH95cPTcNtUsZVLcMmzainuvA5WllFgk',
+'Steven D', 'f6333d643d372e4b25843b68d0684cf295b4175646a620aa4cb8b8073295d795');
 INSERT INTO Users (username, email, password_hash, full_name, token)
-VALUES('alice', 'alice@gmail.com', '', 'Alice Wonderland', '3');
+VALUES('Alice', 'alice@gmail.com', '', 'Alice Wonderland', '2');
 INSERT INTO Users (username, email, password_hash, full_name, token)
-VALUES ('God', 'god@gmail.com', '', 'God', '1');
+VALUES('Bob', 'bob@gmail.com', '', 'Bob Barker', '3');
 INSERT INTO Users (username, email, password_hash, full_name, token)
-VALUES ('four', 'four@gmail.com', '', 'God', '4');
+VALUES ('Charlie', 'charlie@gmail.com', '', 'God', '4');
 INSERT INTO Users (username, email, password_hash, full_name, token)
-VALUES ('five', 'five@gmail.com', '', 'God', '5');
+VALUES ('David', 'david@gmail.com', '', 'DL', '5');
 INSERT INTO Users (username, email, password_hash, full_name, token)
-VALUES ('six', 'six@gmail.com', '', 'God', '6');
+VALUES ('John', 'five@gmail.com', '', 'JG', '6');
 INSERT INTO Users (username, email, password_hash, full_name, token)
-VALUES ('seven', 'seven@gmail.com', '', 'God', '7');
+VALUES ('James', 'six@gmail.com', '', 'J', '7');
 INSERT INTO Users (username, email, password_hash, full_name, token)
-VALUES ('eight', 'eight@gmail.com', '', 'God', '8');
+VALUES ('Sara', 'seven@gmail.com', '', 'S', '8');
+INSERT INTO Users (username, email, password_hash, full_name, token)
+VALUES ('Joey', 'eight@gmail.com', '', 'J', '9');
 
 INSERT INTO Events (event_name, start_date, end_date, created_by)
-VALUES ('Rocket League Championship 2024', '2024-08-01', '2024-08-03', 1),
-       ('Super Smash Bros Tournament', '2024-08-05', '2024-08-07', 1),
-       ('Street Fighter V Championship', '2024-08-10', '2024-08-12', 1),
-       ('Tekken World Tour', '2024-08-15', '2024-08-17', 1),
-       ('Call of Duty: Warzone Event', '2024-08-20', '2024-08-22', 1),
-       ('League of Legends Championship', '2024-08-25', '2024-08-27', 1),
-       ('Dota 2 International', '2024-09-01', '2024-09-03', 1),
-       ('FIFA World Cup eSports', '2024-09-05', '2024-09-07', 1),
-       ('Fortnite Battle Royale', '2024-09-10', '2024-09-12', 1),
-       ('Apex Legends Global Series', '2024-09-15', '2024-09-17', 1),
-       ('Overwatch League Finals', '2024-09-20', '2024-09-22', 1),
-       ('Valorant Champions Tour', '2024-09-25', '2024-09-27', 1),
-       ('PUBG Global Championship', '2024-10-01', '2024-10-03', 1),
-       ('Hearthstone Masters', '2024-10-05', '2024-10-07', 1),
-       ('Counter-Strike: Global Offensive Major', '2024-10-10', '2024-10-12', 1),
-       ('Rainbow Six Siege Invitational', '2024-10-15', '2024-10-17', 1),
-       ('Magic: The Gathering Arena Championship', '2024-10-20', '2024-10-22', 1),
-       ('Smite World Championship', '2024-10-25', '2024-10-27', 1),
-       ('Gears of War Pro Circuit', '2024-10-30', '2024-11-01', 1),
-       ('Mortal Kombat 11 Pro Kompetition', '2024-11-05', '2024-11-07', 1),
-       ('Halo Championship Series', '2024-11-10', '2024-11-12', 1),
-       ('Heroes of the Storm Global Championship', '2024-11-15', '2024-11-17', 1);
+VALUES ('My FGC Tournament 2024', '2024-09-06', '2024-09-06', 1),
+       ('Go For Broke', '2024-08-05', '2024-08-07', 2),
+       ('The Vortex', '2024-08-10', '2024-08-12', 2),
+       ('Tekken World Tour', '2024-10-19', '2024-10-19', 2);
 
 INSERT INTO Tournaments(tournament_name, game_id, event_id, participant_cap, tournament_json, has_started, tournament_format)
-VALUES ('TEST GGST', 1, 1, 50, '{
+VALUES ('My Strive Tournament', 1, 1, 16, '{
   "participant": [
     {
       "id": 0,
@@ -466,7 +457,7 @@ VALUES ('TEST GGST', 1, 1, 50, '{
 }', 'false', 'double_elimination');
 
 INSERT INTO Tournaments(tournament_name, game_id, event_id, participant_cap, tournament_json, has_started, tournament_format)
-VALUES ('TEST TOURNEY 2', 2, 1, 50, '{
+VALUES ('TEST TOURNEY 2', 2, 1, 8, '{
   "participant": [
     {
       "id": 0,
@@ -803,26 +794,27 @@ VALUES ('TEST TOURNEY 2', 2, 1, 50, '{
 }', 'false', 'single_elimination');
 
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(1, 'bob', 1, 1);
+VALUES(2, 'Alice', 1, 1);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(2, 'alice', 1, 1);
+VALUES(3, 'Bob', 1, 1);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(3, 'God', 1, 1);
+VALUES(4, 'Charlie', 1, 1);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(4, 'four', 1, 1);
+VALUES(5, 'David', 1, 1);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(5, 'five', 1, 1);
+VALUES(6, 'John', 1, 1);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(6, 'six', 1, 1);
+VALUES(7, 'James', 1, 1);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(7, 'seven', 1, 1);
+VALUES(8, 'Sara', 1, 1);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(8, 'eight', 1, 1);
-
-
-
+VALUES(9, 'Joey', 1, 1);
 
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(3, 'God', 1, 2);
+VALUES(5, 'David', 1, 2);
 INSERT INTO Participants(user_id, username, event_id, tournament_id)
-VALUES(2, 'alice', 1, 2);
+VALUES(6, 'John', 1, 2);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(5, 'David', 1, 2);
+INSERT INTO Participants(user_id, username, event_id, tournament_id)
+VALUES(9, 'Joey', 1, 2);
