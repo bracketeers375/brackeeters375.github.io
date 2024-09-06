@@ -146,6 +146,9 @@ const genAndUpdateTournamentJson = async (tournament_id) => {
     const format = tournamentData.tournament_format;
     const hasStarted = tournamentData.has_started;
 
+    if(particpantsList.length < 2) {
+      return "Less than 2";
+    }
 
     if(hasStarted) {
       return "Has started";
