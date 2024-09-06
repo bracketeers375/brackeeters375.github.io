@@ -29,12 +29,13 @@
 			<tr>
 				<td><%= participant.username %></td>
 				<td>
-					<input
+					<input 	autocomplete="off"
 							type="number"
+							placeholder="<%= participant.seed %>"
 							id="<%= participant.participants_id %>"
 							max="<%= participantsData.length %>"
 							min="1"
-							aria-label="Seed for <%= participant.username %>">
+							aria-label="Seed for <%= participant.username %>" />
 				</td>
 			</tr>
 		<% }) %>
@@ -77,6 +78,7 @@
 				}
 			}
 		}
+		window.location.reload();
 	});
 </script>
 </body>

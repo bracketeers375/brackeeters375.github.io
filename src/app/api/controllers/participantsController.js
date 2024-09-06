@@ -109,7 +109,7 @@ const seedParticipant = async (req, res) => {
   	let result = await participantsService.seedParticipant(id, seed);
     if(!result)
       return res.status(404).send("Error seeding participant");
-    return result;
+    res.status(200).send(result);
   }catch(error){
     return res.send(error);
   }
