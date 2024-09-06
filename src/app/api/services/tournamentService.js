@@ -64,16 +64,16 @@ const getTournamentsByEventId = async (event_id) => {
     }
 };
 
-const createTournament = async (t_name, g_id, e_id,) => {
+const createTournament = async (t_name, g_id, e_id, h_id, t_id) => {
 
   //Getting the row with highest tournament_id
   //SELECT * FROM TOURNAMENTS ORDER BY tournament_id desc limit 1;
   try {
     await pool.query(
-      `INSERT INTO tournaments(tournament_name, game_id, event_id)
-        VALUES ($1, $2, $3)
+      `INSERT INTO tournaments(tournament_name, game_id, event_id, has_started, tournament_format)
+        VALUES ($1, $2, $3, $4, $5)
         RETURNING *`,
-      [t_name, g_id, e_id],
+      [t_name, g_id, e_id, h_id, t_id],
     ).then((result) => {
       //console.log("result of POST: ", result);
     });
@@ -146,6 +146,9 @@ const genAndUpdateTournamentJson = async (tournament_id) => {
     const format = tournamentData.tournament_format;
     const hasStarted = tournamentData.has_started;
 
+    if(particpantsList.length < 2) {
+      return "Less than 2";
+    }
 
     if(hasStarted) {
       return "Has started";

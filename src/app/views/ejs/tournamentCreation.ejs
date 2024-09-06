@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" type="text/css" href="/css/tournamentCreation.css">
+</head>
+
+<%- include('components/layout/base-layout') %>
+
+<header class="page-header">
+    <h1>Create a Tournament</h1>
+    <div class="divider-bar"></div>
+</header>
+
+<% if(isUserLoggedIn) { %>
+    <form action="/tournaments/create" method="POST">
+        <div class="form-group">
+            <label for="tournamentName" style="color: white">Tournament Name</label>
+            <input type="text" id="tournamentName" name="tournamentName" class="form-control" required>
+        </div>
+    
+        <div class="form-group">
+            <label for="gameId" style="color: white">Select Game</label>
+            <select id="gameId" name="gameId" class="form-control" required>
+                <% games.forEach(game => { %>
+                    <option value="<%= game.game_id %>"><%= game.game_name %></option>
+                <% }); %>
+            </select>
+        </div>
+    
+        <div class="form-group">
+            <label for="eventId" style="color: white">Select Event</label>
+            <select id="eventId" name="eventId" class="form-control" required>
+                <% events.forEach(event => { %>
+                    <option value="<%= event.event_id %>"><%= event.event_name %></option>
+                <% }); %>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="formatId" style="color: white">Select Format</label>
+            <select id="formatId" name="formatId" class="form-control" required>
+                <% events.forEach(event => { %>
+                    <option value="single_elimination">Single Elimination</option>
+                    <option value="double_elimination">Double Elimination</option>
+                    <option value="round_robin">Round Robin</option>
+                <% }); %>
+            </select>
+        </div>
+    
+        <button type="submit" class="btn">Create Tournament</button>
+    </form>
+    
+<% } %>
+<% if(!isUserLoggedIn) { %>
+    <h1> Must be logged in to create a tournament</h1>
+<% } %>
+</body>
+
+</html>

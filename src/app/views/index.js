@@ -3,6 +3,7 @@ import eventsService from "../api/services/eventsService.js";
 import tournamentService from "../api/services/tournamentService.js";
 import userService from "../api/services/userService.js";
 import participantsService from "../api/services/participantsService.js";
+import gamesService from "../api/services/gamesService.js";
 
 const viewRouter = express.Router();
 
@@ -287,6 +288,72 @@ viewRouter.get("/tournament/:id", async (req, res) => {
     res.status(500).send("Error retrieving the tournament.");
   }
 });
+
+viewRouter.get("/tournaments/create", async (req, res) => {
+  let isLoggedIn = true;
+  const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+  
+  if (!token) {
+    isLoggedIn = false;
+  }
+
+  try {
+    // Retrieve the user ID from the token
+    const { user_id: userId } = await userService.getUserByToken(token);
+
+    // Fetch games and events created by the user
+    const games = await gamesService.getAllGames();
+    const events = await eventsService.getEventsByUserId(userId);
+
+    res.render("tournamentCreation", {
+      title: "Tournament Creation - Bracketeers",
+      isUserLoggedIn: isLoggedIn,
+      games,  // Pass games to template
+      events  // Pass events to template
+    });
+  } catch (error) {
+    console.error("Error fetching data for tournament creation:", error);
+    res.status(500).send("An error occurred while preparing the tournament creation page.");
+  }
+});
+
+viewRouter.post("/tournaments/create", async (req, res) => {
+  const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).send("User must be logged in to perform this action.");
+  }
+
+  // Destructure the form data from req.body
+  const { tournamentName, gameId, eventId, formatId} = req.body;
+
+  // Validate the form fields
+  if (!tournamentName || !eventId || !gameId || !formatId) {
+    return res.status(400).send("Missing one or more required fields.");
+  }
+
+  try {
+    // Retrieve the user ID from the token
+    const { user_id: userId } = await userService.getUserByToken(token);
+
+    // Verify that the event belongs to the user
+    const event = await eventsService.getEventById(eventId);
+    if (event.created_by !== userId) {
+      return res.status(403).send("You do not have permission to create a tournament for this event.");
+    }
+
+    // Create the new tournament
+    const newTournament = await tournamentService.createTournament(tournamentName, gameId, eventId, false, formatId);
+
+    // Redirect to event page after creation
+    res.redirect(`/events/${eventId}`);
+  } catch (error) {
+    console.error("Error creating tournament:", error);
+    res.status(500).send("An error occurred while creating the tournament.");
+  }
+});
+
+
 
 viewRouter.use((req, res) => {
   res.status(404).render("404", {
