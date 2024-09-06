@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel="stylesheet" type="text/css" href="/css/seeding.css">
+    </head>
+    <body>
+    <%- include('components/layout/base-layout') %>
+
+    	<div class="content">
+        	<header class="page-header">
+            	<h1>Seed the Participants</h1>
+            	<div class="divider-bar"></div>
+        	</header>
+    	</div>
+
+        <div id="seedErrorContainer"></div>
+    	<div id="seedTableContainer">
+    		<table id="seed-table">
+        		<thead>
+            		<th>Player Name</th>
+            		<th>Seed</th>
+        		</thead>
+        		<tbody id="seedTBody">
+                    <% participantsData.forEach(participant => { %>
+						<tr>
+                            <td><%= participant.username %></td>
+                            <td><input type="number" id='<%= participant.participants_id %>' max='<%= participantsData.length %>' min="1"></td>
+                        </tr>
+                    <% }) %>
+        		</tbody>
+    		</table>
+		</div>
+
+        <button id="submit" class="button">Submit</button>
+        <div id="text"></div>
+        <script>
+            
+            let msg = document.getElementById("text");
+            
+			let btn = document.getElementById("submit");
+            btn.addEventListener("click", async () => {
+                let success = true;
+                let body = document.getElementById("seedTBody");
+                let rows = Array.from(body.children);
+                rows.forEach(async row => {
+                	let inputElem = row.children[1].children[0];
+                	let newSeed = inputElem.value;
+                	let partId = inputElem.id;
+                    if(newSeed != null){
+                        let result = await fetch(`/api/participants/seed/${partId}`, {
+                    	method: "POST",
+                    	headers: {
+                        	"Content-Type": "application/json",
+                    	},
+                    	body: JSON.stringify({seed: newSeed,}),
+                		}).then( response => {
+                            console.log(response);
+                		}).catch(error => {
+                    		console.log(error);
+							return error;
+                		});
+					
+                    }
+                	
+                });
+            });
+
+
+        </script>
+    </body>
+</html>

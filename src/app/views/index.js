@@ -226,6 +226,37 @@ viewRouter.get("/events/:event_id/attendees", async (req, res) => {
 
 });
 
+viewRouter.get("/admin/tournaments/:tourn_id/seeding", async (req, res) => {
+  const tournamentId = parseInt(req.params.tourn_id);
+  const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];
+
+  try {
+    const event = await eventsService.getEventByTournamentId(tournamentId);
+    const tournament = await tournamentService.getTournamentById(tournamentId);
+    const currUser = token ? await userService.getUserByToken(token) : null;
+    const isAdmin = token ? currUser.user_id === event.created_by : false;
+
+    if (!event || !tournament) {
+      return res.status(404).render("404", {
+        title: "404 - Tournament Not Found",
+      });
+    }
+
+    const participantsData = await participantsService.getParticipantsByTourId(tournamentId);
+
+    res.render("seeding", {
+      title: `Seed Participants for ${tournament.tournament_name}`,
+      tournament,
+      participantsData,
+      isAdmin
+    });
+    
+  } catch (error) {
+    console.error("Error fetching tournament:", error);
+    res.status(500).send("Error retrieving the tournament.");
+  }
+});
+
 viewRouter.get("/tournament/:id", async (req, res) => {
   const tournamentId = parseInt(req.params.id);
   const token = req.cookies?.user?.token || req.headers.authorization?.split(' ')[1];

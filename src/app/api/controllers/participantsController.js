@@ -94,11 +94,33 @@ const removeParticipantFromTour = async (req, res) => {
 
 };
 
+const seedParticipant = async (req, res) => {
+  let id = req.params.participant_id;
+  let seed = req.body.seed;
+
+  if(!id || !seed)
+    return res.status(400).send("Missing features");
+
+  if(Number(id) != NaN && seed < 1)
+    return res.status(400).send("Seed cannot be less than 1");
+  
+  
+  try{
+  	let result = await participantsService.seedParticipant(id, seed);
+    if(!result)
+      return res.status(404).send("Error seeding participant");
+    return result;
+  }catch(error){
+    return res.send(error);
+  }
+}
+
 const participantRouter = express.Router();
 participantRouter.get("/getByTour/:tournament_id", getParticipantsByTourId);
 participantRouter.get("/getByEvent/:event_id", getParticipantsByEventId);
 participantRouter.get("/getByEventFormatted/:event_id", getParticipantsByEventIdFormatted);
 participantRouter.post("/add/:tournament_id", addParticipant2Tournament);
 participantRouter.post("/remove/:participants_id", removeParticipantFromTour);
+participantRouter.post("/seed/:participant_id", seedParticipant);
 
 export default participantRouter;

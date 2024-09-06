@@ -32,6 +32,9 @@
                 <% } else { %>
                     <a href="#" class="tournament-join-button button" data-event-id="<%= event.event_id %>" data-tournament-id="<%= tournament.tournament_id %>">Register For Tournament</a>
                 <% } %>
+                <% if(isAdmin){ %>
+                    <a href="/admin/tournaments/<%= tournament.tournament_id %>/seeding" class="button">Seed Participants</a>
+                <% } %>
             </div>
         <% }); %>
     </div>
