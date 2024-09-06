@@ -3,7 +3,7 @@ const { Pool } = pkg;
 
 let databaseConfig;
 if (process.env.NODE_ENV === "production") {
-  databaseConfig = { connectionString: process.env.DATABASE_URL };
+  databaseConfig = { connectionString: process.env.APP_CONNECTION_STRING };
 } else {
   databaseConfig = {
     user: "postgres",
